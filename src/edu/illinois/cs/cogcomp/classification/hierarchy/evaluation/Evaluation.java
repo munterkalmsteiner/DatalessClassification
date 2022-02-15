@@ -9,16 +9,12 @@ import java.util.Random;
 import java.util.Set;
 
 import edu.illinois.cs.cogcomp.classification.densification.representation.SparseSimilarityCondensation;
-import edu.illinois.cs.cogcomp.classification.hierarchy.classifertree.liblinear.ml.ClassifierLibLinearTreeBottomUpML;
-import edu.illinois.cs.cogcomp.classification.hierarchy.classifertree.liblinear.ml.ClassifierLibLinearTreeTopDownML;
 import edu.illinois.cs.cogcomp.classification.hierarchy.classificationinterface.AbstractLabelTree;
 import edu.illinois.cs.cogcomp.classification.hierarchy.classificationinterface.InterfaceMultiClassClassificationTree;
 import edu.illinois.cs.cogcomp.classification.hierarchy.classificationinterface.InterfaceMultiLabelConceptClassificationTree;
 import edu.illinois.cs.cogcomp.classification.hierarchy.classificationinterface.InterfaceMultiLabelContentClassificationTree;
-import edu.illinois.cs.cogcomp.classification.hierarchy.dataless.representation.ml.ConceptTreeTopDownML;
 import edu.illinois.cs.cogcomp.classification.hierarchy.datastructure.LabelKeyValuePair;
 import edu.illinois.cs.cogcomp.classification.hierarchy.datastructure.LabelResultMC;
-import edu.illinois.cs.cogcomp.classification.hierarchy.datastructure.LabelResultML;
 import edu.illinois.cs.cogcomp.classification.hierarchy.datastructure.SparseVector;
 
 /**
@@ -685,11 +681,9 @@ public class Evaluation {
 							falsepositive.get(depth).put(classifiedLabel, falsepositive.get(depth).get(classifiedLabel) + 1);
 						}
 					}
-					
-					writer.write("\n\r");
-
 				}
 				
+				writer.write("\n\r");				
 
 				count++;
 				if (count % 1000 == 0) {

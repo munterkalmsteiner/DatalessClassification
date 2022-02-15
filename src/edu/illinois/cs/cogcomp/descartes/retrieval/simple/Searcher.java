@@ -10,8 +10,6 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.lucene.analysis.Analyzer;
-import org.apache.lucene.analysis.WhitespaceAnalyzer;
-import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.Term;
@@ -35,7 +33,6 @@ import edu.illinois.cs.cogcomp.descartes.AnalyzerFactory;
 import edu.illinois.cs.cogcomp.descartes.retrieval.IResult;
 import edu.illinois.cs.cogcomp.descartes.retrieval.ISearcher;
 import edu.illinois.cs.cogcomp.descartes.similarity.UnNormalizedLuceneSimilarity;
-import edu.illinois.cs.cogcomp.descartes.util.Utilities;
 
 /**
  * @author Vivek Srikumar
@@ -208,6 +205,9 @@ public class Searcher implements ISearcher {
 		String finalQuery = queryText;
 
 		Query query = null;
+		
+		BooleanQuery.setMaxClauseCount(100000);
+        BooleanQuery bq = new BooleanQuery();
 
 		if (fields.length == 1) {
 			QueryParser parser = new QueryParser(AnalyzerVersion,
@@ -220,8 +220,6 @@ public class Searcher implements ISearcher {
 			query = parser.parse(QueryParser.escape(finalQuery));
 		}
 
-		BooleanQuery.setMaxClauseCount(30000);
-		BooleanQuery bq = new BooleanQuery();
 
 		bq.add(query, BooleanClause.Occur.SHOULD);
 		return bq;

@@ -6,7 +6,6 @@ import edu.illinois.cs.cogcomp.classification.hierarchy.dataless.representation.
 import edu.illinois.cs.cogcomp.classification.hierarchy.dataless.representation.ConceptTreeNode;
 import edu.illinois.cs.cogcomp.classification.hierarchy.dataless.representation.ml.ConceptTreeTopDownML;
 import edu.illinois.cs.cogcomp.classification.hierarchy.run.ClassifierConstant;
-import edu.illinois.cs.cogcomp.classification.representation.esa.complex.DiskBasedComplexESA;
 
 /**
  * yqsong@illinois.edu
@@ -22,7 +21,7 @@ public class DumpConceptTree20NewsGroups {
 //		ClassifierConstant.complexVectorType = ComplexESALocal.searchTypes[1];
 //		test20NewsgroupsDataESAComplex (500) ;
 		
-		test20NewsgroupsDataESA (500);
+//		test20NewsgroupsDataESA (500);
 		
 //		test20NewsgroupsDataWordDistWord2Vector (500);
 
@@ -43,9 +42,8 @@ public class DumpConceptTree20NewsGroups {
 		System.out.println("process tree finished");
 	}
 	
-	public static void test20NewsgroupsDataESA (int conceptNum) {
+	public static void test20NewsgroupsDataESA (int conceptNum, String fileOutputPath) {
 		String fileTopicHierarchyPath = "";
-		String fileOutputPath = "data/20newsgroups/output_new/tree.20newsgroups.simple.esa.concepts.newrefine." + conceptNum;
 		
 		AbstractConceptTree tree = new ConceptTreeTopDownML("20newsgroups", "simple", conceptWeights, true);
 		System.out.println("process tree...");

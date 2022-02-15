@@ -26,20 +26,15 @@ public class CorpusESAConceptualization20NewsGroups {
 //		int type = 1;
 //		ClassifierConstant.complexVectorType = ComplexESALocal.searchTypes[type];
 //		conceptualizeCorpusComplex (500) ;
-		
-		conceptualizeCorpus (500) ;
-
-
+	    
+	    
 	}
 	
-	public static void conceptualizeCorpus (int conceptNum) 	{
+	public static void conceptualizeCorpus (int conceptNum, String inputData, String outputData) 	{
 		int seed = 0;
 		Random random = new Random(seed);
 		double trainingRate = 0.5;
-		
-		String inputData = "data/20newsgroups/textindex";
-		String outputData = "data/20newsgroups/output_new/20newsgroups.simple.esa.concepts." + conceptNum;
-		
+
 		CorpusESAConceptualization20NewsGroups corpusContentProc = new CorpusESAConceptualization20NewsGroups();
 		NewsgroupsCorpusConceptData ngData = new NewsgroupsCorpusConceptData();
 		ngData.readCorpusContentOnly(inputData, random, trainingRate);

@@ -1,0 +1,4 @@
+/target/
+data/20newsgroups/output
+data/20newsgroups/textindex
+.settings

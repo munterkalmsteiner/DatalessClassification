@@ -6,7 +6,6 @@ import java.util.Random;
 
 import edu.illinois.cs.cogcomp.classification.hierarchy.dataless.representation.ConceptTreeNode;
 import edu.illinois.cs.cogcomp.classification.hierarchy.dataless.representation.ml.ConceptTreeBottomUpML;
-import edu.illinois.cs.cogcomp.classification.hierarchy.dataless.representation.ml.ConceptTreeTopDownML;
 import edu.illinois.cs.cogcomp.classification.hierarchy.dataprocess.newsgroups.NewsgroupsCorpusConceptData;
 import edu.illinois.cs.cogcomp.classification.hierarchy.dataprocess.newsgroups.NewsgroupsTopicDocMaps;
 import edu.illinois.cs.cogcomp.classification.hierarchy.datastructure.StopWords;
@@ -42,11 +41,11 @@ public class ConceptClassificationESAML {
 		String method = "simple";
 		String data = "20newsgroups";
 		stopWordsFile = "data/rcvTest/english.stop";
-		docIDContentConceptFile = "data/20newsgroups/representation/20newsgroups.simple.esa.concepts.500";
+		docIDContentConceptFile = "data/20newsgroups/output/20newsgroups.simple.esa.concepts.500";
 		docIDTopicMapFile = "data/20newsgroups/textindex";
 //		treeConceptFile = "data/20newsgroups/representation/tree.20newsgroups.simple.esa.concepts.500";
-		treeConceptFile = "data/20newsgroups/representation/tree.20newsgroups.simple.esa.concepts.newrefine.500";
-		outputClassificationFile = "data/output/20newsgroups/result.concept.20newsgroups.classification";
+		treeConceptFile = "data/20newsgroups/output/tree.20newsgroups.simple.esa.concepts.newrefine.500";
+		outputClassificationFile = "data/20newsgroups/output/result.concept.20newsgroups.classification";
 		outputLabelComparisonFile = "data/20newsgroups/output/result.concept.20newsgroups.labelComparison";
 
 		StopWords.rcvStopWords = StopWords.readStopWords (stopWordsFile);

@@ -1,23 +1,17 @@
 package edu.illinois.cs.cogcomp.descartes.indexer;
 
-import info.bliki.wiki.dump.IArticleFilter;
-import info.bliki.wiki.dump.Siteinfo;
-import info.bliki.wiki.dump.WikiArticle;
-import info.bliki.wiki.dump.WikiXMLParser;
-import info.bliki.wiki.model.WikiModel;
-
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.lang.StringUtils;
-import org.xml.sax.SAXException;
 
 import edu.illinois.cs.cogcomp.descartes.util.PageParser;
 import edu.illinois.cs.cogcomp.wiki.parsing.Utils;
-import edu.illinois.cs.cogcomp.wiki.parsing.processors.LinkAnnotationConverter;
+import info.bliki.wiki.dump.IArticleFilter;
+import info.bliki.wiki.dump.Siteinfo;
+import info.bliki.wiki.dump.WikiArticle;
+import info.bliki.wiki.dump.WikiXMLParser;
 
 abstract class DemoArticleFilter implements IArticleFilter {
 
@@ -29,7 +23,7 @@ abstract class DemoArticleFilter implements IArticleFilter {
 
 	@Override
 	public void process(WikiArticle page, Siteinfo siteinfo)
-			throws SAXException {
+	{
 		// System.out.println(page.getTitle());
 		// System.out.println(page.getText());
 		if (page.isMain() && !StringUtils.isEmpty(page.getText())

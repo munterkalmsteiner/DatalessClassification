@@ -32,7 +32,7 @@ public class NewsgroupsTopicHierarchy {
 		topicMapping3.put("comp.sys.mac.hardware", "computer systems mac macintosh apple hardware");
 		topicMapping3.put("comp.graphics", "computer graphics");
 		topicMapping3.put("comp.windows.x", "computer windows x windowsx");
-		topicMapping3.put("comp.os.ms.windows.misc", "computer os operating system microsoft windows");
+		topicMapping3.put("comp.os.ms-windows.misc", "computer os operating system microsoft windows");
 		
 		topicMapping4.put("rec.autos", "cars");
 		topicMapping4.put("rec.motorcycles", "motorcycles");
@@ -85,7 +85,7 @@ public class NewsgroupsTopicHierarchy {
 		topicMapping.put("comp.sys.mac.hardware", "computer systems mac macintosh apple hardware");
 		topicMapping.put("comp.graphics", "computer graphics");
 		topicMapping.put("comp.windows.x", "computer windows x windowsx");
-		topicMapping.put("comp.os.ms.windows.misc", "computer os operating system microsoft windows");
+		topicMapping.put("comp.os.ms-windows.misc", "computer os operating system microsoft windows");
 		
 		topicMapping.put("rec.autos", "cars");
 		topicMapping.put("rec.motorcycles", "motorcycles");
