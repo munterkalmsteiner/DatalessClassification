@@ -15,22 +15,23 @@ import edu.illinois.cs.cogcomp.classification.representation.esa.simple.SimpleES
 
 /**
  * yqsong@illinois.edu
+ * <p>
+ * Conceptualization of the 20newsgroups data corpus.
  */
 
 public class CorpusESAConceptualization20NewsGroups {
 
 	public static void main(String[] args) {
-		
+
 //		ClassifierConstant.cutOff = Double.parseDouble(args[0]);//0.5 0.1;//;
 //		
 //		int type = 1;
 //		ClassifierConstant.complexVectorType = ComplexESALocal.searchTypes[type];
 //		conceptualizeCorpusComplex (500) ;
-	    
-	    
+
 	}
-	
-	public static void conceptualizeCorpus (int conceptNum, String inputData, String outputData) 	{
+
+	public static void conceptualizeCorpus(int conceptNum, String inputData, String outputData) {
 		int seed = 0;
 		Random random = new Random(seed);
 		double trainingRate = 0.5;
@@ -40,23 +41,36 @@ public class CorpusESAConceptualization20NewsGroups {
 		ngData.readCorpusContentOnly(inputData, random, trainingRate);
 		corpusContentProc.writeCorpusSimpleConceptData(ngData.getCorpusContentMap(), conceptNum, outputData);
 	}
-	
-	public static void conceptualizeCorpusComplex (int conceptNum) 	{
+
+	public static void conceptualizeCorpusComplex(int conceptNum) {
 		int seed = 0;
 		Random random = new Random(seed);
 		double trainingRate = 0.5;
-		
+
 		String inputData = "data/20newsgroups/textindex";
-		String outputData = "data/20newsgroups/output/20newsgroups.complexGraph.cutoff" + ClassifierConstant.cutOff + ".esa.concepts." + ClassifierConstant.complexVectorType + conceptNum;
-		
+		String outputData = "data/20newsgroups/output/20newsgroups.complexGraph.cutoff" + ClassifierConstant.cutOff
+				+ ".esa.concepts." + ClassifierConstant.complexVectorType + conceptNum;
+
 		CorpusESAConceptualization20NewsGroups corpusContentProc = new CorpusESAConceptualization20NewsGroups();
 		NewsgroupsCorpusConceptData ngData = new NewsgroupsCorpusConceptData();
 		ngData.readCorpusContentOnly(inputData, random, trainingRate);
 		corpusContentProc.writeCorpusComplexConceptData(ngData.getCorpusContentMap(), conceptNum, outputData);
 
 	}
-	
-	public void writeCorpusSimpleConceptData (HashMap<String, String> corpusContentMap, int numConcepts, String file) {
+
+	/***
+	 * Retrieve and stores the top numConcepts concepts for the documents in corpusContentMap
+	 * using <code>SimpleESALocal</code>. The matching is done based on the document content.
+	 * 
+	 * 
+	 * @param corpusContentMap 
+	 * @param numConcepts number of concepts to retrieve for each document.
+	 * @param file the file where the data corpus with concepts are written.
+	 * 
+	 * @see NewsgroupsCorpusConceptData 
+	 * @see TwentyNGIndexer
+	 */
+	public void writeCorpusSimpleConceptData(HashMap<String, String> corpusContentMap, int numConcepts, String file) {
 		String content = "";
 		try {
 			int count = 0;
@@ -64,7 +78,7 @@ public class CorpusESAConceptualization20NewsGroups {
 			SimpleESALocal esa = new SimpleESALocal();
 			for (String docID : corpusContentMap.keySet()) {
 				count++;
-				System.out.println("written " + count +  " documents with concepts");
+				System.out.println("written " + count + " documents with concepts");
 				content = corpusContentMap.get(docID);
 				List<ConceptData> concepts = esa.getConcepts(numConcepts, content);
 				List<String> conceptsList = new ArrayList<String>();
@@ -80,10 +94,10 @@ public class CorpusESAConceptualization20NewsGroups {
 			System.out.println(content);
 			e.printStackTrace();
 		}
-			
+
 	}
-	
-	public void writeCorpusComplexConceptData (HashMap<String, String> corpusContentMap, int numConcepts, String file) {
+
+	public void writeCorpusComplexConceptData(HashMap<String, String> corpusContentMap, int numConcepts, String file) {
 		try {
 			int count = 0;
 			FileWriter writer = new FileWriter(file);
@@ -91,8 +105,9 @@ public class CorpusESAConceptualization20NewsGroups {
 			esa = new DiskBasedComplexESA();
 			for (String docID : corpusContentMap.keySet()) {
 				count++;
-				System.out.println("written " + count +  " documents with concepts");
-				List<ConceptData> concepts = esa.retrieveConcepts(corpusContentMap.get(docID), numConcepts, ClassifierConstant.complexVectorType);
+				System.out.println("written " + count + " documents with concepts");
+				List<ConceptData> concepts = esa.retrieveConcepts(corpusContentMap.get(docID), numConcepts,
+						ClassifierConstant.complexVectorType);
 				String docContent = corpusContentMap.get(docID).replace("\t", " ");
 				writer.write(docID + "\t" + docContent + "\t");
 				for (int i = concepts.size() - 1; i >= 0; i--) {
@@ -104,9 +119,7 @@ public class CorpusESAConceptualization20NewsGroups {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-			
-	}
-	
-	
-}
 
+	}
+
+}

@@ -34,13 +34,16 @@ import edu.illinois.cs.cogcomp.server.CustomizedHCServer;
 
 /**
  * yqsong@illinois.edu
+ * <p>
+ * Defines the methods associated with Concepts Tree and extends
+ * <code>AbstractLabelTree</code>
  */
 
 public abstract class AbstractConceptTree extends AbstractLabelTree {
-	
+
 	protected ConceptTreeNode root;
 	protected List<ConceptTreeNode> treeNodeList;
-	
+
 	protected String dataCorpus;
 
 	protected HashMap<String, String> conceptVectorStringHash;
@@ -49,12 +52,12 @@ public abstract class AbstractConceptTree extends AbstractLabelTree {
 	public AbstractESA esa = null;
 	public WordEmbeddingInterface word2vec = null;
 	protected String representationType = "simple";
-	public static String[] representationTypes = new String[] {"simple", "complex", "wordDist"};
-	
+	public static String[] representationTypes = new String[] { "simple", "complex", "wordDist" };
+
 	protected int numConcepts;
-	
+
 	protected boolean isDebug = true;
-	
+
 	public boolean isDebug() {
 		return isDebug;
 	}
@@ -64,22 +67,34 @@ public abstract class AbstractConceptTree extends AbstractLabelTree {
 	}
 
 	protected int maxDepth = 10;
-	
-	public static void main (String args[]) {
-		
-	}
-	
 
-	public AbstractConceptTree (String data, String method, HashMap<String, Double> conceptWeights, boolean isInitializeLucene) {
+	public static void main(String args[]) {
+
+	}
+
+	/**
+	 * Creates a new ConceptTree
+	 * 
+	 * @param data               the name of the data corpus
+	 * @param method             describes the method for conceptualizing the tree
+	 *                           (simple, complex, wordDist) (i.e, the matching
+	 *                           method)
+	 * @param conceptWeights     ???
+	 * @param isInitializeLucene a flag when set initializes ESA or Word2Vec
+	 *                           depending on the specified method.
+	 */
+
+	public AbstractConceptTree(String data, String method, HashMap<String, Double> conceptWeights,
+			boolean isInitializeLucene) {
 		root = null;
 		numConcepts = 500;
 		treeNodeList = new ArrayList<ConceptTreeNode>();
-		
+
 		conceptVectorStringHash = new HashMap<String, String>();
 		conceptVectorHash = new HashMap<String, SparseVector>();
-		
+
 		dataCorpus = data;
-		
+
 		if (data.equals(DatalessResourcesConfig.CONST_DATA_RCV)) {
 			treeLabelData = new RCVTreeLabelData();
 		}
@@ -101,20 +116,19 @@ public abstract class AbstractConceptTree extends AbstractLabelTree {
 		if (data.equals("CustomizedHCServer")) {
 			treeLabelData = new CustomizedHCServer();
 		}
-		
+
 		representationType = method;
-		
-		if (isInitializeLucene)
-		{
-			if (representationType.equals("complex") ) {
+
+		if (isInitializeLucene) {
+			if (representationType.equals("complex")) {
 				esa = new DiskBasedComplexESA();
-			} else if (representationType.equals("simple") ) {
+			} else if (representationType.equals("simple")) {
 				esa = new SimpleESALocal();
-			} else if (representationType.equals("wordDist") ) {
+			} else if (representationType.equals("wordDist")) {
 				word2vec = new DiskBasedWordEmbedding();
-			} 
+			}
 		}
-		
+
 		if (data.equals(DatalessResourcesConfig.CONST_DATA_CUSTOMIZED)) {
 			treeLabelData = new CustomizedLabelDataTree(esa);
 		}
@@ -122,19 +136,19 @@ public abstract class AbstractConceptTree extends AbstractLabelTree {
 		globalConceptWeights = conceptWeights;
 	}
 
-	public List<ConceptTreeNode> getTreeNodeList () {
+	public List<ConceptTreeNode> getTreeNodeList() {
 		return this.treeNodeList;
 	}
-	public HashMap<String, SparseVector>  getTreeNodeVectorHash () {
+
+	public HashMap<String, SparseVector> getTreeNodeVectorHash() {
 		return this.conceptVectorHash;
 	}
-	
-	
-	public ConceptTreeNode getRootNode ()	 {
+
+	public ConceptTreeNode getRootNode() {
 		return root;
 	}
-	
-	public void setRootNode (ConceptTreeNode rootNode) {
+
+	public void setRootNode(ConceptTreeNode rootNode) {
 		this.root = rootNode;
 	}
 
@@ -142,43 +156,43 @@ public abstract class AbstractConceptTree extends AbstractLabelTree {
 		this.numConcepts = num;
 	}
 
-	public int getLabelDepth (String label) {
-		ConceptTreeNode node = getLabelDepth (label, root);
+	public int getLabelDepth(String label) {
+		ConceptTreeNode node = getLabelDepth(label, root);
 		if (node != null) {
 			return node.getDepth();
 		}
 		return 0;
 	}
 
-	public ConceptTreeNode getLabelDepth (String label, ConceptTreeNode rootNode) {
+	public ConceptTreeNode getLabelDepth(String label, ConceptTreeNode rootNode) {
 		if (rootNode.getLabelString().equalsIgnoreCase(label.trim()) == true) {
 			return rootNode;
 		} else {
 			for (ConceptTreeNode child : rootNode.getChildren()) {
-				ConceptTreeNode node = getLabelDepth (label, child);
+				ConceptTreeNode node = getLabelDepth(label, child);
 				if (node != null) {
 					return node;
 				}
 			}
 		}
-		
+
 		return null;
 	}
-	
-	public void getLeafNodesConcepts (ConceptTreeNode rootNode, List<ConceptTreeNode> leaveHashSet) {
+
+	public void getLeafNodesConcepts(ConceptTreeNode rootNode, List<ConceptTreeNode> leaveHashSet) {
 		for (ConceptTreeNode child : rootNode.getChildren()) {
-			getLeafNodesConcepts (child, leaveHashSet);
+			getLeafNodesConcepts(child, leaveHashSet);
 		}
 		if (rootNode.getChildren() == null || rootNode.getChildren().size() == 0) {
 			leaveHashSet.add(rootNode);
 		}
 	}
-	
-	public SparseVector convertDocToVector (String document, boolean isBreakConcepts) {
+
+	public SparseVector convertDocToVector(String document, boolean isBreakConcepts) {
 		List<String> conceptsList = new ArrayList<String>();
 		List<Double> scores = new ArrayList<Double>();
 
-		if (representationType.equals("complex") ) {
+		if (representationType.equals("complex")) {
 			List<ConceptData> concepts = null;
 			try {
 				concepts = esa.retrieveConcepts(document, this.numConcepts, ClassifierConstant.complexVectorType);
@@ -189,7 +203,7 @@ public abstract class AbstractConceptTree extends AbstractLabelTree {
 				conceptsList.add(concepts.get(i).concept + "");
 				scores.add(concepts.get(i).score);
 			}
-		} else if (representationType.equals("simple") ) {
+		} else if (representationType.equals("simple")) {
 			List<ConceptData> concepts = null;
 			try {
 				concepts = esa.retrieveConcepts(document, this.numConcepts);
@@ -200,13 +214,13 @@ public abstract class AbstractConceptTree extends AbstractLabelTree {
 				conceptsList.add(concepts.get(i).concept + "");
 				scores.add(concepts.get(i).score);
 			}
-		} else if (representationType.equals("wordDist") ) {
-			HashMap<Integer, Double>  features = word2vec.getConceptVectorBasedonSegmentation(document, true);
+		} else if (representationType.equals("wordDist")) {
+			HashMap<Integer, Double> features = word2vec.getConceptVectorBasedonSegmentation(document, true);
 			for (Integer i : features.keySet()) {
 				conceptsList.add(i + "");
 				scores.add(features.get(i));
 			}
-		} else if (representationType.equals("wordDistSimple") ) {
+		} else if (representationType.equals("wordDistSimple")) {
 			double[] vec = word2vec.getDenseVectorSimpleAverage(document);
 			for (int i = 0; i < vec.length; ++i) {
 				conceptsList.add(i + "");
@@ -224,7 +238,7 @@ public abstract class AbstractConceptTree extends AbstractLabelTree {
 				scores.add(concepts.get(i).score);
 			}
 		}
-		
+
 		SparseVector docConceptVector = new SparseVector(conceptsList, scores, isBreakConcepts, globalConceptWeights);
 
 		return docConceptVector;
@@ -233,7 +247,7 @@ public abstract class AbstractConceptTree extends AbstractLabelTree {
 	// Initialize tree with concepts
 	///////////////////////////////////////////////////////////////////////////////////////////
 
-	public void readLabelTreeFromDump (String filePath, boolean isBreakConcepts) {
+	public void readLabelTreeFromDump(String filePath, boolean isBreakConcepts) {
 		try {
 			if (isDebug) {
 				System.out.println("read tree from file...");
@@ -241,22 +255,23 @@ public abstract class AbstractConceptTree extends AbstractLabelTree {
 			BufferedReader reader = new BufferedReader(new FileReader(filePath));
 			String line = null;
 			while ((line = reader.readLine()) != null) {
-				//System.out.print(line+"\n");
-				if (line.isEmpty() == true && line.equals("") == true){ 
-					//System.out.print("return at line 265\n");
+				// System.out.print(line+"\n");
+				if (line.isEmpty() == true && line.equals("") == true) {
+					// System.out.print("return at line 265\n");
 					continue;
-				}	
+				}
 				String[] tokens = line.split("\t");
 				if (tokens.length != 4) {
-					//System.out.print("return at line 270 and token length is"+tokens.length+"\n");
-					//System.out.print(tokens[0]+"\n"+tokens[1]+"\n"+tokens[2]+"\n"+tokens[3]+"\n");
+					// System.out.print("return at line 270 and token length
+					// is"+tokens.length+"\n");
+					// System.out.print(tokens[0]+"\n"+tokens[1]+"\n"+tokens[2]+"\n"+tokens[3]+"\n");
 					continue;
 				}
 				String parent = tokens[0].trim().toLowerCase();
 				String child = tokens[1].trim().toLowerCase();
 				String childName = tokens[2].trim().toLowerCase();
 				String vector = tokens[3].trim();
-				
+
 				if (treeLabelData.getTreeChildrenIndex().containsKey(parent) == true) {
 					if (treeLabelData.getTreeChildrenIndex().get(parent).contains(child) == false)
 						treeLabelData.getTreeChildrenIndex().get(parent).add(child);
@@ -270,7 +285,7 @@ public abstract class AbstractConceptTree extends AbstractLabelTree {
 				if (treeLabelData.getTreeLabelNameHashMap().containsKey(child) == false) {
 					treeLabelData.getTreeLabelNameHashMap().put(child, childName);
 				}
-				
+
 				if (conceptVectorStringHash.containsKey(child) == false) {
 					conceptVectorStringHash.put(child, vector);
 				}
@@ -284,9 +299,9 @@ public abstract class AbstractConceptTree extends AbstractLabelTree {
 			e.printStackTrace();
 		}
 	}
-	
-	//just for old 20newsgroups data
-	public void modifyTreeNodeConcepts (String file) {
+
+	// just for old 20newsgroups data
+	public void modifyTreeNodeConcepts(String file) {
 		NewsgroupsTopicHierarchy newsgroups = new NewsgroupsTopicHierarchy();
 
 		try {
@@ -300,33 +315,35 @@ public abstract class AbstractConceptTree extends AbstractLabelTree {
 						continue;
 					}
 					System.out.println("  [Read newsgroups data concepts: ] " + topicConceptFile.getAbsolutePath());
-			     	FileReader reader = new FileReader(topicConceptFile);
-			     	BufferedReader bf = new BufferedReader(reader);
-			     	String line = "";
-			     	int count = 0;
-	//		     	List<String> conceptsList = new ArrayList<String>();
-	//	    		List<Double> scores = new ArrayList<Double>();
-			     	String subTopicConceptStr = "";
-		    		while ((line = bf.readLine()) != null) {
-			     		String[] tokens = line.split("\t");
-			     		if (tokens.length != 3) 
-			     			continue;
-			     		String conceptID = tokens[0];
-			     		String conceptName = tokens[1].trim().replaceAll(",", " ").replaceAll(";", " ").replaceAll("_", " ");
-			     		double score = Double.parseDouble(tokens[2].trim());;
-	//		     		conceptsList.add(conceptName);
-	//		     		scores.add(Double.parseDouble(score));
-			     		subTopicConceptStr += conceptName + "," + score + ";";
-			     		if (topicConceptDist.containsKey(conceptName) == true) {
-			     			topicConceptDist.put(conceptName, topicConceptDist.get(conceptName) + score);
-			     		} else {
-			     			topicConceptDist.put(conceptName, score);
-			     		}
-			     	}
-		    		bf.close();
-			     	reader.close();
-		    		this.conceptVectorStringHash.put(subTopic, subTopicConceptStr);
-	//	    		String urlHeadStr = "D:\\data_test\\20newsgroup\\20NG_Source\\";
+					FileReader reader = new FileReader(topicConceptFile);
+					BufferedReader bf = new BufferedReader(reader);
+					String line = "";
+					int count = 0;
+					// List<String> conceptsList = new ArrayList<String>();
+					// List<Double> scores = new ArrayList<Double>();
+					String subTopicConceptStr = "";
+					while ((line = bf.readLine()) != null) {
+						String[] tokens = line.split("\t");
+						if (tokens.length != 3)
+							continue;
+						String conceptID = tokens[0];
+						String conceptName = tokens[1].trim().replaceAll(",", " ").replaceAll(";", " ").replaceAll("_",
+								" ");
+						double score = Double.parseDouble(tokens[2].trim());
+						;
+						// conceptsList.add(conceptName);
+						// scores.add(Double.parseDouble(score));
+						subTopicConceptStr += conceptName + "," + score + ";";
+						if (topicConceptDist.containsKey(conceptName) == true) {
+							topicConceptDist.put(conceptName, topicConceptDist.get(conceptName) + score);
+						} else {
+							topicConceptDist.put(conceptName, score);
+						}
+					}
+					bf.close();
+					reader.close();
+					this.conceptVectorStringHash.put(subTopic, subTopicConceptStr);
+					// String urlHeadStr = "D:\\data_test\\20newsgroup\\20NG_Source\\";
 				}
 				String topicConceptStr = "";
 				for (String key : topicConceptDist.keySet()) {
@@ -338,7 +355,7 @@ public abstract class AbstractConceptTree extends AbstractLabelTree {
 			e.printStackTrace();
 		}
 	}
-	
+
 	public ConceptTreeNode initializeTreeWithConceptVector(String rootStr, int depth, boolean isBreakConcepts) {
 		HashSet<String> childrenStr = treeLabelData.getTreeChildrenIndex().get(rootStr);
 		HashSet<ConceptTreeNode> children = new HashSet<ConceptTreeNode>();
@@ -357,20 +374,19 @@ public abstract class AbstractConceptTree extends AbstractLabelTree {
 			List<String> conceptsList = new ArrayList<String>();
 			List<Double> scores = new ArrayList<Double>();
 			conceptStr = this.conceptVectorStringHash.get(rootStr);
-			if ((rootStr.equals("root") == false && rootStr.equals("top") == false)
-					|| conceptStr != null) {
+			if ((rootStr.equals("root") == false && rootStr.equals("top") == false) || conceptStr != null) {
 				String[] tokens = conceptStr.trim().split(";");
 				for (int i = 0; i < tokens.length; ++i) {
 					String[] subtokens = tokens[i].trim().split(",");
-					if (subtokens.length != 2) 
+					if (subtokens.length != 2)
 						continue;
-					if(subtokens[1].equals("Inc.")) {
+					if (subtokens[1].equals("Inc.")) {
 						int a = 0;
 					}
 					conceptsList.add(subtokens[0].trim());
 					scores.add(Double.parseDouble(subtokens[1].trim()));
 				}
-			} 
+			}
 			node = new ConceptTreeNode(children, rootStr, depth);
 			node.setLabelConcepts(conceptsList, scores, isBreakConcepts, globalConceptWeights);
 			conceptVectorHash.put(rootStr, node.getVector());
@@ -381,7 +397,8 @@ public abstract class AbstractConceptTree extends AbstractLabelTree {
 		return node;
 	}
 
-	public ConceptTreeNode initializeTreeWithConceptVectorComplexESA(String rootStr, int depth, boolean isBreakConcepts) {
+	public ConceptTreeNode initializeTreeWithConceptVectorComplexESA(String rootStr, int depth,
+			boolean isBreakConcepts) {
 		HashSet<String> childrenStr = treeLabelData.getTreeChildrenIndex().get(rootStr);
 		HashSet<ConceptTreeNode> children = new HashSet<ConceptTreeNode>();
 		if (childrenStr != null && depth < maxDepth) {
@@ -397,20 +414,19 @@ public abstract class AbstractConceptTree extends AbstractLabelTree {
 		String conceptStr = "";
 		try {
 			conceptStr = this.conceptVectorStringHash.get(rootStr);
-			List<ConceptData> cl= new ArrayList<ConceptData>();
-			if ((rootStr.equals("root") == false && rootStr.equals("top") == false)
-					|| conceptStr != null) {
+			List<ConceptData> cl = new ArrayList<ConceptData>();
+			if ((rootStr.equals("root") == false && rootStr.equals("top") == false) || conceptStr != null) {
 				String[] tokens = conceptStr.trim().split(";");
-				
+
 				for (int i = 0; i < tokens.length; ++i) {
 					String[] subTokens = tokens[i].split(",");
 					String id = subTokens[0];
 					double value = Double.parseDouble(subTokens[1]);
-					//System.out.println(id+": "+value+"\n");
+					// System.out.println(id+": "+value+"\n");
 					ConceptData concept = new ConceptData(id + "", value);
 					cl.add(concept);
 				}
-			} 
+			}
 			node = new ConceptTreeNode(children, rootStr, depth);
 			node.setconceptsList(cl);
 			conceptVectorHash.put(rootStr, node.getVector());
@@ -424,92 +440,98 @@ public abstract class AbstractConceptTree extends AbstractLabelTree {
 	///////////////////////////////////////////////////////////////////////////////////////////
 	// Initialize tree without concepts
 	///////////////////////////////////////////////////////////////////////////////////////////
-	
-	public void dumpTree (String filePath) {
+
+	public void dumpTree(String filePath) {
 		try {
 			FileWriter writer = new FileWriter(filePath);
-			writer.write("none" + "\t" 
-					+ root.getLabelString() + "\t" 
-					+ root.getLabelDescriptioinString() + "\t" 
+			writer.write("none" + "\t" + root.getLabelString() + "\t" + root.getLabelDescriptioinString() + "\t"
 					+ root.getVector().toString() + "\n\r");
-			dumpTree (root, writer);
+			dumpTree(root, writer);
 			writer.close();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
+
 	}
-	public void dumpTreeComplexESA (String filePath) {
+
+	public void dumpTreeComplexESA(String filePath) {
 		try {
 			FileWriter writer = new FileWriter(filePath);
-			writer.write("none" + "\t" 
-					+ root.getLabelString() + "\t" 
-					+ root.getLabelDescriptioinString() + "\t" 
+			writer.write("none" + "\t" + root.getLabelString() + "\t" + root.getLabelDescriptioinString() + "\t"
 					+ getComplexESA(root.getLabelDescriptioinString()) + "\n\r");
-			dumpTreeComplexESA (root, writer);
+			dumpTreeComplexESA(root, writer);
 			writer.close();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
+
 	}
-	
-	public void dumpTree (ConceptTreeNode root, FileWriter writer) {
+
+	public void dumpTree(ConceptTreeNode root, FileWriter writer) {
 		for (ConceptTreeNode child : root.getChildren()) {
 			try {
-				writer.write(root.getLabelString() + "\t" 
-						+ child.getLabelString() + "\t" 
-						+ child.getLabelDescriptioinString() + "\t" 
-						+ child.getVector().toString() + "\n\r");
-				dumpTree (child, writer);
+				writer.write(root.getLabelString() + "\t" + child.getLabelString() + "\t"
+						+ child.getLabelDescriptioinString() + "\t" + child.getVector().toString() + "\n\r");
+				dumpTree(child, writer);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
 		}
-		
+
 	}
-	
-	public void dumpTreeComplexESA (ConceptTreeNode root, FileWriter writer) {
+
+	public void dumpTreeComplexESA(ConceptTreeNode root, FileWriter writer) {
 		for (ConceptTreeNode child : root.getChildren()) {
 			try {
-				writer.write(root.getLabelString() + "\t" 
-						+ child.getLabelString() + "\t" 
-						+ child.getLabelDescriptioinString() + "\t" 
-						+ getComplexESA(child.getLabelDescriptioinString()) + "\n\r");
-				dumpTreeComplexESA (child, writer);
+				writer.write(root.getLabelString() + "\t" + child.getLabelString() + "\t"
+						+ child.getLabelDescriptioinString() + "\t" + getComplexESA(child.getLabelDescriptioinString())
+						+ "\n\r");
+				dumpTreeComplexESA(child, writer);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
 		}
-		
+
 	}
-	public String getComplexESA(String s) throws Exception{
-		List<ConceptData> conceptList = esa.retrieveConcepts(s, 500,  "tfidfVector");
+
+	public String getComplexESA(String s) throws Exception {
+		List<ConceptData> conceptList = esa.retrieveConcepts(s, 500, "tfidfVector");
 		String str = "";
 
-		for(ConceptData data:conceptList){
-			str +=data.concept+","+data.score+";";
+		for (ConceptData data : conceptList) {
+			str += data.concept + "," + data.score + ";";
 		}
 		return str;
 	}
-	
-	public void conceptualizeTreeLabels (ConceptTreeNode rootNode, boolean isBreakConcepts) {
+
+	/***
+	 * The concept tree for a given <code>rootNode</code> is filled with
+	 * <code>n<code> concepts using the specified <code>method</code> in the
+	 * constructor. The concepts and scores are stored in the <code>>rootNode</code>
+	 * in a <code>SparseVector</code>
+	 * 
+	 * @param rootNode        the root node of the concept tree
+	 * @param isBreakConcepts ???
+	 */
+	public void conceptualizeTreeLabels(ConceptTreeNode rootNode, boolean isBreakConcepts) {
 		Set<ConceptTreeNode> children = rootNode.getChildren();
 		for (ConceptTreeNode child : children) {
 			conceptualizeTreeLabels(child, isBreakConcepts);
 		}
 
 		if (isDebug) {
-			System.out.println("  Conceptualize tree node: " + rootNode.getLabelString() + " in depth: " + rootNode.getDepth());
+			System.out.println(
+					"  Conceptualize tree node: " + rootNode.getLabelString() + " in depth: " + rootNode.getDepth());
 			System.out.println("    Node description: " + rootNode.getLabelDescriptioinString());
 		}
-		
+
 		List<String> conceptsList = new ArrayList<String>();
 		List<Double> scores = new ArrayList<Double>();
-		if (representationType.equals("complex") ) {
+		if (representationType.equals("complex")) {
 			List<ConceptData> concepts = null;
 			try {
-				concepts = esa.retrieveConcepts(rootNode.getLabelDescriptioinString(), this.numConcepts, ClassifierConstant.complexVectorType);
+				concepts = esa.retrieveConcepts(rootNode.getLabelDescriptioinString(), this.numConcepts,
+						ClassifierConstant.complexVectorType);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -517,7 +539,7 @@ public abstract class AbstractConceptTree extends AbstractLabelTree {
 				conceptsList.add(concepts.get(i).concept + "");
 				scores.add(concepts.get(i).score);
 			}
-		} else if (representationType.equals("simple") ) {
+		} else if (representationType.equals("simple")) {
 			List<ConceptData> concepts = null;
 			try {
 				concepts = esa.retrieveConcepts(rootNode.getLabelDescriptioinString(), this.numConcepts);
@@ -528,13 +550,14 @@ public abstract class AbstractConceptTree extends AbstractLabelTree {
 				conceptsList.add(concepts.get(i).concept + "");
 				scores.add(concepts.get(i).score);
 			}
-		} else if (representationType.equals("wordDist") ) {
-			HashMap<Integer, Double>  features = word2vec.getConceptVectorBasedonSegmentation(rootNode.getLabelDescriptioinString(), true);
+		} else if (representationType.equals("wordDist")) {
+			HashMap<Integer, Double> features = word2vec
+					.getConceptVectorBasedonSegmentation(rootNode.getLabelDescriptioinString(), true);
 			for (Integer i : features.keySet()) {
 				conceptsList.add(i + "");
 				scores.add(features.get(i));
 			}
-		} else if (representationType.equals("wordDistSimple") ) {
+		} else if (representationType.equals("wordDistSimple")) {
 			double[] vec = word2vec.getDenseVectorSimpleAverage(rootNode.getLabelDescriptioinString());
 			for (int i = 0; i < vec.length; ++i) {
 				conceptsList.add(i + "");
@@ -554,23 +577,44 @@ public abstract class AbstractConceptTree extends AbstractLabelTree {
 		}
 		rootNode.setLabelConcepts(conceptsList, scores, isBreakConcepts, globalConceptWeights);
 	}
-	
-	public void aggregateChildrenDescription (ConceptTreeNode rootNode) {
+
+	/***
+	 * Aggregates the labelDescription of all the children nodes and brings it up to
+	 * the root node. It updates the current label description for each node. So any
+	 * given node label description contains the label description of the node and
+	 * label description of all of its children in all subsequent levels.
+	 * 
+	 * @param rootNode the node for which the description of its children is
+	 *                 aggregated
+	 */
+
+	public void aggregateChildrenDescription(ConceptTreeNode rootNode) {
 		Set<ConceptTreeNode> children = rootNode.getChildren();
 		for (ConceptTreeNode child : children) {
 			aggregateChildrenDescription(child);
 			String newLabelDescriptionStr = "";
 			if (child.getLabelDescriptioinString() != null) {
-				newLabelDescriptionStr = rootNode.getLabelDescriptioinString() + " " 
-												+ child.getLabelDescriptioinString() + " ";
+				newLabelDescriptionStr = rootNode.getLabelDescriptioinString() + " "
+						+ child.getLabelDescriptioinString() + " ";
 			}
 			rootNode.setLabelDescriptionString(newLabelDescriptionStr);
 		}
 		if (isDebug) {
-			System.out.println("  Aggregate children description: " + rootNode.getLabelString() + " in depth: " + rootNode.getDepth());
+			System.out.println("  Aggregate children description: " + rootNode.getLabelString() + " in depth: "
+					+ rootNode.getDepth());
 		}
 	}
-	
+
+	/***
+	 * Creates a concept tree node starting from the given <code>rootStr</code>. If
+	 * started with the root node in the concept tree, then the
+	 * <code>treeNodeList</code> is initialized with all labelData in
+	 * <code>treeLabelData</code>.
+	 * 
+	 * @param rootStr the key or label of the root.
+	 * @param depth   the current level of the tree depth (zero based index).
+	 * @return the created <code>ConceptTreeNode</code>.
+	 */
 	// this should be called after treeIndex has been filled
 	public ConceptTreeNode initializeTree(String rootStr, int depth) {
 		HashSet<String> childrenStr = treeLabelData.getTreeChildrenIndex().get(rootStr);
@@ -579,7 +623,7 @@ public abstract class AbstractConceptTree extends AbstractLabelTree {
 		try {
 			if (childrenStr != null && depth < maxDepth) {
 				for (String key : childrenStr) {
-					ConceptTreeNode child = initializeTree(key, depth+1);
+					ConceptTreeNode child = initializeTree(key, depth + 1);
 					children.add(child);
 				}
 			}
@@ -591,7 +635,8 @@ public abstract class AbstractConceptTree extends AbstractLabelTree {
 				nodeDescription = treeLabelData.getTreeLabelNameHashMap().get(rootStr);
 			}
 			if (treeLabelData.getTreeTopicDescription().get(rootStr) != null) {
-				nodeDescription = nodeDescription + "  " + treeLabelData.getTreeTopicDescription().get(rootStr) + "    ";
+				nodeDescription = nodeDescription + "  " + treeLabelData.getTreeTopicDescription().get(rootStr)
+						+ "    ";
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -601,8 +646,5 @@ public abstract class AbstractConceptTree extends AbstractLabelTree {
 		treeNodeList.add(node);
 		return node;
 	}
-
-
-	
 
 }

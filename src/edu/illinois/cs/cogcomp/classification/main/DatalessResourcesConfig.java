@@ -11,6 +11,9 @@ import edu.illinois.cs.cogcomp.classification.hierarchy.datastructure.StopWords;
 /**
  * Shaoshi Ling
  * sling3@illinois.edu
+ * <p>
+ * Maintains the classification's configurations and constants.
+ * 
  */
 
 public class DatalessResourcesConfig {
@@ -55,6 +58,13 @@ public class DatalessResourcesConfig {
 		initialization();
 	}
 	
+	/**
+	 * Loads the configuration from the configurations file conf/configurations.properties, 
+	 * and stores them in local public static properties. The public static property 
+	 * Stopwords.rcvStopWords is also populated form the stopwords file specified 
+	 * in the configuration file. 
+	 * 
+	 */
 	public static void initialization () {
 		// Read the configuration file
 		String configFile = "conf/configurations.properties";

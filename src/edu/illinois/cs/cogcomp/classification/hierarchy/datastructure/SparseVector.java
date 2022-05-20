@@ -7,26 +7,29 @@ import java.util.Set;
 
 /**
  * yqsong@illinois.edu
+ * 
+ * A vector of concepts with scores.
  */
 
 public class SparseVector {
 
 	public HashMap<String, Double> keyValueMap;
 	public double norm;
-	
-	public SparseVector (List<String> keys, List<Double> scores, boolean isBreakConcepts, HashMap<String, Double> conceptWeights) {
+
+	public SparseVector(List<String> keys, List<Double> scores, boolean isBreakConcepts,
+			HashMap<String, Double> conceptWeights) {
 		if (conceptWeights == null) {
 			conceptWeights = new HashMap<String, Double>();
 		}
 		keyValueMap = new HashMap<String, Double>();
 		if (isBreakConcepts == false) {
 			for (int i = 0; i < keys.size(); ++i) {
-				keyValueMap.put(keys.get(i),scores.get(i));
+				keyValueMap.put(keys.get(i), scores.get(i));
 				if (conceptWeights.containsKey(keys.get(i)) == false) {
 					conceptWeights.put(keys.get(i), 1.0);
 				}
 			}
-			
+
 		} else {
 			for (int i = 0; i < keys.size(); ++i) {
 				String key = keys.get(i);
@@ -36,22 +39,22 @@ public class SparseVector {
 					if (StopWords.rcvStopWords != null) {
 						if (StopWords.rcvStopWords.contains(token) == false) {
 							if (keyValueMap.containsKey(token) == false) {
-								keyValueMap.put(token,scores.get(i));
+								keyValueMap.put(token, scores.get(i));
 							} else {
-								keyValueMap.put(token,keyValueMap.get(token) + scores.get(i));
+								keyValueMap.put(token, keyValueMap.get(token) + scores.get(i));
 							}
-							
+
 							if (conceptWeights.containsKey(token) == false) {
 								conceptWeights.put(token, 1.0);
 							}
 						}
 					} else {
 						if (keyValueMap.containsKey(token) == false) {
-							keyValueMap.put(token,scores.get(i));
+							keyValueMap.put(token, scores.get(i));
 						} else {
-							keyValueMap.put(token,keyValueMap.get(token) + scores.get(i));
+							keyValueMap.put(token, keyValueMap.get(token) + scores.get(i));
 						}
-						
+
 						if (conceptWeights.containsKey(token) == false) {
 							conceptWeights.put(token, 1.0);
 						}
@@ -59,7 +62,7 @@ public class SparseVector {
 				}
 			}
 		}
-		
+
 		norm = 0;
 		for (String key : keyValueMap.keySet()) {
 			double value = keyValueMap.get(key);
@@ -70,38 +73,34 @@ public class SparseVector {
 		}
 		norm = Math.sqrt(norm);
 	}
-	
 
-	
 	@SuppressWarnings("unchecked")
 	public SparseVector(SparseVector v) {
 		keyValueMap = (HashMap<String, Double>) v.keyValueMap.clone();
 		norm = v.norm;
 	}
 
-
-
-	public String toString () {
+	public String toString() {
 		String str = "";
 		for (String key : keyValueMap.keySet()) {
 			str += key + "," + keyValueMap.get(key) + ";";
 		}
 		return str;
 	}
-	
-	public HashMap<String, Double> getData () {
+
+	public HashMap<String, Double> getData() {
 		return this.keyValueMap;
 	}
-	
-	public Set<String> getKeys () {
+
+	public Set<String> getKeys() {
 		return this.keyValueMap.keySet();
 	}
-	
-	public double getNorm () {
+
+	public double getNorm() {
 		return this.norm;
 	}
-	
-	public void updateNorm (HashMap<String, Double> conceptWeights) {
+
+	public void updateNorm(HashMap<String, Double> conceptWeights) {
 		norm = 0;
 		for (String key : keyValueMap.keySet()) {
 			double value = keyValueMap.get(key);
@@ -112,15 +111,15 @@ public class SparseVector {
 		}
 		norm = Math.sqrt(norm);
 	}
-	
-	public double jaccard (SparseVector v2) {
+
+	public double jaccard(SparseVector v2) {
 		Set<String> set1 = new HashSet<String>(this.keyValueMap.keySet());
 		Set<String> set2 = v2.getKeys();
 		set1.retainAll(set2);
 		int overlap = set1.size();
 		return ((double) overlap) / (set1.size() + set2.size());
 	}
-	
+
 	public SparseVector add(SparseVector v2, HashMap<String, Double> conceptWeights) {
 		SparseVector v3 = new SparseVector(v2);
 		for (String key : keyValueMap.keySet()) {
@@ -131,8 +130,16 @@ public class SparseVector {
 		v3.updateNorm(conceptWeights);
 		return v3;
 	}
-	
-	public double cosine (SparseVector v2, HashMap<String, Double> conceptWeights) {
+
+	/***
+	 * Calculates the similarity between the input vector <code>v2</code> and the
+	 * current vector
+	 * 
+	 * @param v2             the vector to which the similarity is calculated
+	 * @param conceptWeights weights of concepts
+	 * @return similarity score
+	 */
+	public double cosine(SparseVector v2, HashMap<String, Double> conceptWeights) {
 //		double norm1 = 0;
 //		double norm2 = 0;
 		double dot = 0;
@@ -142,8 +149,9 @@ public class SparseVector {
 					double value1 = this.keyValueMap.get(key);
 					double value2 = v2.keyValueMap.get(key);
 					double value3 = 1;
-					if (conceptWeights.containsKey(key));
-						value3 = conceptWeights.get(key);
+					if (conceptWeights.containsKey(key))
+						;
+					value3 = conceptWeights.get(key);
 					dot += value1 * value2 * value3;
 				}
 			}
@@ -159,8 +167,8 @@ public class SparseVector {
 				}
 			}
 		}
-		
+
 		return dot / (Double.MIN_VALUE + this.norm) / (Double.MIN_VALUE + v2.getNorm());
 	}
-	
+
 }

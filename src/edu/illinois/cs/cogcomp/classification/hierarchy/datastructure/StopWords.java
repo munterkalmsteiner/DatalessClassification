@@ -12,6 +12,14 @@ import java.util.HashSet;
 public class StopWords {
 	public static HashSet<String> rcvStopWords;
 	
+	/**
+	 * Reads stopwords from the given filePath, and assigns the value to the 
+	 * property rcvStopWords.
+	 * 
+	 * @param filePath the file to read stopwords from.
+	 * 
+	 * @return rcvStopWords a HashSet of the loaded stopwords.
+	 * */
 	public static HashSet<String> readStopWords (String filePath) {
 		
 		File file = new File(filePath);

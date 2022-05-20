@@ -20,65 +20,73 @@ import edu.illinois.cs.cogcomp.classification.representation.esa.complex.MemoryB
  */
 
 public class ConceptTreeBottomUpML extends AbstractConceptTree implements InterfaceMultiLabelConceptClassificationTree {
-	
+
 	private static final long serialVersionUID = 1L;
 
 	double classifierMLThreshold = ClassifierConstant.classifierMLThreshold;
 	int leastK = ClassifierConstant.leastK;
 	int maxK = ClassifierConstant.maxK;
-	public static void main (String args[]) {
-		
+
+	public static void main(String args[]) {
+
 	}
-	
-	public ConceptTreeBottomUpML (String data, String method, HashMap<String, Double> conceptWeights, boolean isInitializeLucene) {
+
+	public ConceptTreeBottomUpML(String data, String method, HashMap<String, Double> conceptWeights,
+			boolean isInitializeLucene) {
 		super(data, method, conceptWeights, isInitializeLucene);
 	}
-	
-	public void setThreshold (double threshold) {
+
+	public void setThreshold(double threshold) {
 		this.classifierMLThreshold = threshold;
 	}
 
 	@Override
-	public int searchLabelDepth (String label) {
+	public int searchLabelDepth(String label) {
 		return getLabelDepth(label);
 	}
-	
+
 	///////////////////////////////////////////////////////////////////////////////////////////
 	// Label documents
 	///////////////////////////////////////////////////////////////////////////////////////////
 
 	List<ConceptTreeNode> leaveHashSet = new ArrayList<ConceptTreeNode>();
+
+	/***
+	 * Labels the documents based on the similarity between the tree concepts and
+	 * the document concepts
+	 */
 	@Override
 	public HashMap<Integer, List<LabelKeyValuePair>> labelDocumentML(SparseVector docContent) {
 		if (leaveHashSet.size() == 0) {
 			getLeafNodesConcepts(root, leaveHashSet);
 		}
-		
+
 		HashMap<String, Double> orgSimilarities = new HashMap<String, Double>();
 		HashMap<String, Double> similarities = new HashMap<String, Double>();
-		
+
 		double maxSimilarity = 0 - Double.MAX_VALUE;
 		double minSimilarity = Double.MAX_VALUE;
 		for (ConceptTreeNode leaf : leaveHashSet) {
 			double similarity = leaf.getVector().cosine(docContent, globalConceptWeights);
 			orgSimilarities.put(leaf.getLabelString(), similarity);
 			if (similarity > maxSimilarity) {
-				 maxSimilarity = similarity;
+				maxSimilarity = similarity;
 			}
 			if (similarity < minSimilarity) {
 				minSimilarity = similarity;
-			}	
+			}
 		}
-		
+
 		if (minSimilarity < 0) {
 			for (String simiKey : orgSimilarities.keySet()) {
 				orgSimilarities.put(simiKey, orgSimilarities.get(simiKey) - minSimilarity);
 			}
 		}
-		
+
 		double sumSimilarity = 0;
 		for (String simiKey : orgSimilarities.keySet()) {
-			double value = (orgSimilarities.get(simiKey) - minSimilarity) / (maxSimilarity - minSimilarity + Double.MIN_VALUE);
+			double value = (orgSimilarities.get(simiKey) - minSimilarity)
+					/ (maxSimilarity - minSimilarity + Double.MIN_VALUE);
 			if (orgSimilarities.size() == 1) {
 				value = 1;
 			}
@@ -88,7 +96,7 @@ public class ConceptTreeBottomUpML extends AbstractConceptTree implements Interf
 		for (String simiKey : similarities.keySet()) {
 			similarities.put(simiKey, similarities.get(simiKey) / (sumSimilarity + Double.MIN_VALUE));
 		}
-		
+
 		HashMap<Integer, List<LabelKeyValuePair>> depthLabelMap = new HashMap<Integer, List<LabelKeyValuePair>>();
 
 		TreeMap<String, Double> sortedSimilarities = HashSort.sortByValues(similarities);
@@ -100,54 +108,55 @@ public class ConceptTreeBottomUpML extends AbstractConceptTree implements Interf
 
 				String labelStr = simiKey;
 				while (labelStr != null) {
-					int depth = getLabelDepth (labelStr);
+					int depth = getLabelDepth(labelStr);
 					if (depthLabelMap.containsKey(depth) == false) {
 						depthLabelMap.put(depth, new ArrayList<LabelKeyValuePair>());
 					}
 					LabelKeyValuePair labelPair = new LabelKeyValuePair(labelStr, orgSimilarities.get(simiKey));
 					depthLabelMap.get(depth).add(labelPair);
-					
+
 					labelStr = treeLabelData.getTreeParentIndex().get(labelStr);
 				}
-				
+
 			}
 			labelCount++;
 		}
 		return depthLabelMap;
 	}
-	
+
 	@Deprecated
 	public HashMap<Integer, List<LabelKeyValuePair>> labelDocumentW2V(String docContent) {
 		if (leaveHashSet.size() == 0) {
 			getLeafNodesConcepts(root, leaveHashSet);
 		}
-		
+
 		HashMap<String, Double> orgSimilarities = new HashMap<String, Double>();
 		HashMap<String, Double> similarities = new HashMap<String, Double>();
-		
+
 		double maxSimilarity = 0 - Double.MAX_VALUE;
 		double minSimilarity = Double.MAX_VALUE;
 		for (ConceptTreeNode leaf : leaveHashSet) {
-			String label=treeLabelData.getTreeLabelNameHashMap().get(leaf.getLabelString());
-			double similarity = SparseSimilarityCondensation.similarity(this.word2vec, docContent,label);
+			String label = treeLabelData.getTreeLabelNameHashMap().get(leaf.getLabelString());
+			double similarity = SparseSimilarityCondensation.similarity(this.word2vec, docContent, label);
 			orgSimilarities.put(leaf.getLabelString(), similarity);
 			if (similarity > maxSimilarity) {
-				 maxSimilarity = similarity;
+				maxSimilarity = similarity;
 			}
 			if (similarity < minSimilarity) {
 				minSimilarity = similarity;
-			}	
+			}
 		}
-		
+
 		if (minSimilarity < 0) {
 			for (String simiKey : orgSimilarities.keySet()) {
 				orgSimilarities.put(simiKey, orgSimilarities.get(simiKey) - minSimilarity);
 			}
 		}
-		
+
 		double sumSimilarity = 0;
 		for (String simiKey : orgSimilarities.keySet()) {
-			double value = (orgSimilarities.get(simiKey) - minSimilarity) / (maxSimilarity - minSimilarity + Double.MIN_VALUE);
+			double value = (orgSimilarities.get(simiKey) - minSimilarity)
+					/ (maxSimilarity - minSimilarity + Double.MIN_VALUE);
 			if (orgSimilarities.size() == 1) {
 				value = 1;
 			}
@@ -157,7 +166,7 @@ public class ConceptTreeBottomUpML extends AbstractConceptTree implements Interf
 		for (String simiKey : similarities.keySet()) {
 			similarities.put(simiKey, similarities.get(simiKey) / (sumSimilarity + Double.MIN_VALUE));
 		}
-		
+
 		HashMap<Integer, List<LabelKeyValuePair>> depthLabelMap = new HashMap<Integer, List<LabelKeyValuePair>>();
 
 		TreeMap<String, Double> sortedSimilarities = HashSort.sortByValues(similarities);
@@ -169,16 +178,16 @@ public class ConceptTreeBottomUpML extends AbstractConceptTree implements Interf
 
 				String labelStr = simiKey;
 				while (labelStr != null) {
-					int depth = getLabelDepth (labelStr);
+					int depth = getLabelDepth(labelStr);
 					if (depthLabelMap.containsKey(depth) == false) {
 						depthLabelMap.put(depth, new ArrayList<LabelKeyValuePair>());
 					}
 					LabelKeyValuePair labelPair = new LabelKeyValuePair(labelStr, orgSimilarities.get(simiKey));
 					depthLabelMap.get(depth).add(labelPair);
-					
+
 					labelStr = treeLabelData.getTreeParentIndex().get(labelStr);
 				}
-				
+
 			}
 			labelCount++;
 		}
@@ -186,12 +195,10 @@ public class ConceptTreeBottomUpML extends AbstractConceptTree implements Interf
 	}
 
 	@Override
-	public HashMap<Integer, List<LabelKeyValuePair>> labelDocumentDense(
-			SparseSimilarityCondensation vectorCondensation, String docContent) {
+	public HashMap<Integer, List<LabelKeyValuePair>> labelDocumentDense(SparseSimilarityCondensation vectorCondensation,
+			String docContent) {
 		// TODO Auto-generated method stub
 		return null;
 	}
-
-	
 
 }

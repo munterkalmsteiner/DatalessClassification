@@ -4,6 +4,8 @@ import java.util.HashMap;
 
 /**
  * yqsong@illinois.edu
+ * <p>
+ * Stores the topics labels for 20newsgroups data 
  */
 
 public class NewsgroupsTopicHierarchy {
@@ -108,10 +110,9 @@ public class NewsgroupsTopicHierarchy {
 		topicHierarchy.put("sales", topicMapping6);
 	}
 	
+
 	public HashMap<String, HashMap<String, String>> getTopicHierarchy () {
 		return topicHierarchy;
 	}
-
-	
 
 }
