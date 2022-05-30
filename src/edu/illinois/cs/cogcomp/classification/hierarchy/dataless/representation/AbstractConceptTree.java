@@ -15,6 +15,7 @@ import edu.illinois.cs.cogcomp.classification.hierarchy.dataprocess.newsgroups.N
 import edu.illinois.cs.cogcomp.classification.hierarchy.dataprocess.newsgroups.NewsgroupsTreeLabelData;
 import edu.illinois.cs.cogcomp.classification.hierarchy.dataprocess.nytimes.NYTimesTreeLabelData;
 import edu.illinois.cs.cogcomp.classification.hierarchy.dataprocess.rcv.RCVTreeLabelData;
+import edu.illinois.cs.cogcomp.classification.hierarchy.dataprocess.sb11.SB11TreeLabelData;
 import edu.illinois.cs.cogcomp.classification.hierarchy.dataprocess.yahoo.CustomizedLabelData;
 import edu.illinois.cs.cogcomp.classification.hierarchy.dataprocess.yahoo.WikiCateLabelData;
 import edu.illinois.cs.cogcomp.classification.hierarchy.dataprocess.yahoo.WikiTwoLabelData;
@@ -113,9 +114,14 @@ public abstract class AbstractConceptTree extends AbstractLabelTree {
 		if (data.equals(DatalessResourcesConfig.CONST_DATA_CUSTOMIZEDHC)) {
 			treeLabelData = new CustomizedLabelDataHCTree();
 		}
+		if (data.equals(DatalessResourcesConfig.CONST_DATA_SB11)) {
+			treeLabelData = new SB11TreeLabelData();
+		}
 		if (data.equals("CustomizedHCServer")) {
 			treeLabelData = new CustomizedHCServer();
 		}
+		
+		
 
 		representationType = method;
 

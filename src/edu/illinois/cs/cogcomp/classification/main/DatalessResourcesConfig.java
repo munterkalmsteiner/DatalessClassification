@@ -25,9 +25,10 @@ public class DatalessResourcesConfig {
 	public final static String CONST_DATA_20NG = "20newsgroups";
 	public final static String CONST_DATA_SIMPLEWIKI = "WikiCate";
 	public final static String CONST_DATA_CUSTOMIZEDHC = "CustomizedHC";
+	public final static String CONST_DATA_SB11 = "sb11";
 	public final static String CONST_PATH_WIKI = "data/testLabels.txt";
 	public final static String CONST_PATH_HC_WIKI = "data/HCtestLabels.txt";
-	
+	 
 	public static Set<String> stopwordSet = new HashSet<String>();
 	
 	public static String simpleESADocumentIndex;

@@ -11,7 +11,7 @@ import edu.illinois.cs.cogcomp.classification.hierarchy.dataprocess.abstracts.Ab
  * 
  * Purpose: an implementation for the abstract class
  * <code>AbstractTreeLabelData</code>. Handles reading the labels (topics or
- * taxonomy) that will be used to classify the raw data.
+ * taxonomy) as a tree that will be used to classify the raw data.
  * 
  * @see AbstractTreeLabelData AbstractTreeLabelData for more details.
  */
