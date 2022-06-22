@@ -21,6 +21,10 @@
 			<name>CogcompSoftware</name>
 			<url>http://cogcomp.cs.illinois.edu/m2repo/</url>
 		</repository>
+		<repository>
+            <id>ukp-oss-model-releases</id>
+            <url>http://zoidberg.ukp.informatik.tu-darmstadt.de/artifactory/public-model-releases-local</url>
+        </repository>
 	</repositories>
     
 	<dependencies>
@@ -156,7 +160,32 @@
 			<artifactId>de.tudarmstadt.ukp.wikipedia.api</artifactId>
 			<version>0.9.2</version>
 		</dependency>
-		
+
+		<dependency>
+			<groupId>org.dkpro.core</groupId>
+			<artifactId>dkpro-core-opennlp-asl</artifactId>
+			<version>2.2.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.dkpro.core</groupId>
+			<artifactId>dkpro-core-snowball-asl</artifactId>
+			<version>2.2.0</version>
+		</dependency>
+		<dependency>
+			<groupId>com.opencsv</groupId>
+			<artifactId>opencsv</artifactId>
+			<version>5.6</version>
+		</dependency>
+		<dependency>
+			<groupId>org.dkpro.core</groupId>
+			<artifactId>dkpro-core-corenlp-gpl</artifactId>
+			<version>2.2.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.deeplearning4j</groupId>
+			<artifactId>deeplearning4j-nlp</artifactId>
+			<version>0.9.1</version>
+		</dependency>
 	</dependencies>
 	
 	<distributionManagement>
