@@ -11,9 +11,9 @@ public class DumpConceptTreeSB11 {
 
 	public static HashMap<String, Double> conceptWeights = new HashMap<String, Double>();;
 	
-	public static void testSB11DataESA (int conceptNum, String fileOutputPath, String fileTopicHierarchyPath) {
+	public static void testSB11DataESA (int conceptNum, String fileOutputPath, String fileTopicHierarchyPath, String sb11Table) {
 		
-		AbstractConceptTree tree = new ConceptTreeTopDownML("sb11", "simple", conceptWeights, true);
+		AbstractConceptTree tree = new ConceptTreeTopDownML("sb11," + sb11Table, "simple", conceptWeights, true);
 		System.out.println("process tree...");
 		tree.treeLabelData.readTreeHierarchy(fileTopicHierarchyPath);
 		ConceptTreeNode rootNode = tree.initializeTree("root", 0);

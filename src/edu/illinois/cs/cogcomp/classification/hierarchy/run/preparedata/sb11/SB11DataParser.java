@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import com.opencsv.CSVReader;
 import com.opencsv.exceptions.CsvException;
@@ -39,12 +40,14 @@ public class SB11DataParser {
 		List<List<String>> rows = readCSVFile();
 
 		int reqIdIndex = 5;
+		int tableIndex = 13;
 		int labelIndex = 14;
 		// Lang SV
 		int reqTextIndex = 8;
 		int docTitleIndex = 3;
 		int secTitleIndex = 6;
 		int adviceIndex = 10;
+		
 
 		if (lang.equals("EN")) {
 			reqTextIndex += 1;
@@ -54,15 +57,27 @@ public class SB11DataParser {
 		}
 
 		for (List<String> row : rows) {
-			if(row.get(13).strip().equals(table)) {
+			if(row.get(13).strip().contains(table)) {
 				String reqId = row.get(5);
 				String text = row.get(reqTextIndex);
 				String documentTitle = row.get(docTitleIndex);
 				String sectionTitles = row.get(secTitleIndex);
 				String advice = row.get(adviceIndex);
-				String sb11Label = row.get(labelIndex);
+				String sb11Table = table;
+				
+				List<String> sb11LabelsList = new ArrayList<String>();
+				String[] tempTablesArray = row.get(tableIndex).split("#");
+				String[] tempLabelsArray = row.get(labelIndex).split("#");
+				
+				for(int i = 0; i < tempTablesArray.length; i++) {
+					if (tempTablesArray[i].equals(table)) {
+						sb11LabelsList.add(tempLabelsArray[i]);
+					}
+				}
+				
+				String sb11Labels = sb11LabelsList.stream().collect(Collectors.joining("#"));
 
-				Requirement req = new Requirement(reqId, text, documentTitle, sectionTitles, advice, sb11Label);
+				Requirement req = new Requirement(reqId, text, documentTitle, sectionTitles, advice, sb11Labels, sb11Table);
 				requirements.add(req);
 			}
 		}

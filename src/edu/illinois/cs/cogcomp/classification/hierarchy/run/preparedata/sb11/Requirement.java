@@ -1,5 +1,7 @@
 package edu.illinois.cs.cogcomp.classification.hierarchy.run.preparedata.sb11;
 
+import java.util.List;
+
 public class Requirement {
 
 	private String id;
@@ -7,7 +9,8 @@ public class Requirement {
 	private String documentTitle;
 	private String sectionTitles;
 	private String advice;
-	private String sb11Label;
+	private String sb11Labels;
+	private String sb11Table;
 
 	/**
 	 * A natural language requirement
@@ -20,13 +23,14 @@ public class Requirement {
 	 * @param sb11Label
 	 */
 	public Requirement(String id, String text, String documentTitle, String sectionTitles, String advice,
-			String sb11Label) {
+			String sb11Labels, String sb11Table) {
 		this.id = id;
 		this.text = text;
 		this.documentTitle = documentTitle;
 		this.sectionTitles = sectionTitles;
 		this.advice = advice;
-		this.sb11Label = sb11Label;
+		this.sb11Labels = sb11Labels;
+		this.sb11Table = sb11Table;
 	}
 
 	public String getId() {
@@ -48,9 +52,12 @@ public class Requirement {
 	public String getAdvice() {
 		return advice;
 	}
-	
 
-	public String getSB11Label() {
-		return sb11Label;
+	public String getSB11Labels() {
+		return sb11Labels;
+	}
+	
+	public String getSb11Table() {
+		return sb11Table;
 	}
 }

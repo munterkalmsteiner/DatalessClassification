@@ -20,15 +20,18 @@ import edu.illinois.cs.cogcomp.classification.hierarchy.dataprocess.abstracts.Ab
 public class SB11TopicDocMaps extends AbstractTopicDocMaps {
 	
 	private String sb11FilePath = "";
-	public SB11TopicDocMaps (String sb11FilePath) {
+	private String table = "";
+	
+	public SB11TopicDocMaps (String sb11FilePath, String table) {
 		super();
 		this.sb11FilePath = sb11FilePath;
+		this.table = table;
 	}
 	
 	@Override
 	public void readTopicDocMap(String file) {
 
-		SB11TreeLabelData treeLabelData = new SB11TreeLabelData();
+		SB11TreeLabelData treeLabelData = new SB11TreeLabelData(table);
 		treeLabelData.readTreeHierarchy(this.sb11FilePath);
 		HashMap<String, String> parentIndex = treeLabelData.getTreeParentIndex();
 		try {
@@ -37,67 +40,29 @@ public class SB11TopicDocMaps extends AbstractTopicDocMaps {
 			int maxDocNum = reader.maxDoc();
 			for (int i = 0; i < maxDocNum; ++i) {
 				if (reader.isDeleted(i) == false) { 
-					if (i % 1000 == 0) {
-						System.out.println ("[Read NYTimes Data for TopicMap: ] " + i + "docs ..");
+					if (i % 10 == 0) {
+						System.out.println ("[Read SB11 Data for TopicMap: ] " + i + "docs ..");
 					}
 					Document doc = reader.document(i);
 					String docID = doc.get("uri");
-					String topic = doc.get("newsgroup"); //doc.get("Body");
+					String topic = doc.get("sb11Labels"); //doc.get("Body");
 					if (docID == null || topic == null) {
 						 continue;
 					}
-					String superTopic = parentIndex.get(topic);
+		
+					this.populateMaps(docID, topic, parentIndex);
 					
-					if (topicDocMap.containsKey(superTopic) == true) {
-	    				if (topicDocMap.get(superTopic).contains(docID) == false) {
-	    					topicDocMap.get(superTopic).add(docID);
-	    				}
-					} else {
-						topicDocMap.put(superTopic, new HashSet<String>());
-						topicDocMap.get(superTopic).add(docID);
-					}
-	    		
-					if (docTopicMap.containsKey(docID) == true) {
-						if (docTopicMap.get(docID).contains(superTopic) == false) {
-							docTopicMap.get(docID).add(superTopic);
-						}
-					} else {
-						docTopicMap.put(docID, new HashSet<String>());
-						docTopicMap.get(docID).add(superTopic);
-					}
-					
-					
-					
-					if (topicDocMap.containsKey(topic) == true) {
-	    				if (topicDocMap.get(topic).contains(docID) == false) {
-	    					topicDocMap.get(topic).add(docID);
-	    				}
-					} else {
-						topicDocMap.put(topic, new HashSet<String>());
-						topicDocMap.get(topic).add(docID);
-					}
-	    		
-					if (docTopicMap.containsKey(docID) == true) {
-						if (docTopicMap.get(docID).contains(topic) == false) {
-							docTopicMap.get(docID).add(topic);
-						}
-					} else {
-						docTopicMap.put(docID, new HashSet<String>());
-						docTopicMap.get(docID).add(topic);
-					}
 				}
 			}
 			reader.close();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-
-
 	}
 
 	@Override
 	public void readFilteredTopicDocMap(String file, Set<String> docIDSet) {
-		SB11TreeLabelData treeLabelData = new SB11TreeLabelData();
+		SB11TreeLabelData treeLabelData = new SB11TreeLabelData(table);
 		treeLabelData.readTreeHierarchy(this.sb11FilePath);
 		HashMap<String, String> parentIndex = treeLabelData.getTreeParentIndex();
 
@@ -112,54 +77,16 @@ public class SB11TopicDocMaps extends AbstractTopicDocMaps {
 					}
 					Document doc = reader.document(i);
 					String docID = doc.get("uri");
-					String topic = doc.get("sb11Label"); //doc.get("Body");
-					if (docID == null || topic == null) {
+					String topics = doc.get("sb11Labels"); //doc.get("Body");
+					if (docID == null || topics == null) {
 						 continue;
 					}
 					if (docIDSet.contains(docID) == false)
 						continue;
+					String[] topicArray = topics.split("#");
 					
-					String superTopic = parentIndex.get(topic);
-					
-					if (topic == null || superTopic == null) {
-						int a = 0;
-					}
-					
-					if (topicDocMap.containsKey(superTopic) == true) {
-	    				if (topicDocMap.get(superTopic).contains(docID) == false) {
-	    					topicDocMap.get(superTopic).add(docID);
-	    				}
-					} else {
-						topicDocMap.put(superTopic, new HashSet<String>());
-						topicDocMap.get(superTopic).add(docID);
-					}
-	    		
-					if (docTopicMap.containsKey(docID) == true) {
-						if (docTopicMap.get(docID).contains(superTopic) == false) {
-							docTopicMap.get(docID).add(superTopic);
-						}
-					} else {
-						docTopicMap.put(docID, new HashSet<String>());
-						docTopicMap.get(docID).add(superTopic);
-					}
-					
-					
-					if (topicDocMap.containsKey(topic) == true) {
-	    				if (topicDocMap.get(topic).contains(docID) == false) {
-	    					topicDocMap.get(topic).add(docID);
-	    				}
-					} else {
-						topicDocMap.put(topic, new HashSet<String>());
-						topicDocMap.get(topic).add(docID);
-					}
-	    		
-					if (docTopicMap.containsKey(docID) == true) {
-						if (docTopicMap.get(docID).contains(topic) == false) {
-							docTopicMap.get(docID).add(topic);
-						}
-					} else {
-						docTopicMap.put(docID, new HashSet<String>());
-						docTopicMap.get(docID).add(topic);
+					for (String topic: topicArray) {
+						this.populateMaps(docID, topic, parentIndex);	
 					}
 				}
 			}
@@ -169,4 +96,33 @@ public class SB11TopicDocMaps extends AbstractTopicDocMaps {
 		}
 	}
 
+	private void populateMaps(String docID, String topic, HashMap<String, String> parentIndex) {
+		if (docID == null || topic == null || topic == "root") {
+			 return;
+		}
+		
+		if (topicDocMap.containsKey(topic) == true) {
+			if (topicDocMap.get(topic).contains(docID) == false) {
+				topicDocMap.get(topic).add(docID);
+			}
+		} else {
+			topicDocMap.put(topic, new HashSet<String>());
+			topicDocMap.get(topic).add(docID);
+		}
+	
+		if (docTopicMap.containsKey(docID) == true) {
+			if (docTopicMap.get(docID).contains(topic) == false) {
+				docTopicMap.get(docID).add(topic);
+			}
+		} else {
+			docTopicMap.put(docID, new HashSet<String>());
+			docTopicMap.get(docID).add(topic);
+		}
+		
+		
+		String superTopic = parentIndex.get(topic);
+		
+		this.populateMaps(docID, superTopic, parentIndex);
+		
+	}
 }

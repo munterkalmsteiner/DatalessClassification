@@ -6,8 +6,7 @@ import java.util.Random;
 
 import edu.illinois.cs.cogcomp.classification.hierarchy.dataless.representation.ConceptTreeNode;
 import edu.illinois.cs.cogcomp.classification.hierarchy.dataless.representation.ml.ConceptTreeBottomUpML;
-import edu.illinois.cs.cogcomp.classification.hierarchy.dataprocess.newsgroups.NewsgroupsCorpusConceptData;
-import edu.illinois.cs.cogcomp.classification.hierarchy.dataprocess.newsgroups.NewsgroupsTopicDocMaps;
+import edu.illinois.cs.cogcomp.classification.hierarchy.dataless.representation.ml.ConceptTreeTopDownML;
 import edu.illinois.cs.cogcomp.classification.hierarchy.dataprocess.sb11.SB11CorpusConceptData;
 import edu.illinois.cs.cogcomp.classification.hierarchy.dataprocess.sb11.SB11TopicDocMaps;
 import edu.illinois.cs.cogcomp.classification.hierarchy.datastructure.StopWords;
@@ -26,30 +25,38 @@ public class ConceptClassificationESAML {
 
 	
 	public static void main(String[] args) {
-		testSB11SimpleConcept(1);
+		testSB11SimpleConcept(1,
+				"Byggdelar",
+				"",
+				"",
+				"",
+				"",
+				"");
 	}
 	
-	public static void testSB11SimpleConcept(int topK) {
+	public static void testSB11SimpleConcept(int topK, 
+			String sb11Table,
+			String textIndex,
+			String conceptTreeFile,
+			String conceptFile,
+			String outputClassificationFile,
+			String outputLabelComparisonFile) {
 		
 		int seed = 0;
 		Random random = new Random(seed);
 		double trainingRate = 0.06;
 
-		String stopWordsFile = "";
+		String stopWordsFile = "data/rcvTest/english.stop";
 		String docIDContentConceptFile = "";
 		String docIDTopicMapFile = "";
 		String treeConceptFile = "";
-		String outputClassificationFile = "";
-		String outputLabelComparisonFile = "";
 		String method = "simple";
-		String data = "sb11";
-		String sb11FilePath = "data/sb11/raw/SB11_SV_EN_20220520.csv";
-		stopWordsFile = "data/rcvTest/english.stop";
-		docIDContentConceptFile = "data/sb11/output/sb11.simple.esa.concepts.500";
-		docIDTopicMapFile = "data/sb11/textindex";
-		treeConceptFile = "data/sb11/output/tree.sb11.simple.esa.concepts.newrefine.500";
-		outputClassificationFile = "data/sb11/output/result.concept.sb11.classification";
-		outputLabelComparisonFile = "data/sb11/output/result.concept.sb11.labelComparison";
+		String sb11Taxonomy = SB11ExperiementConfig.sb11Taxonomy;
+		String data = "sb11," + sb11Table ;
+		
+		docIDContentConceptFile = conceptFile;
+		docIDTopicMapFile = textIndex;
+		treeConceptFile = conceptTreeFile;
 		
 
 		StopWords.rcvStopWords = StopWords.readStopWords (stopWordsFile);
@@ -58,15 +65,15 @@ public class ConceptClassificationESAML {
 		corpusContentProc.readCorpusContentAndConcepts(docIDContentConceptFile, ClassifierConstant.isBreakConcepts, random, trainingRate, conceptWeights);
 
 		// read topic doc maps
-		SB11TopicDocMaps sb11TDM = new SB11TopicDocMaps(sb11FilePath);
+		SB11TopicDocMaps sb11TDM = new SB11TopicDocMaps(sb11Taxonomy, sb11Table);
 		sb11TDM.readFilteredTopicDocMap (docIDTopicMapFile, corpusContentProc.getCorpusConceptVectorMap().keySet());
 		
 		HashMap<String, HashSet<String>> topicDocMap = sb11TDM.getTopicDocMap();
 		HashMap<String, HashSet<String>> docTopicMap = sb11TDM.getDocTopicMap();
 		
 		// read tree
-		ConceptTreeBottomUpML tree = new ConceptTreeBottomUpML(data, method, conceptWeights, false);
-//		ConceptTreeTopDownML tree = new ConceptTreeTopDownML(data, method, conceptWeights, false);
+		//ConceptTreeBottomUpML tree = new ConceptTreeBottomUpML(data, method, conceptWeights, false);
+		ConceptTreeTopDownML tree = new ConceptTreeTopDownML(data, method, conceptWeights, false);
 
 		System.out.println("process tree...");
 		tree.readLabelTreeFromDump(treeConceptFile, ClassifierConstant.isBreakConcepts);

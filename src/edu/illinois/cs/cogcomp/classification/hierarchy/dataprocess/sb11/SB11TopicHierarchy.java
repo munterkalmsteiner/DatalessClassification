@@ -3,6 +3,7 @@ package edu.illinois.cs.cogcomp.classification.hierarchy.dataprocess.sb11;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.io.*;
@@ -12,6 +13,7 @@ import com.opencsv.exceptions.CsvException;
 import com.sun.tools.javac.util.Pair;
 
 import edu.illinois.cs.cogcomp.classification.hierarchy.datastructure.KeyValuePair;
+import weka.classifiers.trees.LADTree;
 
 public class SB11TopicHierarchy {
 
@@ -30,10 +32,10 @@ public class SB11TopicHierarchy {
 
 	private String filePath = "";
 	private HashMap<String, HashMap<String, String>> topicHierarchy = new HashMap<String, HashMap<String, String>>();
-	private HashMap<String, String> topicMappingBuilding = new HashMap<String, String>();
-	private List<Pair<String, String>> topicMappingBuildingList = new ArrayList<Pair<String, String>>();
-	private HashMap<String, String> topicMappingLand = new HashMap<String, String>();
-	private HashMap<String, String> topicMappingAlternative = new HashMap<String, String>();
+	private LinkedHashMap<String, String> topicMappingBuilding;
+	private LinkedHashMap<String, String> topicMappingLandscape;
+	private LinkedHashMap<String, String> topicMappingAlternative;
+	
 	
 	private String COMMA_DELIMITER = ";";
 
@@ -47,12 +49,16 @@ public class SB11TopicHierarchy {
 		return topicHierarchy;
 	}
 	
-	public HashMap<String, String> getTopicMappingBuilding() {
+	public LinkedHashMap<String, String> getTopicMappingBuilding() {
 		return topicMappingBuilding;
 	}
 	
-	public List<Pair<String, String>> getTopicMappingBuildingList() {
-		return topicMappingBuildingList;
+	public LinkedHashMap<String, String> getTopicMappingLandscape() {
+		return topicMappingLandscape;
+	}
+	
+	public LinkedHashMap<String, String> getTopicMappingAlternative() {
+		return topicMappingAlternative;
 	}
 
 	private List<List<String>> readCSVFile() {
@@ -84,10 +90,9 @@ public class SB11TopicHierarchy {
 
 	private void readLabels(List<List<String>> classifications, String lang) throws IllegalArgumentException {
 		// ensure the maps are empty
-		topicMappingBuilding = new HashMap<String, String>();
-		topicMappingBuildingList = new ArrayList<Pair<String,String>>();
-		topicMappingLand = new HashMap<String, String>();
-		topicMappingAlternative = new HashMap<String, String>();
+		topicMappingBuilding = new LinkedHashMap<String, String>();
+		topicMappingLandscape = new LinkedHashMap<String, String>();
+		topicMappingAlternative = new LinkedHashMap<String, String>();
 		
 		int labelId;
 		if(lang.equals("EN")) {
@@ -108,10 +113,9 @@ public class SB11TopicHierarchy {
 				String label = classification.get(labelId);
 				if(table.equals("Byggdelar")) {
 					topicMappingBuilding.put(key, label);
-					topicMappingBuildingList.add(new Pair<String, String>(key, label));
 				}
 				else if(table.equals("Landskapsinformation")) {
-					topicMappingLand.put(key, label);
+					topicMappingLandscape.put(key, label);
 				}
 				else if(table.equals("Alternativtabell")) {
 					topicMappingAlternative.put(key, label);
@@ -120,13 +124,13 @@ public class SB11TopicHierarchy {
 			}
 		}
 		topicHierarchy.put("Byggdelar", topicMappingBuilding);
-		topicHierarchy.put("Landskapsinformation", topicMappingLand);
+		topicHierarchy.put("Landskapsinformation", topicMappingLandscape);
 		topicHierarchy.put("Alternativtabell", topicMappingAlternative);
 		
 		System.out.printf("\n read %d Byggdelar classes", topicMappingBuilding.size());
-		System.out.printf("\n read %d Landskapsinformation classes", topicMappingLand.size());
-		System.out.printf("\n read %d Alternativtabell classes", topicMappingAlternative.size());
-		System.out.printf("\n read %d Byggdelarlist classes", topicMappingBuildingList.size());
+		System.out.printf("\n read %d Landskapsinformation classes", topicMappingLandscape.size());
+		System.out.printf("\n read %d Alternativtabell classes \n", topicMappingAlternative.size());
+		System.out.println();
 	}
 
 }

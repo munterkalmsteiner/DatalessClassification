@@ -53,6 +53,9 @@ public class SB11CorpusConceptData extends AbstractCorpusConceptData {
 					if (doc.get("sectionTitles") != null) {
 						text += " " + doc.get("sectionTitles");
 					}
+					if (doc.get("advice") != null) {
+						text += " " + doc.get("advice");
+					}
 					text = text.replaceAll("\n", " ");
 					text = text.replaceAll("\r", " ");
 					text = text.replaceAll("\t", " ");
@@ -93,7 +96,7 @@ public class SB11CorpusConceptData extends AbstractCorpusConceptData {
 					}
 					Document doc = reader.document(i);
 
-					String topic = doc.get("newsgroup"); // doc.get("Body");
+					String topic = doc.get("sb11labels"); // doc.get("Body");
 					String id = doc.get("uri");
 					if (id == null || topic == null) {
 						continue;

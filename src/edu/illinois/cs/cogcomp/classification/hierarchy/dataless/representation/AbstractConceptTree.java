@@ -114,8 +114,9 @@ public abstract class AbstractConceptTree extends AbstractLabelTree {
 		if (data.equals(DatalessResourcesConfig.CONST_DATA_CUSTOMIZEDHC)) {
 			treeLabelData = new CustomizedLabelDataHCTree();
 		}
-		if (data.equals(DatalessResourcesConfig.CONST_DATA_SB11)) {
-			treeLabelData = new SB11TreeLabelData();
+		if (data.startsWith(DatalessResourcesConfig.CONST_DATA_SB11)) {
+			String table = data.split(",")[1];
+			treeLabelData = new SB11TreeLabelData(table);
 		}
 		if (data.equals("CustomizedHCServer")) {
 			treeLabelData = new CustomizedHCServer();

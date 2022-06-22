@@ -2,6 +2,7 @@ package edu.illinois.cs.cogcomp.classification.hierarchy.run.preparedata.sb11;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
@@ -29,10 +30,13 @@ public class SB11Indexer extends AbstractDocIndexer {
 	 * @param fname    the name of the file where the raw data is located.
 	 * @param indexDir the directory where the output of the indexing process will
 	 *                 be stored.
+	 * @param table    sb11Table name to read documents classified with this table
 	 */
-	public SB11Indexer(String fname, String indexDir) throws Exception {
+	private String table; 
+	public SB11Indexer(String fname, String indexDir, String table) throws Exception {
 		super(fname, indexDir, null, "standard");
 		// TODO Auto-generated constructor stub
+		this.table = table;
 	}
 
 	/**
@@ -44,7 +48,7 @@ public class SB11Indexer extends AbstractDocIndexer {
 	@Override
 	public Stats index() throws Exception {
 		SB11DataParser parser = new SB11DataParser(fname);
-		parser.parse("EN", "Byggdelar");
+		parser.parse("EN", this.table);
 
 		for (Requirement req : parser.getRequirements()) {
 			/*
@@ -87,7 +91,7 @@ public class SB11Indexer extends AbstractDocIndexer {
 		String sectionTitles = req.getSectionTitles();
 		String text = req.getText();
 		String advice = req.getAdvice();
-		String sb11Labels = req.getSB11Label();
+		String sb11Labels = req.getSB11Labels().toLowerCase();
 		Document doc = new Document();
 
 		// Uri
@@ -110,8 +114,9 @@ public class SB11Indexer extends AbstractDocIndexer {
 		Fieldable adviceField = new Field("advice", advice, Field.Store.YES, Field.Index.ANALYZED);
 		doc.add(adviceField);
 
-		// SB11 label (true label)
-		Fieldable sb11LabelField = new Field("sb11Label", sb11Labels, Field.Store.YES, Field.Index.NO);
+		// SB11 label (true labels)
+		Fieldable sb11LabelField = new Field("sb11Labels", sb11Labels, Field.Store.YES, Field.Index.NO);
+
 		doc.add(sb11LabelField);
 
 		return doc;
