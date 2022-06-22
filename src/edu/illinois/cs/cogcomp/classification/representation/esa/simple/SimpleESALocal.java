@@ -23,19 +23,21 @@ import edu.illinois.cs.cogcomp.descartes.retrieval.simple.Searcher;
 
 /**
  * yqsong@illinois.edu
+ * 
+ * Concepts retrieval from cogcomp.esa.simple.wikiIndex, using the simple method.
  */
 
 public class SimpleESALocal extends AbstractESA {
 	Searcher searcher;
 
 	public SimpleESALocal() {
-		initializeLocalESA (AnalyzerFactory.defaultAnalyzerName, new String[]{"title", "text"});
+		initializeLocalESA(AnalyzerFactory.defaultAnalyzerName, new String[] { "title", "text" });
 	}
-	
+
 	public static void main(String[] args) throws Exception {
 		DatalessResourcesConfig.initialization();
 		SimpleESALocal esa = new SimpleESALocal();
-		
+
 		while (true) {
 			BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 			String testStr = "";
@@ -55,12 +57,12 @@ public class SimpleESALocal extends AbstractESA {
 			System.out.println("Count: " + count);
 		}
 	}
-	
-	private void initializeLocalESA (String languageName, String[] fieldNames) {
+
+	private void initializeLocalESA(String languageName, String[] fieldNames) {
 		Set<String> stopwordSet = DatalessResourcesConfig.stopwordSet;
-		
+
 		searcher = new Searcher(fieldNames, false, stopwordSet, languageName);
-		
+
 		try {
 			searcher.open(DatalessResourcesConfig.simpleESADocumentIndex);
 		} catch (IOException e) {
@@ -68,20 +70,31 @@ public class SimpleESALocal extends AbstractESA {
 		}
 		System.out.println("Done.");
 	}
-	
+
+	/***
+	 * Retrieve the top <code>conceptNum</code> from the index in
+	 * cogcomp.esa.simple.wikiIndex using <code>IndexSearcher</code>.
+	 * <p>
+	 * Make sure that cogcomp.esa.simple.wikiIndex is set in the configuration file.
+	 * 
+	 * @param conceptNum
+	 * @param document
+	 * @return
+	 * @throws Exception
+	 */
 	public List<ConceptData> getConcepts(int conceptNum, String document) throws Exception {
-		
+
 		document = QueryPreProcessor.process(document);
 
 		List<ConceptData> concepts = new ArrayList<ConceptData>();
-		
+
 		int count = 0;
 		StringBuffer sb = new StringBuffer();
 		for (String s : document.split("\\s")) {
 			sb.append(s + " ");
 			count++;
 		}
-		
+
 		ArrayList<IResult> search = null;
 		try {
 			search = searcher.search(document, conceptNum);
@@ -91,27 +104,28 @@ public class SimpleESALocal extends AbstractESA {
 		}
 		if (search != null) {
 			for (IResult res : search) {
-				concepts.add(new ConceptData(res.getTitle().replaceAll(",", "").replaceAll(";", "").replaceAll("\t", ""), res.getScore()));
+				concepts.add(new ConceptData(
+						res.getTitle().replaceAll(",", "").replaceAll(";", "").replaceAll("\t", ""), res.getScore()));
 //				put(res.getTitle().replaceAll(",", "").replaceAll(";", "").replaceAll("\t", ""), res.getScore());
 			}
 		}
-		
+
 		return concepts;
 	}
-	
+
 	public List<String> getDocuments(int retrievedNum, String document) throws Exception {
 
 		document = QueryPreProcessor.process(document);
 
 		List<String> retrivedDocuments = new ArrayList<String>();
-		
+
 		int count = 0;
 		StringBuffer sb = new StringBuffer();
 		for (String s : document.split("\\s")) {
 			sb.append(s + " ");
 			count++;
 		}
-		
+
 		ArrayList<IResult> search = null;
 		try {
 			search = searcher.search(document, retrievedNum);
@@ -122,24 +136,23 @@ public class SimpleESALocal extends AbstractESA {
 		if (search != null) {
 			for (IResult res : search) {
 				retrivedDocuments.add(res.getDocument().replaceAll("[^a-zA-Z\\s]", ""));
-				
+
 //				put(res.getTitle().replaceAll(",", "").replaceAll(";", "").replaceAll("\t", ""), res.getScore());
 			}
 		}
-		
+
 		return retrivedDocuments;
 	}
 
 	@Override
-	public List<ConceptData> retrieveConcepts(String document, int numConcepts,
-			String complexVectorType) throws Exception {
+	public List<ConceptData> retrieveConcepts(String document, int numConcepts, String complexVectorType)
+			throws Exception {
 		return getConcepts(numConcepts, document);
 	}
 
 	@Override
-	public List<ConceptData> retrieveConcepts(String document, int numConcepts)
-			throws Exception {
+	public List<ConceptData> retrieveConcepts(String document, int numConcepts) throws Exception {
 		return getConcepts(numConcepts, document);
 	}
-	
+
 }

@@ -686,7 +686,7 @@ public class Evaluation {
 				writer.write("\n\r");				
 
 				count++;
-				if (count % 1000 == 0) {
+				if (count % 10 == 0) {
 					System.out.println("Classified " + count + " documents ...");
 				}
 			}

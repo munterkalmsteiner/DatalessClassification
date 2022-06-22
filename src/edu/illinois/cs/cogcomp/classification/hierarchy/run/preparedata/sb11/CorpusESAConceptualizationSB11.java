@@ -1,4 +1,4 @@
-package edu.illinois.cs.cogcomp.classification.hierarchy.run.preparedata.newsgroups;
+package edu.illinois.cs.cogcomp.classification.hierarchy.run.preparedata.sb11;
 
 import java.io.FileWriter;
 import java.util.ArrayList;
@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Random;
 
 import edu.illinois.cs.cogcomp.classification.hierarchy.dataprocess.newsgroups.NewsgroupsCorpusConceptData;
+import edu.illinois.cs.cogcomp.classification.hierarchy.dataprocess.sb11.SB11CorpusConceptData;
 import edu.illinois.cs.cogcomp.classification.hierarchy.datastructure.ConceptData;
 import edu.illinois.cs.cogcomp.classification.hierarchy.run.ClassifierConstant;
 import edu.illinois.cs.cogcomp.classification.representation.esa.AbstractESA;
@@ -14,12 +15,13 @@ import edu.illinois.cs.cogcomp.classification.representation.esa.complex.DiskBas
 import edu.illinois.cs.cogcomp.classification.representation.esa.simple.SimpleESALocal;
 
 /**
- * yqsong@illinois.edu
+ * Conceptualization of the sb11 data corpus.
  * <p>
- * Conceptualization of the 20newsgroups data corpus.
+ * @author waleed
+ *
  */
 
-public class CorpusESAConceptualization20NewsGroups {
+public class CorpusESAConceptualizationSB11 {
 
 	public static void main(String[] args) {
 
@@ -34,12 +36,13 @@ public class CorpusESAConceptualization20NewsGroups {
 	public static void conceptualizeCorpus(int conceptNum, String inputData, String outputData) {
 		int seed = 0;
 		Random random = new Random(seed);
-		double trainingRate = 0.5;
+		double trainingRate = 0.6;
 
-		CorpusESAConceptualization20NewsGroups corpusContentProc = new CorpusESAConceptualization20NewsGroups();
-		NewsgroupsCorpusConceptData ngData = new NewsgroupsCorpusConceptData();
-		ngData.readCorpusContentOnly(inputData, random, trainingRate);
-		corpusContentProc.writeCorpusSimpleConceptData(ngData.getCorpusContentMap(), conceptNum, outputData);
+		CorpusESAConceptualizationSB11 corpusContentProc = new CorpusESAConceptualizationSB11();
+		SB11CorpusConceptData sb11Data = new SB11CorpusConceptData();
+		sb11Data.readCorpusContentOnly(inputData, random, trainingRate);
+		corpusContentProc.writeCorpusSimpleConceptData(sb11Data.getCorpusContentMap(), conceptNum, outputData);
+		System.out.println("Completed conceptualizing data corpus");
 	}
 
 	public static void conceptualizeCorpusComplex(int conceptNum) {
@@ -47,14 +50,14 @@ public class CorpusESAConceptualization20NewsGroups {
 		Random random = new Random(seed);
 		double trainingRate = 0.5;
 
-		String inputData = "data/20newsgroups/textindex";
-		String outputData = "data/20newsgroups/output/20newsgroups.complexGraph.cutoff" + ClassifierConstant.cutOff
+		String inputData = "data/sb11/textindex";
+		String outputData = "data/sb11/output/20newsgroups.complexGraph.cutoff" + ClassifierConstant.cutOff
 				+ ".esa.concepts." + ClassifierConstant.complexVectorType + conceptNum;
 
-		CorpusESAConceptualization20NewsGroups corpusContentProc = new CorpusESAConceptualization20NewsGroups();
-		NewsgroupsCorpusConceptData ngData = new NewsgroupsCorpusConceptData();
-		ngData.readCorpusContentOnly(inputData, random, trainingRate);
-		corpusContentProc.writeCorpusComplexConceptData(ngData.getCorpusContentMap(), conceptNum, outputData);
+		CorpusESAConceptualizationSB11 corpusContentProc = new CorpusESAConceptualizationSB11();
+		SB11CorpusConceptData sb11Data = new SB11CorpusConceptData();
+		sb11Data.readCorpusContentOnly(inputData, random, trainingRate);
+		corpusContentProc.writeCorpusComplexConceptData(sb11Data.getCorpusContentMap(), conceptNum, outputData);
 
 	}
 
@@ -67,8 +70,8 @@ public class CorpusESAConceptualization20NewsGroups {
 	 * @param numConcepts number of concepts to retrieve for each document.
 	 * @param file the file where the data corpus with concepts are written.
 	 * 
-	 * @see NewsgroupsCorpusConceptData 
-	 * @see TwentyNGIndexer
+	 * @see SB11CorpusConceptData 
+	 * @see SB11Indexer
 	 */
 	public void writeCorpusSimpleConceptData(HashMap<String, String> corpusContentMap, int numConcepts, String file) {
 		String content = "";
