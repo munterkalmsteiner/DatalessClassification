@@ -4,9 +4,20 @@ import java.io.File;
 import java.util.List;
 import java.util.Map;
 
+import edu.illinois.cs.cogcomp.classification.hierarchy.run.preparedata.sb11.Annotation.ClassificationSystem;
 import se.bth.serl.flatclassifier.utils.NLP.Language;
 
-public interface CSReader
+public abstract class CSReader
 {
-    public Map<String, List<CSObject>> read(File csRawData, Language lang);
+    protected File csRawData;
+    protected Language lang;
+    
+    abstract public Map<String, List<CSObject>> read();
+    
+    public Language getLanguage() 
+    {
+        return lang;
+    }
+    
+    public abstract ClassificationSystem getClassificationSystem();
 }

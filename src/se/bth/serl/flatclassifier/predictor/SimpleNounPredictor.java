@@ -34,9 +34,9 @@ public class SimpleNounPredictor
     extends PredictorBase
 {
 
-    public SimpleNounPredictor(Map<String, List<CSObject>> aCoClassModel)
+    public SimpleNounPredictor(Map<String, List<CSObject>> acsModel, String acsTable)
     {
-        super(aCoClassModel);
+        super(acsModel, acsTable);
     }
 
     @Override
@@ -74,7 +74,10 @@ public class SimpleNounPredictor
     private void updateHits(List<CSObject> aHits, String value)
     {
         if (csModel.containsKey(value)) {
-            aHits.addAll(csModel.get(value));
+            List<CSObject> hits = csModel.get(value);
+            filtercsObjectsonTable(hits);
+            if (hits.size() > 0)
+                aHits.addAll(hits);
         }
     }
 }

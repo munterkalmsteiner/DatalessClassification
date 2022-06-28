@@ -36,11 +36,13 @@ public abstract class PredictorBase
 {
     protected final Logger log = LoggerFactory.getLogger(getClass());
     protected Map<String, List<CSObject>> csModel;
+    protected String csTable;
     private static Map<String, Optional<List<String>>> secoCache = new HashMap<>();
 
-    public PredictorBase(Map<String, List<CSObject>> acsModel)
+    public PredictorBase(Map<String, List<CSObject>> acsModel, String acsTable)
     {
         csModel = acsModel;
+        csTable = acsTable;
     }
 
     protected void logScore(Token token, Map<CSObject, Double> result)
@@ -57,6 +59,12 @@ public abstract class PredictorBase
         });
 
         log.debug(msg.toString());
+    }
+    
+    protected void filtercsObjectsonTable(List<CSObject> csObjects)
+    {
+        // Filter results that are not in a particular Table
+        csObjects.removeIf(cs -> !cs.getTable().equals(csTable));
     }
     
     /*protected List<Term> decompound(Term aTerm) {

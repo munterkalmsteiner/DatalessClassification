@@ -26,25 +26,30 @@ import com.opencsv.CSVReaderBuilder;
 import com.opencsv.exceptions.CsvException;
 
 import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token;
+import edu.illinois.cs.cogcomp.classification.hierarchy.run.preparedata.sb11.Annotation.ClassificationSystem;
 import se.bth.serl.flatclassifier.utils.NLP;
 import se.bth.serl.flatclassifier.utils.NLP.Language;
 import se.bth.serl.flatclassifier.utils.Term;
 
 public class SB11Reader
-    implements CSReader
+    extends CSReader
 {
     private final Logger log = LoggerFactory.getLogger(getClass());
     
     
     public static void main(String[] args) {
-        SB11Reader r = new SB11Reader();
-        
-        File f = new File("/home/mun/phd/teaching/PhDSupervision/Waleed/syncthing/DCAT/WP4/recommender_code/raw_data/SB11_SV_EN_20220520.csv");
-        r.read(f, Language.EN);
+        SB11Reader r = new SB11Reader(new File("/home/mun/phd/teaching/PhDSupervision/Waleed/syncthing/DCAT/WP4/recommender_code/raw_data/SB11_SV_EN_20220520.csv"), Language.EN);
+        r.read();
+    }
+    
+    public SB11Reader(File csRawData, Language lang) 
+    {
+        this.csRawData = csRawData;
+        this.lang = lang;
     }
 
     @Override
-    public Map<String, List<CSObject>> read(File csRawData, Language lang)
+    public Map<String, List<CSObject>> read()
     {
         Map<String, List<CSObject>> lookupTable = new HashMap<>();
         
@@ -78,19 +83,17 @@ public class SB11Reader
                 case EN:
                     cso.setName(row[2]);
                     cso.setDefinition(row[3]);
-                    jcas.setDocumentText(cso.getText());
-                    jcas.setDocumentLanguage("en");
                     break;
                 case SV:
                     cso.setName(row[4]);
                     cso.setDefinition(row[5]);
-                    jcas.setDocumentText(cso.getText());
-                    jcas.setDocumentLanguage("sv");
                     break;
                 default:
                     break;
                 }
                 
+                jcas.setDocumentText(cso.getText());
+                jcas.setDocumentLanguage(NLP.getLanguageString(lang));
                 cso.setIri(cso.getTable() + "_" + cso.getCode());
                 
                 SimplePipeline.runPipeline(jcas, NLP.baseAnalysisEngine());
@@ -123,6 +126,14 @@ public class SB11Reader
             e.printStackTrace();
         }
         
+        log.info("Found {} nouns in SB11.", lookupTable.size());
+        
         return lookupTable;
+    }
+    
+    @Override
+    public ClassificationSystem getClassificationSystem()
+    {
+        return ClassificationSystem.SB11;
     }
 }

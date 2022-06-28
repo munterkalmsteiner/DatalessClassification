@@ -1,19 +1,15 @@
 package edu.illinois.cs.cogcomp.classification.hierarchy.run.preparedata.sb11;
 
-import java.io.File;
 import java.io.IOException;
-import java.util.List;
 
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
 import org.apache.lucene.document.Fieldable;
 import org.apache.lucene.index.CorruptIndexException;
 
-import com.wojtuch.NewsgroupParser;
-import com.wojtuch.models.NewsgroupsArticle;
-
+import edu.illinois.cs.cogcomp.classification.hierarchy.run.preparedata.sb11.Annotation.ClassificationSystem;
 import edu.illinois.cs.cogcomp.descartes.indexer.AbstractDocIndexer;
-import edu.illinois.cs.cogcomp.descartes.indexer.AbstractDocIndexer.Stats;
+import se.bth.serl.flatclassifier.utils.NLP.Language;
 
 /**
  * 
@@ -47,32 +43,32 @@ public class SB11Indexer extends AbstractDocIndexer {
 	 */
 	@Override
 	public Stats index() throws Exception {
-		SB11DataParser parser = new SB11DataParser(fname);
-		parser.parse("EN", this.table);
+		DataParser parser = new DataParser(fname);
+		if (parser.parse()) {
+		    for (Requirement req : parser.getRequirements()) {
+	            /*
+	             * Waleed: reads the properties from the requirement and create a document with
+	             * the reqs fields
+	             **/
+	            Document doc = createDocument(req);
+	            try {
+	                indexer.addDocument(doc);
+	            } catch (CorruptIndexException e) {
+	                // TODO Auto-generated catch block
+	                e.printStackTrace();
+	            } catch (IOException e) {
+	                // TODO Auto-generated catch block
+	                e.printStackTrace();
+	            }
+	        }
 
-		for (Requirement req : parser.getRequirements()) {
-			/*
-			 * Waleed: reads the properties from the requirement and create a document with
-			 * the reqs fields
-			 **/
-			Document doc = createDocument(req);
-			try {
-				indexer.addDocument(doc);
-			} catch (CorruptIndexException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+	        System.out.println("Optimizing.");
+	        indexer.optimize();
+	        System.out.println("Finished optimizing");
+	        indexer.close();
+	        System.out.println("Done.");
 		}
-
-		System.out.println("Optimizing.");
-		indexer.optimize();
-		System.out.println("Finished optimizing");
-		indexer.close();
-		System.out.println("Done.");
-
+		
 		return null;
 	}
 
@@ -86,12 +82,12 @@ public class SB11Indexer extends AbstractDocIndexer {
 	 *          and advice.
 	 */
 	private Document createDocument(Requirement req) {
-		String uri = req.getDocumentTitle() + "_" + req.getId();
-		String documentTitle = req.getDocumentTitle();
-		String sectionTitles = req.getSectionTitles();
-		String text = req.getText();
-		String advice = req.getAdvice();
-		String sb11Labels = req.getSB11Labels().toLowerCase();
+		String uri = req.getDocumentTitle(Language.EN) + "_" + req.getReqId();
+		String documentTitle = req.getDocumentTitle(Language.EN);
+		String sectionTitles = req.getSectionTitlesString(Language.EN);
+		String text = req.getText(Language.EN);
+		String advice = req.getAdvice(Language.EN);
+		String sb11Labels = req.getLabelsString(ClassificationSystem.SB11, Language.EN, table).toLowerCase();
 		Document doc = new Document();
 
 		// Uri

@@ -39,9 +39,9 @@ public class Word2VecPredictor
     private Word2Vec w2vModel;
     private final int numSimilarWords = 10;
 
-    public Word2VecPredictor(Map<String, List<CSObject>> aCoClassModel, Word2Vec aW2vModel)
+    public Word2VecPredictor(Map<String, List<CSObject>> acsModel, String acsTable, Word2Vec aW2vModel)
     {
-        super(aCoClassModel);
+        super(acsModel, acsTable);
         if (wordsNearestCache == null) {
             wordsNearestCache = new HashMap<>();
         }
@@ -88,10 +88,14 @@ public class Word2VecPredictor
         for (String similarWord : similarWords) {
             Optional<Term> term = NLP.lemstem(similarWord.toLowerCase(), aTerm.getLanguage());
             if (term.isPresent()) {
-                String lemma = term.get().getLemma();
-                List<CSObject> csObjects = csModel.get(lemma);
-                if (csObjects != null) {
-                    hits.put(similarWord, csObjects);
+                String similarLemma = term.get().getLemma();
+                if (!similarLemma.equals(aTerm.getLemma())) {
+                    List<CSObject> csObjects = csModel.get(similarLemma);
+                    if (csObjects != null) {
+                        filtercsObjectsonTable(csObjects);
+                        if (csObjects.size() > 0)
+                            hits.put(similarWord, csObjects);
+                    }
                 }
             } 
         }

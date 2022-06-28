@@ -44,7 +44,6 @@ public class NLP
     private static final int AE_POOL_SIZE = 10;
     private static final int CAS_POOL_SIZE = 10;
     private static AnalysisEngine aBaseEngine = null;
-    private static AnalysisEngine aLemStemEngine = null;
     private static CasPool aCasPool = null;
     
     public enum Language { EN, SV };
@@ -59,6 +58,7 @@ public class NLP
             builder.add(createEngineDescription(CoreNlpLemmatizer.class));
             aBaseEngine = UIMAFramework.produceAnalysisEngine(
                     builder.createAggregateDescription(), AE_POOL_SIZE, 0);
+            aCasPool = new CasPool(CAS_POOL_SIZE, aBaseEngine);
         }
 
         return aBaseEngine;
@@ -67,12 +67,14 @@ public class NLP
     public static Optional<Term> lemstem(String term, Language lang) {
         Optional<Term> aTerm = Optional.empty();
         
-        CAS aCas = aCasPool.getCas(0);
+        CAS aCas = null;
+        
         try {
-            initLemStemEngine(term);
-            aCas.setDocumentLanguage("sv");
+            baseAnalysisEngine();
+            aCas = aCasPool.getCas(0);
+            aCas.setDocumentLanguage(getLanguageString(lang));
             aCas.setDocumentText(term);
-            SimplePipeline.runPipeline(aCas, aLemStemEngine);
+            SimplePipeline.runPipeline(aCas, aBaseEngine);
             
             Collection<Token> tokens = JCasUtil.select(aCas.getJCas(), Token.class);
             
@@ -94,15 +96,21 @@ public class NLP
         return aTerm;
     }
     
-    private static void initLemStemEngine(String term) throws ResourceInitializationException {
-        if (aLemStemEngine == null) {
-            AggregateBuilder builder = new AggregateBuilder();
-            builder.add(createEngineDescription(CoreNlpSegmenter.class));
-            builder.add(createEngineDescription(SnowballStemmer.class));
-            builder.add(createEngineDescription(CoreNlpLemmatizer.class));
-            aLemStemEngine = UIMAFramework.produceAnalysisEngine(
-                    builder.createAggregateDescription(), AE_POOL_SIZE, 0);
-            aCasPool = new CasPool(CAS_POOL_SIZE, aLemStemEngine);
-        }        
+    public static String getLanguageString(Language lang)
+    {
+        String lstring = null;
+        
+        switch (lang) {
+        case EN:
+            lstring = "EN";
+            break;
+        case SV:
+            lstring = "SV";
+            break;
+        default:
+            break;
+        }
+        
+        return lstring;
     }
 }
