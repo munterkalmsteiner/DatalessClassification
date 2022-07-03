@@ -4,3 +4,4 @@ data/20newsgroups/textindex
 .settings
 /doc
 .checkstyle
+conf/configurations.properties
