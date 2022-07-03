@@ -5,3 +5,6 @@ data/20newsgroups/textindex
 /doc
 .checkstyle
 conf/configurations.properties
+
+data/sb11/output
+data/sb11/textindex
