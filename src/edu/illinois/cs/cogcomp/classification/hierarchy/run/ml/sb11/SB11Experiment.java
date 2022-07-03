@@ -14,8 +14,8 @@ public class SB11Experiment {
 	public static void main(String[] args) {
 
 		int numConcepts = 500;
-		String sb11Taxonomy = SB11ExperiementConfig.sb11Taxonomy;
-		String rawData = SB11ExperiementConfig.rawDataSB11;
+		String sb11Taxonomy = SB11ExperimentConfig.sb11Taxonomy;
+		String rawData = SB11ExperimentConfig.rawDataSB11;
 		String textIndex = "data/sb11/textindex/"; // sub directory will be created with table name
 		String conceptTreeFile = "data/sb11/output/tree.sb11.simple.esa.concepts.newrefine." + numConcepts;
 		String conceptFile = "data/sb11/output/sb11.simple.esa.concepts." + numConcepts;

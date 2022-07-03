@@ -51,7 +51,7 @@ public class ConceptClassificationESAML {
 		String docIDTopicMapFile = "";
 		String treeConceptFile = "";
 		String method = "simple";
-		String sb11Taxonomy = SB11ExperiementConfig.sb11Taxonomy;
+		String sb11Taxonomy = SB11ExperimentConfig.sb11Taxonomy;
 		String data = "sb11," + sb11Table ;
 		
 		docIDContentConceptFile = conceptFile;

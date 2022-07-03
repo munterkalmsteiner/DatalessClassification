@@ -1,13 +1,7 @@
 package edu.illinois.cs.cogcomp.classification.hierarchy.dataprocess.sb11;
 
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
-import java.util.List;
-import org.apache.commons.httpclient.util.IdleConnectionHandler;
-
-import com.sun.tools.javac.code.Attribute.Array;
-import com.sun.tools.javac.util.Pair;
 
 import edu.illinois.cs.cogcomp.classification.hierarchy.dataprocess.abstracts.AbstractTreeLabelData;
 

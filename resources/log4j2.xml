@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="WARN">
+  <Appenders>
+    <Console name="ConsoleAppender" target="SYSTEM_OUT">
+      <!--SHORT PATTERN -->
+      <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss} %level{length=5} [$${ctx:username:-SYSTEM}] %logger{1} - %msg%n" />
+      <!--ROBUST PATTERN
+        <PatternLayout pattern="%d{ISO8601} %level{length=5} [%thread] %logger - %msg%n"/> -->
+    </Console>
+  </Appenders>
+
+  <Loggers>
+    <Logger name="edu.illinois" level="INFO"/>
+    <Logger name="se.bth" level="INFO"/>
+    <Logger name="de.tudarmstadt.ukp.inception" level="INFO"/>
+    <Logger name="liquibase" level="ERROR"/>
+    <Logger name="org.apache.uima" level="error"/>
+    <Logger name="ch.rasc.piwik.tracking.PiwikTracker" level="FATAL"/>
+    <Logger name="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer" level="ERROR"/>
+    <Logger name="org.springframework.beans.factory.config.PropertiesFactoryBean" level="ERROR"/>
+    <!-- Avoid warning on cookies with an invalid expiration date - cf. issue #739 -->
+    <Logger name="org.apache.http.client.protocol.ResponseProcessCookies" level="ERROR"/>
+    <Root level="warn">
+      <AppenderRef ref="ConsoleAppender" />
+    </Root>
+  </Loggers>
+</Configuration>

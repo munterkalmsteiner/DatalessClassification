@@ -1,19 +1,15 @@
 package edu.illinois.cs.cogcomp.classification.hierarchy.dataprocess.sb11;
 
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
-import java.io.*;
 
 import com.opencsv.CSVReader;
 import com.opencsv.exceptions.CsvException;
-import com.sun.tools.javac.util.Pair;
-
-import edu.illinois.cs.cogcomp.classification.hierarchy.datastructure.KeyValuePair;
-import weka.classifiers.trees.LADTree;
 
 public class SB11TopicHierarchy {
 
