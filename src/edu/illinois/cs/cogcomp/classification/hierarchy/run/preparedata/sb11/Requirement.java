@@ -111,7 +111,8 @@ public class Requirement {
 	            .filter(a -> a.getClassificationSystem().equals(cs))
 	            .filter(a -> a.getLanguage().equals(lang))
 	            .filter(a -> a.getTable().equals(table))
-	            .map(a -> a.getLabel()).toList();
+                .map(a -> a.getLabel())
+                .collect(Collectors.toList());
 	}
 	
 	public String getLabelsString(ClassificationSystem cs, Language lang, String table) 
