@@ -83,7 +83,7 @@ public class SB11TopicDocMaps extends AbstractTopicDocMaps {
 					}
 					if (docIDSet.contains(docID) == false)
 						continue;
-					String[] topicArray = topics.split("#");
+					String[] topicArray = topics.split(" ");
 					
 					for (String topic: topicArray) {
 						this.populateMaps(docID, topic, parentIndex);	
