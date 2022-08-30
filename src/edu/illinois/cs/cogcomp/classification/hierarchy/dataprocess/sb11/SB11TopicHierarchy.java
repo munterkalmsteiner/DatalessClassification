@@ -31,6 +31,7 @@ public class SB11TopicHierarchy {
 	private LinkedHashMap<String, String> topicMappingBuilding;
 	private LinkedHashMap<String, String> topicMappingLandscape;
 	private LinkedHashMap<String, String> topicMappingAlternative;
+	private LinkedHashMap<String, String> labelLookupMap = new LinkedHashMap<String, String>();
 	
 	
 	private String COMMA_DELIMITER = ";";
@@ -57,6 +58,10 @@ public class SB11TopicHierarchy {
 		return topicMappingAlternative;
 	}
 
+	public String getLabelName(String labelKey) {
+		return labelLookupMap.get(labelKey.toLowerCase());
+	}
+	
 	private List<List<String>> readCSVFile() {
 		List<List<String>> results = new ArrayList<List<String>>(); 
 		
@@ -116,7 +121,7 @@ public class SB11TopicHierarchy {
 				else if(table.equals("Alternativtabell")) {
 					topicMappingAlternative.put(key, label);
 				}
-				
+				labelLookupMap.put(key.toLowerCase(), label);
 			}
 		}
 		topicHierarchy.put("Byggdelar", topicMappingBuilding);
