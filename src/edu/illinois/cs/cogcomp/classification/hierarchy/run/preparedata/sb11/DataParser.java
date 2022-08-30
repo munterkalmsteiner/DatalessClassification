@@ -3,16 +3,19 @@ package edu.illinois.cs.cogcomp.classification.hierarchy.run.preparedata.sb11;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
+import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.opencsv.CSVParser;
+import com.opencsv.CSVParserBuilder;
 import com.opencsv.CSVReader;
+import com.opencsv.CSVReaderBuilder;
+import com.opencsv.enums.CSVReaderNullFieldIndicator;
 import com.opencsv.exceptions.CsvException;
 
 import edu.illinois.cs.cogcomp.classification.hierarchy.run.preparedata.sb11.Annotation.ClassificationSystem;
@@ -46,7 +49,7 @@ public class DataParser {
     private static final int NAMEINDEX_CC_EN = 19;
     private static final int NAMEINDEX_CC_SV = 20;
 
-    private static final String DELIMITER = ";";
+    private static final char DELIMITER = ';';
     
     private final Logger log = LoggerFactory.getLogger(getClass());
 	private String filePath;
@@ -66,90 +69,92 @@ public class DataParser {
 	}
 
 	public boolean parse() {
-		List<List<String>> rows = readCSVFile();
+		Optional<List<String[]>> rows = readCSVFile();
+		if (rows.isPresent()) {
+		    for (String[] row : rows.get()) {
+	            String reqId = row[REQIDINDEX];
+	                
+	            if (requirements.containsKey(reqId)) {
+	                Requirement req = requirements.get(reqId);
+	                parseAnnotations(row, req);
+	            } else {
+	                Requirement req = new Requirement();
+	                req.setSampleId(row[SAMPLEIDINDEX]);
+	                req.setDocumentId(row[DOCUMENTIDINDEX]);
+	                req.setDocumentTitle(Language.EN, row[DOCTITLEINEDEX_EN]);
+	                req.setDocumentTitle(Language.SV, row[DOCTITLEINEDEX_SV]);
+	                req.setReqId(reqId);
+	                req.setSectionTitles(Language.EN, row[SECTITLEINDEX_EN]);
+	                req.setSectionTitles(Language.SV, row[SECTITLEINDEX_SV]);
+	                req.setText(Language.EN, row[REQTEXTINDEX_EN]);
+	                req.setText(Language.SV, row[REQTEXTINDEX_SV]);
+	                req.setAdvice(Language.EN, row[ADVICEINDEX_EN]);
+	                req.setAdvice(Language.SV, row[ADVICEINDEX_SV]);
+	                    
+	                parseAnnotations(row, req);
 
-		for (List<String> row : rows) {
-		    if (row.size() < NAMEINDEX_CC_SV) {
-		        log.error("Data row too short: " + row.stream().collect(Collectors.joining("; ")));
-		        return false;
-		    }
-		    
-			String reqId = row.get(REQIDINDEX);
-				
-			if (requirements.containsKey(reqId)) {
-			    Requirement req = requirements.get(reqId);
-                parseAnnotations(row, req);
-            } else {
-                Requirement req = new Requirement();
-                req.setSampleId(row.get(SAMPLEIDINDEX));
-                req.setDocumentId(row.get(DOCUMENTIDINDEX));
-                req.setDocumentTitle(Language.EN, row.get(DOCTITLEINEDEX_EN));
-                req.setDocumentTitle(Language.SV, row.get(DOCTITLEINEDEX_SV));
-                req.setReqId(reqId);
-                req.setSectionTitles(Language.EN, row.get(SECTITLEINDEX_EN));
-                req.setSectionTitles(Language.SV, row.get(SECTITLEINDEX_SV));
-                req.setText(Language.EN, row.get(REQTEXTINDEX_EN));
-                req.setText(Language.SV, row.get(REQTEXTINDEX_SV));
-                req.setAdvice(Language.EN, row.get(ADVICEINDEX_EN));
-                req.setAdvice(Language.SV, row.get(ADVICEINDEX_SV));
-                    
-                parseAnnotations(row, req);
-
-                requirements.put(reqId, req);
-            }
-				
+	                requirements.put(reqId, req);
+	            }
+	                
+	        }
+	        return true; 
+		} else {
+		    log.error("Parsing of file %s failed", filePath);
+		    return false;
 		}
-		
-		return true;
 	}
 	
-	private void parseAnnotations(List<String> row, Requirement req) 
+	private void parseAnnotations(String[] row, Requirement req) 
 	{
-	    String[] tablesArray = row.get(TABLEINDEX_SB11).split("#");
-        String[] labelsArray = row.get(LABELINDEX_SB11).split("#");
-            
-        for (int i = 0; i < tablesArray.length; i++) {
-            req.addAnnotation(createAnnotation(
-                    ClassificationSystem.SB11, 
-                    Language.SV,
-                    row.get(SPANINDEX), 
-                    tablesArray[i], 
-                    labelsArray[i],
-                    row.get(NAMEINDEX_SB11_SV), 
-                    null));
-            
-            req.addAnnotation(createAnnotation(
-                    ClassificationSystem.SB11, 
-                    Language.EN,
-                    row.get(SPANINDEX), 
-                    tablesArray[i], 
-                    labelsArray[i],
-                    row.get(NAMEINDEX_SB11_EN), 
-                    null));
-        }
-        
-        tablesArray = row.get(TABLEINDEX_CC).split("#");
-        labelsArray = row.get(LABELINDEX_CC).split("#");
-            
-        for (int i = 0; i < tablesArray.length; i++) {
-            req.addAnnotation(createAnnotation(
-                    ClassificationSystem.COCLASS, 
-                    Language.SV,
-                    row.get(SPANINDEX), 
-                    tablesArray[i], 
-                    labelsArray[i],
-                    row.get(NAMEINDEX_CC_SV), 
-                    null));
-            
-            req.addAnnotation(createAnnotation(
-                    ClassificationSystem.COCLASS, 
-                    Language.EN,
-                    row.get(SPANINDEX), 
-                    tablesArray[i], 
-                    labelsArray[i],
-                    row.get(NAMEINDEX_CC_EN), 
-                    null));
-        }
+	    if (row[TABLEINDEX_SB11] != null) {
+	        String[] tablesArray = row[TABLEINDEX_SB11].split("#");
+	        String[] labelsArray = row[LABELINDEX_SB11].split("#");
+	            
+	        for (int i = 0; i < tablesArray.length; i++) {
+	            req.addAnnotation(createAnnotation(
+	                    ClassificationSystem.SB11, 
+	                    Language.SV,
+	                    row[SPANINDEX], 
+	                    tablesArray[i], 
+	                    labelsArray[i],
+	                    row[NAMEINDEX_SB11_SV], 
+	                    null));
+	            
+	            req.addAnnotation(createAnnotation(
+	                    ClassificationSystem.SB11, 
+	                    Language.EN,
+	                    row[SPANINDEX], 
+	                    tablesArray[i], 
+	                    labelsArray[i],
+	                    row[NAMEINDEX_SB11_EN], 
+	                    null));
+	        }
+	    }
+	    
+	    if (row[TABLEINDEX_CC] != null) {
+	        String[] tablesArray = row[TABLEINDEX_CC].split("#");
+	        String[] labelsArray = row[LABELINDEX_CC].split("#");
+	            
+	        for (int i = 0; i < tablesArray.length; i++) {
+	            req.addAnnotation(createAnnotation(
+	                    ClassificationSystem.COCLASS, 
+	                    Language.SV,
+	                    row[SPANINDEX], 
+	                    tablesArray[i], 
+	                    labelsArray[i],
+	                    row[NAMEINDEX_CC_SV], 
+	                    null));
+	            
+	            req.addAnnotation(createAnnotation(
+	                    ClassificationSystem.COCLASS, 
+	                    Language.EN,
+	                    row[SPANINDEX], 
+	                    tablesArray[i], 
+	                    labelsArray[i],
+	                    row[NAMEINDEX_CC_EN], 
+	                    null));
+	        }
+	    }
 	}
 
     private Annotation createAnnotation(ClassificationSystem cs, Language lang, String span, 
@@ -163,31 +168,40 @@ public class DataParser {
         return an;
     }
 
-	private List<List<String>> readCSVFile() {
-		List<List<String>> results = new ArrayList<List<String>>();
+	private Optional<List<String[]>> readCSVFile() {
+		Optional<List<String[]>> results = Optional.empty();
 
-		try (CSVReader reader = new CSVReader(new FileReader(filePath))) {
-			List<String[]> r = reader.readAll();
-			for (String[] arrays : r) {
-				String line = "";
-				for (String array : arrays) {
-					line += array.replace("\n", " ");
-				}
-				results.add(Arrays.asList(line.split(this.DELIMITER)));
-			}
-			// remove header
-			results.remove(0);
-			return results;
-
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (CsvException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-		return null;
+		CSVParser parser = new CSVParserBuilder()
+		        .withSeparator(DELIMITER)
+		        .withIgnoreQuotations(false)
+		        .withFieldAsNull(CSVReaderNullFieldIndicator.EMPTY_SEPARATORS)
+		        .build();
+		
+		try (CSVReader reader = new CSVReaderBuilder(new FileReader(filePath))
+		        .withSkipLines(1)
+	            .withCSVParser(parser)
+	            .build()) {
+		    
+    		        results = Optional.of(reader.readAll());
+    		        
+    		        /* Replace new lines with spaces */
+    		        if (results.isPresent()) {
+        		        for (String[] r : results.get()) {
+        		            for (int i = 0; i < r.length; i++) {
+        		                if (r[i] != null)
+        		                    r[i] = r[i].replaceAll("\n", " ");
+        		            }
+        		        }
+    		        }
+		        }
+		        catch (IOException e) {
+		            e.printStackTrace();
+		        }
+		        catch (CsvException e) {
+		            e.printStackTrace();
+		        }
+		
+		return results;
 	}
 
 	public String getFilePath() {
