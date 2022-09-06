@@ -24,7 +24,8 @@ import edu.illinois.cs.cogcomp.descartes.retrieval.simple.Searcher;
 /**
  * yqsong@illinois.edu
  * 
- * Concepts retrieval from cogcomp.esa.simple.wikiIndex, using the simple method.
+ * Concepts retrieval from cogcomp.esa.simple.wikiIndex, using the simple
+ * method.
  */
 
 public class SimpleESALocal extends AbstractESA {
@@ -32,6 +33,15 @@ public class SimpleESALocal extends AbstractESA {
 
 	public SimpleESALocal() {
 		initializeLocalESA(AnalyzerFactory.defaultAnalyzerName, new String[] { "title", "text" });
+	}
+
+	/***
+	 * Waleed Abdeen
+	 * 
+	 * @param languageName lowercase language name
+	 */
+	public SimpleESALocal(String languageName) {
+		initializeLocalESA(languageName, new String[] { "title", "text" });
 	}
 
 	public static void main(String[] args) throws Exception {
@@ -76,6 +86,7 @@ public class SimpleESALocal extends AbstractESA {
 	 * cogcomp.esa.simple.wikiIndex using <code>IndexSearcher</code>.
 	 * <p>
 	 * Make sure that cogcomp.esa.simple.wikiIndex is set in the configuration file.
+	 * Otherwise, you can use the method in <code>DatalessResourcesConfig</code>
 	 * 
 	 * @param conceptNum
 	 * @param document

@@ -29,10 +29,12 @@ public class SB11Indexer extends AbstractDocIndexer {
 	 * @param table    sb11Table name to read documents classified with this table
 	 */
 	private String table; 
-	public SB11Indexer(String fname, String indexDir, String table) throws Exception {
+	private Language lang;
+	public SB11Indexer(String fname, String indexDir, String table, Language lang) throws Exception {
 		super(fname, indexDir, null, "standard");
 		// TODO Auto-generated constructor stub
 		this.table = table;
+		this.lang = lang;
 	}
 
 	/**
@@ -82,12 +84,12 @@ public class SB11Indexer extends AbstractDocIndexer {
 	 *          and advice.
 	 */
 	private Document createDocument(Requirement req) {
-		String uri = req.getDocumentTitle(Language.EN) + "_" + req.getReqId();
-		String documentTitle = req.getDocumentTitle(Language.EN);
-		String sectionTitles = req.getSectionTitlesString(Language.EN);
-		String text = req.getText(Language.EN);
-		String advice = req.getAdvice(Language.EN);
-		String sb11Labels = req.getLabelsString(ClassificationSystem.SB11, Language.EN, table).toLowerCase();
+		String uri = req.getDocumentTitle(lang) + "_" + req.getReqId();
+		String documentTitle = req.getDocumentTitle(lang);
+		String sectionTitles = req.getSectionTitlesString(lang);
+		String text = req.getText(lang);
+		String advice = req.getAdvice(lang) == null ? "" : req.getAdvice(lang); 
+		String sb11Labels = req.getLabelsString(ClassificationSystem.SB11, lang, table).toLowerCase();
 		Document doc = new Document();
 
 		// Uri
@@ -112,7 +114,6 @@ public class SB11Indexer extends AbstractDocIndexer {
 
 		// SB11 label (true labels)
 		Fieldable sb11LabelField = new Field("sb11Labels", sb11Labels, Field.Store.YES, Field.Index.NO);
-
 		doc.add(sb11LabelField);
 
 		return doc;

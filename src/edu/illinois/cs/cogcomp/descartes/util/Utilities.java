@@ -1,7 +1,14 @@
 package edu.illinois.cs.cogcomp.descartes.util;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.Reader;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 
 import org.apache.commons.configuration.ConfigurationException;
@@ -26,6 +33,36 @@ public class Utilities {
 	}
 	return stopWords;
     }
+    
+    public static Set<String> getStopWords(String lang) {
+    	String stopWordsFileName = "data/stopwords/stopwords_" + lang.toLowerCase() + ".txt";
+		File stopWordsFile = new File(stopWordsFileName);
+		if (stopWordsFile.exists() == false) {
+			stopWordsFileName = "data/stopwords/stopwords_null.txt";
+			stopWordsFile = new File(stopWordsFileName);
+		}
+
+		Path path = stopWordsFile.toPath();
+		Reader reader = null;
+		Set<String> charStopSet = new HashSet<String>();
+		try {
+			reader = Files.newBufferedReader(path, StandardCharsets.UTF_8);
+			BufferedReader br = getBufferedReader(reader);
+			String word = null;
+			while ((word = br.readLine()) != null) {
+				charStopSet.add(word.trim());
+			}
+			reader.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+    	return charStopSet;
+     }
+    
+    private static BufferedReader getBufferedReader(Reader reader) {
+		return (reader instanceof BufferedReader) ? (BufferedReader) reader : new BufferedReader(reader);
+	}
     
     // public static Set<String> getStopWords(String configFile)
     // throws ConfigurationException {

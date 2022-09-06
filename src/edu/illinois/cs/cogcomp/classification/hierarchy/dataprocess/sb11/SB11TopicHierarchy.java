@@ -11,6 +11,9 @@ import java.util.List;
 import com.opencsv.CSVReader;
 import com.opencsv.exceptions.CsvException;
 
+import edu.illinois.cs.cogcomp.classification.hierarchy.run.ml.sb11.SB11ExperimentConfig;
+import se.bth.serl.flatclassifier.utils.NLP.Language;
+
 public class SB11TopicHierarchy {
 
 	/**
@@ -18,8 +21,8 @@ public class SB11TopicHierarchy {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		String filePath = "./data/sb11/raw/SB11_SV_EN_20220520.csv";
-		SB11TopicHierarchy tx = new SB11TopicHierarchy("EN", filePath);
+		String filePath = SB11ExperimentConfig.sb11Taxonomy;
+		SB11TopicHierarchy tx = new SB11TopicHierarchy("SV", filePath);
 
 		Object firstKey = tx.topicMappingBuilding.keySet().toArray()[1000];
 		System.out.print(tx.topicMappingBuilding.get(firstKey));

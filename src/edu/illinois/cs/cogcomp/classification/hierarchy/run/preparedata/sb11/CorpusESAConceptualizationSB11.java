@@ -33,7 +33,7 @@ public class CorpusESAConceptualizationSB11 {
 
 	}
 
-	public static void conceptualizeCorpus(int conceptNum, String inputData, String outputData) {
+	public static void conceptualizeCorpus(int conceptNum, String inputData, String outputData, String lang) {
 		int seed = 0;
 		Random random = new Random(seed);
 		double trainingRate = 0.6;
@@ -41,7 +41,7 @@ public class CorpusESAConceptualizationSB11 {
 		CorpusESAConceptualizationSB11 corpusContentProc = new CorpusESAConceptualizationSB11();
 		SB11CorpusConceptData sb11Data = new SB11CorpusConceptData();
 		sb11Data.readCorpusContentOnly(inputData, random, trainingRate);
-		corpusContentProc.writeCorpusSimpleConceptData(sb11Data.getCorpusContentMap(), conceptNum, outputData);
+		corpusContentProc.writeCorpusSimpleConceptData(sb11Data.getCorpusContentMap(), conceptNum, outputData, lang);
 		System.out.println("Completed conceptualizing data corpus");
 	}
 
@@ -73,12 +73,12 @@ public class CorpusESAConceptualizationSB11 {
 	 * @see SB11CorpusConceptData 
 	 * @see SB11Indexer
 	 */
-	public void writeCorpusSimpleConceptData(HashMap<String, String> corpusContentMap, int numConcepts, String file) {
+	public void writeCorpusSimpleConceptData(HashMap<String, String> corpusContentMap, int numConcepts, String file, String lang) {
 		String content = "";
 		try {
 			int count = 0;
 			FileWriter writer = new FileWriter(file);
-			SimpleESALocal esa = new SimpleESALocal();
+			SimpleESALocal esa = new SimpleESALocal(lang.toLowerCase());
 			for (String docID : corpusContentMap.keySet()) {
 				count++;
 				System.out.println("written " + count + " documents with concepts");
@@ -122,7 +122,6 @@ public class CorpusESAConceptualizationSB11 {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-
 	}
 
 }

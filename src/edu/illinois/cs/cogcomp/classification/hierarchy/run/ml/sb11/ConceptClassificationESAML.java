@@ -1,7 +1,9 @@
 package edu.illinois.cs.cogcomp.classification.hierarchy.run.ml.sb11;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Random;
 
 import edu.illinois.cs.cogcomp.classification.hierarchy.dataless.representation.ConceptTreeNode;
@@ -9,9 +11,14 @@ import edu.illinois.cs.cogcomp.classification.hierarchy.dataless.representation.
 import edu.illinois.cs.cogcomp.classification.hierarchy.dataless.representation.ml.ConceptTreeTopDownML;
 import edu.illinois.cs.cogcomp.classification.hierarchy.dataprocess.sb11.SB11CorpusConceptData;
 import edu.illinois.cs.cogcomp.classification.hierarchy.dataprocess.sb11.SB11TopicDocMaps;
+import edu.illinois.cs.cogcomp.classification.hierarchy.datastructure.ConceptData;
+import edu.illinois.cs.cogcomp.classification.hierarchy.datastructure.LabelKeyValuePair;
+import edu.illinois.cs.cogcomp.classification.hierarchy.datastructure.SparseVector;
 import edu.illinois.cs.cogcomp.classification.hierarchy.datastructure.StopWords;
 import edu.illinois.cs.cogcomp.classification.hierarchy.evaluation.Evaluation;
+import edu.illinois.cs.cogcomp.classification.hierarchy.evaluation.SB11Classifier;
 import edu.illinois.cs.cogcomp.classification.hierarchy.run.ClassifierConstant;
+import edu.illinois.cs.cogcomp.classification.representation.esa.simple.SimpleESALocal;
 
 /**
  * 
@@ -27,15 +34,18 @@ public class ConceptClassificationESAML {
 	public static void main(String[] args) {
 		testSB11SimpleConcept(1,
 				"Byggdelar",
+				"EN",
 				"",
 				"",
 				"",
 				"",
 				"");
 	}
+
 	
 	public static void testSB11SimpleConcept(int topK, 
 			String sb11Table,
+			String lang,
 			String textIndex,
 			String conceptTreeFile,
 			String conceptFile,
@@ -52,7 +62,7 @@ public class ConceptClassificationESAML {
 		String treeConceptFile = "";
 		String method = "simple";
 		String sb11Taxonomy = SB11ExperimentConfig.sb11Taxonomy;
-		String data = "sb11," + sb11Table ;
+		String data = "sb11," + sb11Table + "," + lang;
 		
 		docIDContentConceptFile = conceptFile;
 		docIDTopicMapFile = textIndex;
@@ -65,7 +75,7 @@ public class ConceptClassificationESAML {
 		corpusContentProc.readCorpusContentAndConcepts(docIDContentConceptFile, ClassifierConstant.isBreakConcepts, random, trainingRate, conceptWeights);
 
 		// read topic doc maps
-		SB11TopicDocMaps sb11TDM = new SB11TopicDocMaps(sb11Taxonomy, sb11Table);
+		SB11TopicDocMaps sb11TDM = new SB11TopicDocMaps(sb11Taxonomy, sb11Table, lang);
 		sb11TDM.readFilteredTopicDocMap (docIDTopicMapFile, corpusContentProc.getCorpusConceptVectorMap().keySet());
 		
 		HashMap<String, HashSet<String>> topicDocMap = sb11TDM.getTopicDocMap();

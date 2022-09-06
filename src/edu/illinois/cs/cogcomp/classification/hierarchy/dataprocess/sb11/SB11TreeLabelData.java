@@ -4,25 +4,27 @@ import java.util.HashSet;
 import java.util.LinkedHashMap;
 
 import edu.illinois.cs.cogcomp.classification.hierarchy.dataprocess.abstracts.AbstractTreeLabelData;
+import se.bth.serl.flatclassifier.utils.NLP.Language;
 
 public class SB11TreeLabelData extends AbstractTreeLabelData {
 
 	private static final long serialVersionUID = 1L;
 	
 	private String table;
-	
+	private String lang;
 	/**
 	 * Holds SB11 taxonomy
 	 * @param table SB11 table name
 	 */
-	public SB11TreeLabelData(String table) {
+	public SB11TreeLabelData(String table, String lang) {
 		super();
 		this.table = table;
+		this.lang = lang;
 	}
 	
 	@Override
 	public void readTreeHierarchy(String fileTopicHierarchyPath) {
-		SB11TopicHierarchy sbTH = new SB11TopicHierarchy("EN", fileTopicHierarchyPath);
+		SB11TopicHierarchy sbTH = new SB11TopicHierarchy(lang, fileTopicHierarchyPath);
 		//TODO find a way to provide table from the experiment class
 		
 		treeIndex.put("root", new HashSet<String>());

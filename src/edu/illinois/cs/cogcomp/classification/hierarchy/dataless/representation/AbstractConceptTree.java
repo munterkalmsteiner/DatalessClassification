@@ -115,8 +115,10 @@ public abstract class AbstractConceptTree extends AbstractLabelTree {
 			treeLabelData = new CustomizedLabelDataHCTree();
 		}
 		if (data.startsWith(DatalessResourcesConfig.CONST_DATA_SB11)) {
-			String table = data.split(",")[1];
-			treeLabelData = new SB11TreeLabelData(table);
+			String[] values = data.split(",");
+			String table = values[1];
+			String lang = values[2];
+			treeLabelData = new SB11TreeLabelData(table, lang);
 		}
 		if (data.equals("CustomizedHCServer")) {
 			treeLabelData = new CustomizedHCServer();
@@ -130,7 +132,11 @@ public abstract class AbstractConceptTree extends AbstractLabelTree {
 			if (representationType.equals("complex")) {
 				esa = new DiskBasedComplexESA();
 			} else if (representationType.equals("simple")) {
-				esa = new SimpleESALocal();
+				if(data.startsWith(DatalessResourcesConfig.CONST_DATA_SB11)) {
+					String lang = data.split(",")[2];
+					esa = new SimpleESALocal(lang.toLowerCase());
+				}else 
+					esa = new SimpleESALocal();
 			} else if (representationType.equals("wordDist")) {
 				word2vec = new DiskBasedWordEmbedding();
 			}

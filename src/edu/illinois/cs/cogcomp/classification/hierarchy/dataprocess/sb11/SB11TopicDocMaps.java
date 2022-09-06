@@ -21,17 +21,18 @@ public class SB11TopicDocMaps extends AbstractTopicDocMaps {
 	
 	private String sb11FilePath = "";
 	private String table = "";
-	
-	public SB11TopicDocMaps (String sb11FilePath, String table) {
+	private String lang = "";
+	public SB11TopicDocMaps (String sb11FilePath, String table, String lang) {
 		super();
 		this.sb11FilePath = sb11FilePath;
 		this.table = table;
+		this.lang = lang;
 	}
 	
 	@Override
 	public void readTopicDocMap(String file) {
 
-		SB11TreeLabelData treeLabelData = new SB11TreeLabelData(table);
+		SB11TreeLabelData treeLabelData = new SB11TreeLabelData(table, lang);
 		treeLabelData.readTreeHierarchy(this.sb11FilePath);
 		HashMap<String, String> parentIndex = treeLabelData.getTreeParentIndex();
 		try {
@@ -62,7 +63,7 @@ public class SB11TopicDocMaps extends AbstractTopicDocMaps {
 
 	@Override
 	public void readFilteredTopicDocMap(String file, Set<String> docIDSet) {
-		SB11TreeLabelData treeLabelData = new SB11TreeLabelData(table);
+		SB11TreeLabelData treeLabelData = new SB11TreeLabelData(table, lang);
 		treeLabelData.readTreeHierarchy(this.sb11FilePath);
 		HashMap<String, String> parentIndex = treeLabelData.getTreeParentIndex();
 
