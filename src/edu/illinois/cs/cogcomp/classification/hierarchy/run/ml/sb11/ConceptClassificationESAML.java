@@ -11,6 +11,7 @@ import edu.illinois.cs.cogcomp.classification.hierarchy.dataprocess.sb11.SB11Cor
 import edu.illinois.cs.cogcomp.classification.hierarchy.dataprocess.sb11.SB11TopicDocMaps;
 import edu.illinois.cs.cogcomp.classification.hierarchy.datastructure.StopWords;
 import edu.illinois.cs.cogcomp.classification.hierarchy.evaluation.Evaluation;
+import edu.illinois.cs.cogcomp.classification.hierarchy.evaluation.SB11Evaluation;
 import edu.illinois.cs.cogcomp.classification.hierarchy.run.ClassifierConstant;
 
 /**
@@ -25,7 +26,7 @@ public class ConceptClassificationESAML {
 
 	
 	public static void main(String[] args) {
-		testSB11SimpleConcept(1,
+		testSB11SimpleConcept(5,
 				"Byggdelar",
 				"",
 				"",
@@ -81,7 +82,13 @@ public class ConceptClassificationESAML {
 		tree.setRootNode(rootNode);
 		System.out.println("process tree finished");
 		
-		Evaluation.testMultiLabelConceptTreeResults (tree,
+//		Evaluation.testMultiLabelConceptTreeResults (tree,
+//				corpusContentProc.getCorpusConceptVectorMap(), 
+//				topicDocMap, docTopicMap,
+//				outputClassificationFile,  outputLabelComparisonFile, 
+//				topK);
+//		
+		SB11Evaluation.testTopKWithoutDepth(tree,
 				corpusContentProc.getCorpusConceptVectorMap(), 
 				topicDocMap, docTopicMap,
 				outputClassificationFile,  outputLabelComparisonFile, 

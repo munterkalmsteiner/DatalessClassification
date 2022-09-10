@@ -8,6 +8,9 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.opencsv.CSVReader;
 import com.opencsv.exceptions.CsvException;
 
@@ -26,6 +29,8 @@ public class SB11TopicHierarchy {
 		System.out.printf(". Key: %s", firstKey);
 	}
 
+	private Logger log = LoggerFactory.getLogger(SB11TopicHierarchy.class);
+	
 	private String filePath = "";
 	private HashMap<String, HashMap<String, String>> topicHierarchy = new HashMap<String, HashMap<String, String>>();
 	private LinkedHashMap<String, String> topicMappingBuilding;
@@ -128,10 +133,10 @@ public class SB11TopicHierarchy {
 		topicHierarchy.put("Landskapsinformation", topicMappingLandscape);
 		topicHierarchy.put("Alternativtabell", topicMappingAlternative);
 		
-		System.out.printf("\n read %d Byggdelar classes", topicMappingBuilding.size());
-		System.out.printf("\n read %d Landskapsinformation classes", topicMappingLandscape.size());
-		System.out.printf("\n read %d Alternativtabell classes \n", topicMappingAlternative.size());
-		System.out.println();
+		log.info("read sb11 labels");
+		log.debug("read " + topicMappingBuilding.size() +" Byggdelar classes");
+		log.debug("read " + topicMappingLandscape.size() + " Landskapsinformation classes");
+		log.debug("read " + topicMappingAlternative.size() + " Alternativtabell classes");
 	}
 
 }

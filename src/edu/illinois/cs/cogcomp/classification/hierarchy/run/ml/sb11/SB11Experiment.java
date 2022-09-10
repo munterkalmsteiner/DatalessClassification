@@ -14,6 +14,7 @@ public class SB11Experiment {
 	public static void main(String[] args) {
 
 		int numConcepts = 500;
+		int topK = 5;
 		String sb11Taxonomy = SB11ExperimentConfig.sb11Taxonomy;
 		String rawData = SB11ExperimentConfig.rawDataSB11;
 		String textIndex = "data/sb11/textindex/"; // sub directory will be created with table name
@@ -25,13 +26,13 @@ public class SB11Experiment {
 		String sb11Table = "Byggdelar"; // Byggdelar, Landskapsinformation ot Alternativtabell
 
 		SB11Experiment exByggdelar = new SB11Experiment(numConcepts, sb11Taxonomy, sb11Table, rawData, textIndex,
-				conceptTreeFile, conceptFile, outputClassificationFile, outputLabelComparisonFile, false);
+				conceptTreeFile, conceptFile, outputClassificationFile, outputLabelComparisonFile, topK, false);
 
 	}
 
 	public SB11Experiment(int numConcepts, String sb11Taxonomy, String sb11Table, String rawData, String textIndex,
 			String conceptTreeFile, String conceptFile, String outputClassificationFile,
-			String outputLabelComparisonFile, boolean cleanRun) {
+			String outputLabelComparisonFile, int topK, boolean cleanRun) {
 		/*
 		 * Make sure that the following paths in conf/configurations.properties are set
 		 * correctly: - cogcomp.esa.simple.wikiIndex
@@ -73,7 +74,7 @@ public class SB11Experiment {
 			CorpusESAConceptualizationSB11.conceptualizeCorpus(numConcepts, textIndex, conceptFile);
 		}
 
-		ConceptClassificationESAML.testSB11SimpleConcept(1, sb11Table, textIndex, conceptTreeFile, conceptFile,
+		ConceptClassificationESAML.testSB11SimpleConcept(topK, sb11Table, textIndex, conceptTreeFile, conceptFile,
 				outputClassificationFile, outputLabelComparisonFile);
 	}
 

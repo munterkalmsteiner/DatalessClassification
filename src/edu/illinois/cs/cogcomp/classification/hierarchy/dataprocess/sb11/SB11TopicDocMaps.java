@@ -45,13 +45,16 @@ public class SB11TopicDocMaps extends AbstractTopicDocMaps {
 					}
 					Document doc = reader.document(i);
 					String docID = doc.get("uri");
-					String topic = doc.get("sb11Labels"); //doc.get("Body");
-					if (docID == null || topic == null) {
+					String topics = doc.get("sb11Labels"); //doc.get("Body");
+					if (docID == null || topics == null) {
 						 continue;
 					}
 		
-					this.populateMaps(docID, topic, parentIndex);
+					String[] topicArray = topics.split(" ");
 					
+					for (String topic: topicArray) {
+						this.populateMaps(docID, topic.toUpperCase(), parentIndex);	
+					}					
 				}
 			}
 			reader.close();

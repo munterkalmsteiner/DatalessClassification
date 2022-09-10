@@ -3,20 +3,26 @@ package edu.illinois.cs.cogcomp.classification.hierarchy.run.ml.sb11;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.stream.Collectors;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import edu.illinois.cs.cogcomp.classification.hierarchy.dataless.representation.ConceptTreeNode;
 import edu.illinois.cs.cogcomp.classification.hierarchy.dataless.representation.ml.ConceptTreeTopDownML;
 import edu.illinois.cs.cogcomp.classification.hierarchy.dataprocess.sb11.SB11TopicHierarchy;
 import edu.illinois.cs.cogcomp.classification.hierarchy.datastructure.LabelKeyValuePair;
 import edu.illinois.cs.cogcomp.classification.hierarchy.datastructure.SparseVector;
 import edu.illinois.cs.cogcomp.classification.hierarchy.datastructure.StopWords;
-import edu.illinois.cs.cogcomp.classification.hierarchy.evaluation.SB11Classifier;
 import edu.illinois.cs.cogcomp.classification.hierarchy.run.ClassifierConstant;
 import edu.illinois.cs.cogcomp.classification.main.DatalessResourcesConfig;
+import edu.illinois.cs.cogcomp.descartes.retrieval.simple.Searcher;
 
 public class Demonstrator {
 
 	public static HashMap<String, Double> conceptWeights = new HashMap<String, Double>();
-
+	private static final Logger log = LoggerFactory.getLogger(Demonstrator.class);
+	
 	public static void main(String[] args) {
 
 		HashMap<String, List<LabelKeyValuePair>> results = Demonstrator.classifyReq(
@@ -40,29 +46,31 @@ public class Demonstrator {
 			int numOfClasses) {
 		int numConcepts = 500;
 
+		boolean isDebug = java.lang.management.ManagementFactory.getRuntimeMXBean().
+				getInputArguments().toString().indexOf("jdwp") >= 0;
 		DatalessResourcesConfig.initialization();
-		String baseDir = "/home/waleed/dev/DatalessClassification/";
-		String conceptTreeFile = baseDir + "data/sb11/output/tree.sb11.simple.esa.concepts.newrefine." + numConcepts + "."
+		String conceptTreeFile =  "data/sb11/output/tree.sb11.simple.esa.concepts.newrefine." + numConcepts + "."
 				+ sb11Table;
-
-		String stopWordsFile = baseDir + "data/rcvTest/english.stop";
+		String stopWordsFile = "data/rcvTest/english.stop";
 		String treeConceptFile = "";
 		String method = "simple";
 		String sb11Taxonomy = SB11ExperimentConfig.sb11Taxonomy;
 		String data = "sb11," + sb11Table;
 		String textToClassify = documentTitle + " " + sectionsTitle + " " + requirement;  
-				
+		
+		log.info("Clasifying started");
+		log.info(textToClassify);
+		
 		treeConceptFile = conceptTreeFile;
-
 		StopWords.rcvStopWords = StopWords.readStopWords(stopWordsFile);
-
 		ConceptTreeTopDownML tree = new ConceptTreeTopDownML(data, method, conceptWeights, true);
 
-		System.out.println("process tree...");
+	    tree.setDebug(isDebug);
+		log.info("process tree...");
 		tree.readLabelTreeFromDump(treeConceptFile, ClassifierConstant.isBreakConcepts);
 		ConceptTreeNode rootNode = tree.initializeTreeWithConceptVector("root", 0, ClassifierConstant.isBreakConcepts);
 		tree.setRootNode(rootNode);
-		System.out.println("process tree finished");
+		log.info("process tree finished");
 
 		// Waleed
 		SB11TopicHierarchy sb11 = new SB11TopicHierarchy("EN", sb11Taxonomy);
@@ -79,6 +87,11 @@ public class Demonstrator {
 		
 		
 		List<LabelKeyValuePair> topScoreFromAllResult =  SB11Classifier.topScorefromAllClasses(labelsInDepth, numOfClasses);
+		topScoreFromAllResult =  topScoreFromAllResult
+				.stream()
+				.map(c -> new LabelKeyValuePair(c.getLabel().toUpperCase(), c.getScore()))
+				.collect(Collectors.toList());
+		
 		for (int i = 0; i < topScoreFromAllResult.size(); i++) {
 			topScoreFromAllResult.get(i).setLabel(
 					topScoreFromAllResult.get(i).getLabel() + " - " + sb11.getLabelName(topScoreFromAllResult.get(i).getLabel()));
@@ -88,6 +101,8 @@ public class Demonstrator {
 		//results.put("Siblings Diff", new ArrayList<LabelKeyValuePair>() { { add(sibilingDiffResult); }}) ;
 		//results.put("Top Two Diff", new ArrayList<LabelKeyValuePair>() { { add(topTwoDiffResult); }});
 		results.put("Top Scores", topScoreFromAllResult);
+		
+		log.info("Classification completed");
 		
 		return results;
 	}

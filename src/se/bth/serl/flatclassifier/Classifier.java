@@ -134,6 +134,75 @@ public class Classifier
         predictors.add(new Word2VecPredictor(csModel, csTable, w2vModel));
     }
     
+    public Map<String, Double> classifyRequirement(Requirement requirement) {
+    	
+    	Map<String, Double> results = new LinkedHashMap<String, Double>();
+    	
+    	jcas.setDocumentLanguage(NLP.getLanguageString(lang));
+        jcas.setDocumentText(requirement.getText(lang));
+     
+        StringBuilder sb = new StringBuilder();
+        
+        sb.append("-----------");
+        sb.append(requirement.getReqId());
+        sb.append("-----------\n\n");
+        sb.append(requirement.getText(lang));
+        sb.append("\nAnnotations (");
+        sb.append(csTable);
+        sb.append("): ");
+        sb.append(requirement.getAnnotationInfo(cs, lang, csTable));
+        sb.append("\n\n");
+        
+        try {
+            SimplePipeline.runPipeline(jcas, NLP.baseAnalysisEngine());
+            
+            /* For some reason, we get Tokens with different POS (and possibly other varying 
+             * features) JCas with select. Hence, we keep track of the terms we are interested in 
+             * (nouns). Note that the hash function of Term does not consider the POS value since
+             * it seems that a term can be tagged with different noun POS tags. In this way, we
+             * avoid that those terms appear twice. 
+             */
+            Set<Term> uniqueTerms = new HashSet<>();
+            
+            int nouns = 0;
+            for (Token token : JCasUtil.select(jcas, Token.class)) {
+                Term term = new Term(token, lang);
+                if (term.isNoun() && !uniqueTerms.contains(term)) {
+                    nouns++;
+                    
+                    Map<String, Score> result = calculateScore(term);
+                    //uniqueTerms.add(term);
+
+                    if(result.size() == 0) {
+                    	continue;
+                    }
+                    
+                    String topLabelIri = (String) result.keySet().toArray()[0];
+                	String topLabelCode = topLabelIri.split("_")[1];
+                	Double topScore = result.get(result.keySet().toArray()[0]).totalScore;
+                    
+                	if(!result.containsKey(topLabelCode)) {
+                		results.put(topLabelCode, topScore);	
+                	}
+                }
+            }
+            
+            sb.append("\n");
+            sb.append("Total nouns: ");
+            sb.append(nouns);
+            sb.append("\n\n\n");
+                                    
+            jcas.reset();
+            
+            return results;
+        }
+        catch (AnalysisEngineProcessException | ResourceInitializationException e) {
+            e.printStackTrace();
+            return null;
+        }
+
+    }
+    
     private void classify(Requirement requirement) 
     {
         jcas.setDocumentLanguage(NLP.getLanguageString(lang));
