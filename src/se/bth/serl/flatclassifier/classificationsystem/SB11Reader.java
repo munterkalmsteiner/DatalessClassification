@@ -26,7 +26,7 @@ import com.opencsv.CSVReaderBuilder;
 import com.opencsv.exceptions.CsvException;
 
 import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token;
-import edu.illinois.cs.cogcomp.classification.hierarchy.run.preparedata.sb11.Annotation.ClassificationSystem;
+import edu.illinois.cs.cogcomp.classification.hierarchy.run.preparedata.requirements.Annotation.ClassificationSystem;
 import se.bth.serl.flatclassifier.utils.NLP;
 import se.bth.serl.flatclassifier.utils.NLP.Language;
 import se.bth.serl.flatclassifier.utils.Term;

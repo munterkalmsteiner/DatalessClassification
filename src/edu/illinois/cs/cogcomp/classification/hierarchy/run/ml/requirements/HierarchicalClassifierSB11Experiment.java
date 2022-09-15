@@ -1,22 +1,22 @@
-package edu.illinois.cs.cogcomp.classification.hierarchy.run.ml.sb11;
+package edu.illinois.cs.cogcomp.classification.hierarchy.run.ml.requirements;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 
-import edu.illinois.cs.cogcomp.classification.hierarchy.run.preparedata.sb11.CorpusESAConceptualizationSB11;
-import edu.illinois.cs.cogcomp.classification.hierarchy.run.preparedata.sb11.DumpConceptTreeSB11;
-import edu.illinois.cs.cogcomp.classification.hierarchy.run.preparedata.sb11.SB11Indexer;
+import edu.illinois.cs.cogcomp.classification.hierarchy.run.preparedata.requirements.CorpusESAConceptualizationSB11;
+import edu.illinois.cs.cogcomp.classification.hierarchy.run.preparedata.requirements.DumpConceptTreeSB11;
+import edu.illinois.cs.cogcomp.classification.hierarchy.run.preparedata.requirements.SB11Indexer;
 import edu.illinois.cs.cogcomp.classification.main.DatalessResourcesConfig;
 
-public class SB11Experiment {
+public class HierarchicalClassifierSB11Experiment {
 
 	public static void main(String[] args) {
 
 		int numConcepts = 500;
 		int topK = 5;
 		String sb11Taxonomy = SB11ExperimentConfig.sb11Taxonomy;
-		String rawData = SB11ExperimentConfig.rawDataSB11;
+		String rawData = GenericCSConfig.rawData;
 		String textIndex = "data/sb11/textindex/"; // sub directory will be created with table name
 		String conceptTreeFile = "data/sb11/output/tree.sb11.simple.esa.concepts.newrefine." + numConcepts;
 		String conceptFile = "data/sb11/output/sb11.simple.esa.concepts." + numConcepts;
@@ -25,12 +25,12 @@ public class SB11Experiment {
 
 		String sb11Table = "Byggdelar"; // Byggdelar, Landskapsinformation ot Alternativtabell
 
-		SB11Experiment exByggdelar = new SB11Experiment(numConcepts, sb11Taxonomy, sb11Table, rawData, textIndex,
+		Run(numConcepts, sb11Taxonomy, sb11Table, rawData, textIndex,
 				conceptTreeFile, conceptFile, outputClassificationFile, outputLabelComparisonFile, topK, false);
 
 	}
 
-	public SB11Experiment(int numConcepts, String sb11Taxonomy, String sb11Table, String rawData, String textIndex,
+	public static void Run(int numConcepts, String sb11Taxonomy, String sb11Table, String rawData, String textIndex,
 			String conceptTreeFile, String conceptFile, String outputClassificationFile,
 			String outputLabelComparisonFile, int topK, boolean cleanRun) {
 		/*

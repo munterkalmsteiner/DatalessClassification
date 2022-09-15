@@ -1,4 +1,4 @@
-package edu.illinois.cs.cogcomp.classification.hierarchy.dataprocess.sb11;
+package edu.illinois.cs.cogcomp.classification.hierarchy.dataprocess.requirements;
 
 import java.io.File;
 import java.util.HashMap;
@@ -17,22 +17,21 @@ import edu.illinois.cs.cogcomp.classification.hierarchy.dataprocess.abstracts.Ab
  * @param file
  */
 
-public class SB11TopicDocMaps extends AbstractTopicDocMaps {
+public class CoClassTopicDocMaps extends AbstractTopicDocMaps {
 	
-	private String sb11FilePath = "";
+	private String coClassFilePath = "";
 	private String table = "";
 	
-	public SB11TopicDocMaps (String sb11FilePath, String table) {
+	public CoClassTopicDocMaps (String coClassFilePath, String table) {
 		super();
-		this.sb11FilePath = sb11FilePath;
+		this.coClassFilePath = coClassFilePath;
 		this.table = table;
 	}
 	
 	@Override
 	public void readTopicDocMap(String file) {
-
-		SB11TreeLabelData treeLabelData = new SB11TreeLabelData(table);
-		treeLabelData.readTreeHierarchy(this.sb11FilePath);
+		CoClassTreeLabelData treeLabelData = new CoClassTreeLabelData(table);
+		treeLabelData.readTreeHierarchy(this.coClassFilePath);
 		HashMap<String, String> parentIndex = treeLabelData.getTreeParentIndex();
 		try {
 			Directory inputDir = FSDirectory.open(new File(file));
@@ -40,23 +39,25 @@ public class SB11TopicDocMaps extends AbstractTopicDocMaps {
 			int maxDocNum = reader.maxDoc();
 			for (int i = 0; i < maxDocNum; ++i) {
 				if (reader.isDeleted(i) == false) { 
-					if (i % 10 == 0) {
-						System.out.println ("[Read SB11 Data for TopicMap: ] " + i + "docs ..");
-					}
 					Document doc = reader.document(i);
 					String docID = doc.get("uri");
-					String topics = doc.get("sb11Labels"); //doc.get("Body");
+					String topics = doc.get("coClassLabels"); //doc.get("Body");
 					if (docID == null || topics == null) {
 						 continue;
 					}
 		
 					String[] topicArray = topics.split(" ");
-					
+
 					for (String topic: topicArray) {
-						this.populateMaps(docID, topic.toUpperCase(), parentIndex);	
-					}					
+						//Doc without true labels will not be put in the maps
+						if(topic.isBlank()) {
+							continue;
+						}
+						this.populateMaps(docID, topic.toLowerCase(), parentIndex);	
+					}				
 				}
 			}
+			System.out.println ("TopicDocMap: Read CoClass data with true labels for " + maxDocNum + " docs.");
 			reader.close();
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -65,8 +66,9 @@ public class SB11TopicDocMaps extends AbstractTopicDocMaps {
 
 	@Override
 	public void readFilteredTopicDocMap(String file, Set<String> docIDSet) {
-		SB11TreeLabelData treeLabelData = new SB11TreeLabelData(table);
-		treeLabelData.readTreeHierarchy(this.sb11FilePath);
+		CoClassTreeLabelData treeLabelData = new CoClassTreeLabelData(table);
+		treeLabelData.readTreeHierarchy(this.coClassFilePath);
+		
 		HashMap<String, String> parentIndex = treeLabelData.getTreeParentIndex();
 
 		try {
@@ -75,12 +77,9 @@ public class SB11TopicDocMaps extends AbstractTopicDocMaps {
 			int maxDocNum = reader.maxDoc();
 			for (int i = 0; i < maxDocNum; ++i) {
 				if (reader.isDeleted(i) == false) { 
-					if (i % 10 == 0) {
-						System.out.println ("[Read SB11 Data for TopicMap: ] " + i + "docs ..");
-					}
 					Document doc = reader.document(i);
 					String docID = doc.get("uri");
-					String topics = doc.get("sb11Labels"); //doc.get("Body");
+					String topics = doc.get("coClassLabels"); //doc.get("Body");
 					if (docID == null || topics == null) {
 						 continue;
 					}
@@ -89,10 +88,15 @@ public class SB11TopicDocMaps extends AbstractTopicDocMaps {
 					String[] topicArray = topics.split(" ");
 					
 					for (String topic: topicArray) {
-						this.populateMaps(docID, topic, parentIndex);	
+						//Doc without true labels will not be put in the maps
+						if(topic.isBlank()) {
+							continue;
+						}
+						this.populateMaps(docID, topic.toLowerCase(), parentIndex);	
 					}
 				}
 			}
+			System.out.println ("TopicDocMap: Read CoClass data with true labels for " + maxDocNum + " docs.");
 			reader.close();
 		} catch (Exception e) {
 			e.printStackTrace();

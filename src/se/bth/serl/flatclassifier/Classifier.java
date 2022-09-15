@@ -31,10 +31,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 
 import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token;
-import edu.illinois.cs.cogcomp.classification.hierarchy.run.ml.sb11.SB11ExperimentConfig;
-import edu.illinois.cs.cogcomp.classification.hierarchy.run.preparedata.sb11.Annotation.ClassificationSystem;
-import edu.illinois.cs.cogcomp.classification.hierarchy.run.preparedata.sb11.DataParser;
-import edu.illinois.cs.cogcomp.classification.hierarchy.run.preparedata.sb11.Requirement;
+import edu.illinois.cs.cogcomp.classification.hierarchy.run.ml.requirements.GenericCSConfig;
+import edu.illinois.cs.cogcomp.classification.hierarchy.run.ml.requirements.SB11ExperimentConfig;
+import edu.illinois.cs.cogcomp.classification.hierarchy.run.preparedata.requirements.DataParser;
+import edu.illinois.cs.cogcomp.classification.hierarchy.run.preparedata.requirements.Requirement;
+import edu.illinois.cs.cogcomp.classification.hierarchy.run.preparedata.requirements.Annotation.ClassificationSystem;
 import se.bth.serl.flatclassifier.classificationsystem.CSObject;
 import se.bth.serl.flatclassifier.classificationsystem.CSReader;
 import se.bth.serl.flatclassifier.classificationsystem.CSReaderFactory;
@@ -63,10 +64,10 @@ public class Classifier
         String csname = SB11ExperimentConfig.csName;
         String csrawdata = SB11ExperimentConfig.sb11Taxonomy;
         String csModelfilename = SB11ExperimentConfig.csModelFile;
-        String word2vecfilename = SB11ExperimentConfig.word2vecmodel;
-        String annotatedData = SB11ExperimentConfig.rawDataSB11;
         String csTable = SB11ExperimentConfig.sb11Table;
         
+        String word2vecfilename = GenericCSConfig.word2vecmodel;
+        String annotatedData = GenericCSConfig.rawData;
          
         Optional<CSReader> csr = CSReaderFactory.getReader(csname, csrawdata, language);
         if (csr.isEmpty())
@@ -134,7 +135,14 @@ public class Classifier
         predictors.add(new Word2VecPredictor(csModel, csTable, w2vModel));
     }
     
-    public Map<String, Double> classifyRequirement(Requirement requirement) {
+    /**
+     * I added this class so that we return the classifications 
+     * rather than writing them in the console
+     *  
+     * @param requirement
+     * @return classifications
+     */
+    public Map<String, Double> classifyRequirement(Requirement requirement, int topKPerTerm) {
     	
     	Map<String, Double> results = new LinkedHashMap<String, Double>();
     	
@@ -177,13 +185,19 @@ public class Classifier
                     	continue;
                     }
                     
-                    String topLabelIri = (String) result.keySet().toArray()[0];
-                	String topLabelCode = topLabelIri.split("_")[1];
-                	Double topScore = result.get(result.keySet().toArray()[0]).totalScore;
+                    for(int k = 0; k < topKPerTerm; k++) {
+                    	if(result.size() <= k) {
+                    		break;
+                    	}
+                    	String topLabelIri = (String) result.keySet().toArray()[k];
+                    	String topLabelCode = topLabelIri.split("_")[1];
+                    	Double topScore = result.get(result.keySet().toArray()[k]).totalScore;
+                        
+                    	if(!result.containsKey(topLabelCode)) {
+                    		results.put(topLabelCode, topScore);	
+                    	}
+                    }
                     
-                	if(!result.containsKey(topLabelCode)) {
-                		results.put(topLabelCode, topScore);	
-                	}
                 }
             }
             

@@ -1,4 +1,4 @@
-package edu.illinois.cs.cogcomp.classification.hierarchy.run.preparedata.sb11;
+package edu.illinois.cs.cogcomp.classification.hierarchy.run.preparedata.requirements;
 
 import java.io.FileWriter;
 import java.util.ArrayList;
@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Random;
 
 import edu.illinois.cs.cogcomp.classification.hierarchy.dataprocess.newsgroups.NewsgroupsCorpusConceptData;
-import edu.illinois.cs.cogcomp.classification.hierarchy.dataprocess.sb11.SB11CorpusConceptData;
+import edu.illinois.cs.cogcomp.classification.hierarchy.dataprocess.requirements.SB11CorpusConceptData;
 import edu.illinois.cs.cogcomp.classification.hierarchy.datastructure.ConceptData;
 import edu.illinois.cs.cogcomp.classification.hierarchy.run.ClassifierConstant;
 import edu.illinois.cs.cogcomp.classification.representation.esa.AbstractESA;
@@ -15,13 +15,13 @@ import edu.illinois.cs.cogcomp.classification.representation.esa.complex.DiskBas
 import edu.illinois.cs.cogcomp.classification.representation.esa.simple.SimpleESALocal;
 
 /**
- * Conceptualization of the sb11 data corpus.
+ * Conceptualization of the coclass data corpus.
  * <p>
  * @author waleed
  *
  */
 
-public class CorpusESAConceptualizationSB11 {
+public class CorpusESAConceptualizationCoClass {
 
 	public static void main(String[] args) {
 
@@ -38,26 +38,25 @@ public class CorpusESAConceptualizationSB11 {
 		Random random = new Random(seed);
 		double trainingRate = 0.6;
 
-		CorpusESAConceptualizationSB11 corpusContentProc = new CorpusESAConceptualizationSB11();
-		SB11CorpusConceptData sb11Data = new SB11CorpusConceptData();
-		sb11Data.readCorpusContentOnly(inputData, random, trainingRate);
-		corpusContentProc.writeCorpusSimpleConceptData(sb11Data.getCorpusContentMap(), conceptNum, outputData);
+		CorpusESAConceptualizationCoClass corpusContentProc = new CorpusESAConceptualizationCoClass();
+		SB11CorpusConceptData coClassData = new SB11CorpusConceptData();
+		coClassData.readCorpusContentOnly(inputData, random, trainingRate);
+		corpusContentProc.writeCorpusSimpleConceptData(coClassData.getCorpusContentMap(), conceptNum, outputData);
 		System.out.println("Completed conceptualizing data corpus");
 	}
 
-	public static void conceptualizeCorpusComplex(int conceptNum) {
+	public static void conceptualizeCorpusComplex(int conceptNum, String inputData, String outputData) {
 		int seed = 0;
 		Random random = new Random(seed);
 		double trainingRate = 0.5;
 
-		String inputData = "data/sb11/textindex";
-		String outputData = "data/sb11/output/20newsgroups.complexGraph.cutoff" + ClassifierConstant.cutOff
-				+ ".esa.concepts." + ClassifierConstant.complexVectorType + conceptNum;
+		//String outputData = "data/sb11/output/sb11.complexGraph.cutoff" + ClassifierConstant.cutOff
+		//		+ ".esa.concepts." + ClassifierConstant.complexVectorType + conceptNum;
 
-		CorpusESAConceptualizationSB11 corpusContentProc = new CorpusESAConceptualizationSB11();
-		SB11CorpusConceptData sb11Data = new SB11CorpusConceptData();
-		sb11Data.readCorpusContentOnly(inputData, random, trainingRate);
-		corpusContentProc.writeCorpusComplexConceptData(sb11Data.getCorpusContentMap(), conceptNum, outputData);
+		CorpusESAConceptualizationCoClass corpusContentProc = new CorpusESAConceptualizationCoClass();
+		SB11CorpusConceptData coClassData = new SB11CorpusConceptData();
+		coClassData.readCorpusContentOnly(inputData, random, trainingRate);
+		corpusContentProc.writeCorpusComplexConceptData(coClassData.getCorpusContentMap(), conceptNum, outputData);
 
 	}
 

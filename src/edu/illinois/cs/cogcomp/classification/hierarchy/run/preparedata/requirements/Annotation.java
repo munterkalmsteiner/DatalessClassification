@@ -1,4 +1,4 @@
-package edu.illinois.cs.cogcomp.classification.hierarchy.run.preparedata.sb11;
+package edu.illinois.cs.cogcomp.classification.hierarchy.run.preparedata.requirements;
 
 import se.bth.serl.flatclassifier.utils.NLP.Language;
 

@@ -1,4 +1,4 @@
-package edu.illinois.cs.cogcomp.classification.hierarchy.run.preparedata.sb11;
+package edu.illinois.cs.cogcomp.classification.hierarchy.run.preparedata.requirements;
 
 import java.io.IOException;
 
@@ -7,7 +7,7 @@ import org.apache.lucene.document.Field;
 import org.apache.lucene.document.Fieldable;
 import org.apache.lucene.index.CorruptIndexException;
 
-import edu.illinois.cs.cogcomp.classification.hierarchy.run.preparedata.sb11.Annotation.ClassificationSystem;
+import edu.illinois.cs.cogcomp.classification.hierarchy.run.preparedata.requirements.Annotation.ClassificationSystem;
 import edu.illinois.cs.cogcomp.descartes.indexer.AbstractDocIndexer;
 import se.bth.serl.flatclassifier.utils.NLP.Language;
 
@@ -88,6 +88,7 @@ public class SB11Indexer extends AbstractDocIndexer {
 		String text = req.getText(Language.EN);
 		String advice = req.getAdvice(Language.EN) == null ? "" : req.getAdvice(Language.EN);
 		String sb11Labels = req.getLabelsString(ClassificationSystem.SB11, Language.EN, table).toLowerCase();
+
 		Document doc = new Document();
 
 		// Uri

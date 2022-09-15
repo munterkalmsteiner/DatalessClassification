@@ -1,4 +1,4 @@
-package edu.illinois.cs.cogcomp.classification.hierarchy.run.ml.sb11;
+package edu.illinois.cs.cogcomp.classification.hierarchy.run.ml.requirements;
 
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -10,7 +10,7 @@ import org.slf4j.LoggerFactory;
 
 import edu.illinois.cs.cogcomp.classification.hierarchy.dataless.representation.ConceptTreeNode;
 import edu.illinois.cs.cogcomp.classification.hierarchy.dataless.representation.ml.ConceptTreeTopDownML;
-import edu.illinois.cs.cogcomp.classification.hierarchy.dataprocess.sb11.SB11TopicHierarchy;
+import edu.illinois.cs.cogcomp.classification.hierarchy.dataprocess.requirements.CSTopicHierarchy;
 import edu.illinois.cs.cogcomp.classification.hierarchy.datastructure.LabelKeyValuePair;
 import edu.illinois.cs.cogcomp.classification.hierarchy.datastructure.SparseVector;
 import edu.illinois.cs.cogcomp.classification.hierarchy.datastructure.StopWords;
@@ -73,7 +73,7 @@ public class Demonstrator {
 		log.info("process tree finished");
 
 		// Waleed
-		SB11TopicHierarchy sb11 = new SB11TopicHierarchy("EN", sb11Taxonomy);
+		CSTopicHierarchy sb11 = new CSTopicHierarchy("SB11","EN", sb11Taxonomy);
 		SparseVector reqVector = tree.convertDocToVector(textToClassify, ClassifierConstant.isBreakConcepts);
 		HashMap<Integer, List<LabelKeyValuePair>> labelsInDepth = tree.labelDocumentML(reqVector);
 

@@ -1,4 +1,4 @@
-package edu.illinois.cs.cogcomp.classification.hierarchy.dataprocess.sb11;
+package edu.illinois.cs.cogcomp.classification.hierarchy.dataprocess.requirements;
 
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -22,14 +22,14 @@ public class SB11TreeLabelData extends AbstractTreeLabelData {
 	
 	@Override
 	public void readTreeHierarchy(String fileTopicHierarchyPath) {
-		SB11TopicHierarchy sbTH = new SB11TopicHierarchy("EN", fileTopicHierarchyPath);
+		CSTopicHierarchy sbTH = new CSTopicHierarchy("SB11","EN", fileTopicHierarchyPath);
 		//TODO find a way to provide table from the experiment class
 		
 		treeIndex.put("root", new HashSet<String>());
 
 		if (table.equals("Byggdelar")) {
 
-			LinkedHashMap<String, String> topicMap = sbTH.getTopicMappingBuilding();
+			LinkedHashMap<String, String> topicMap = sbTH.getTopicHierarchy("Byggdelar");
 			for (String topicKey : topicMap.keySet()) {
 				int keyLength = topicKey.length();
 				String topicValue = topicMap.get(topicKey);
@@ -47,7 +47,7 @@ public class SB11TreeLabelData extends AbstractTreeLabelData {
 				treeIndex.put(topicKey, new HashSet<String>());
 			}
 		} else if (table.equals("Landskapsinformation")) {
-			LinkedHashMap<String, String> topicMap = sbTH.getTopicMappingLandscape();
+			LinkedHashMap<String, String> topicMap = sbTH.getTopicHierarchy("Landskapsinformation");
 			for (String topicKey : topicMap.keySet()) {
 				String topicValue = topicMap.get(topicKey);
 				
@@ -58,7 +58,7 @@ public class SB11TreeLabelData extends AbstractTreeLabelData {
 				treeIndex.put(topicKey, new HashSet<String>());
 			}
 		} else if (table.equals("Alternativtabell")) {
-			LinkedHashMap<String, String> topicMap = sbTH.getTopicMappingAlternative();
+			LinkedHashMap<String, String> topicMap = sbTH.getTopicHierarchy("Alternativtabell");
 			for (String topicKey : topicMap.keySet()) {
 				int keyLength = topicKey.length();
 				String topicValue = topicMap.get(topicKey);

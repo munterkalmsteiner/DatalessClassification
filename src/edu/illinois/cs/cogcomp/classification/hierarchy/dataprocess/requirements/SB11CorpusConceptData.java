@@ -1,4 +1,4 @@
-package edu.illinois.cs.cogcomp.classification.hierarchy.dataprocess.sb11;
+package edu.illinois.cs.cogcomp.classification.hierarchy.dataprocess.requirements;
 
 import java.io.File;
 import java.util.Random;

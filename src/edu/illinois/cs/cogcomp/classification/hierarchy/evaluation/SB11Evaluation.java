@@ -1,18 +1,14 @@
 package edu.illinois.cs.cogcomp.classification.hierarchy.evaluation;
 
-import java.io.FileWriter;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
-
 import edu.illinois.cs.cogcomp.classification.hierarchy.classificationinterface.InterfaceMultiLabelConceptClassificationTree;
 import edu.illinois.cs.cogcomp.classification.hierarchy.datastructure.LabelKeyValuePair;
 import edu.illinois.cs.cogcomp.classification.hierarchy.datastructure.SparseVector;
-import edu.illinois.cs.cogcomp.classification.hierarchy.run.ml.sb11.SB11Classifier;
-import se.bth.serl.flatclassifier.ConfusionMatrix;
+import edu.illinois.cs.cogcomp.classification.hierarchy.run.ml.requirements.SB11Classifier;
+import se.bth.serl.flatclassifier.Evaluator;
 
 
 public class SB11Evaluation {
@@ -25,7 +21,7 @@ public class SB11Evaluation {
 		HashMap<String, EvalResults> resultsMap = new HashMap<String, EvalResults>();
 		try {
 
-			HashMap<String, Map<String, Double>> docClassifiedTopics = new LinkedHashMap<String, Map<String, Double>>();
+			HashMap<String, HashMap<String, Double>> docClassifiedTopics = new LinkedHashMap<String, HashMap<String, Double>>();
 
 			for (String docID : docIdContentMap.keySet()) {
 				// get vector
@@ -44,14 +40,14 @@ public class SB11Evaluation {
 				if (classifiedLabelScoreList.size() != 0) {
 					for (LabelKeyValuePair kvp : classifiedLabelScoreList) {
 						if (!docClassifiedTopics.get(docID).containsKey(kvp.getLabel().toUpperCase())) {
-							docClassifiedTopics.get(docID).put(kvp.getLabel().toLowerCase(), kvp.getScore());
+							docClassifiedTopics.get(docID).put(kvp.getLabel(), kvp.getScore());
 						}
 					}
 				}
 			}
 			
-			HashMap<String, ConfusionMatrix> cms = se.bth.serl.flatclassifier.Evaluation.calculateConfusionMatrix(docClassifiedTopics, docTopicMap);
-			se.bth.serl.flatclassifier.Evaluation.calculateMetrics(cms);
+			Evaluator eval = new Evaluator(docClassifiedTopics, docTopicMap);
+			eval.calculateMetrics();
 			
 		} catch (Exception e) {
 			e.printStackTrace();
