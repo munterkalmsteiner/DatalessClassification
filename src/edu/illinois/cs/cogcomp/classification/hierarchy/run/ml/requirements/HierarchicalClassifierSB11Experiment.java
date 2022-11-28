@@ -17,22 +17,24 @@ public class HierarchicalClassifierSB11Experiment {
 		int topK = 5;
 		String sb11Taxonomy = SB11ExperimentConfig.sb11Taxonomy;
 		String rawData = GenericCSConfig.rawData;
+		String method = "simple";
 		String textIndex = "data/sb11/textindex/"; // sub directory will be created with table name
-		String conceptTreeFile = "data/sb11/output/tree.sb11.simple.esa.concepts.newrefine." + numConcepts;
-		String conceptFile = "data/sb11/output/sb11.simple.esa.concepts." + numConcepts;
-		String outputClassificationFile = "data/sb11/output/result.concept.sb11.classification." + numConcepts;
-		String outputLabelComparisonFile = "data/sb11/output/result.concept.sb11.labelComparison." + numConcepts;
+		String conceptTreeFile = "data/sb11/output/tree.sb11." + method + ".concepts.newrefine." + numConcepts;
+		String conceptFile = "data/sb11/output/sb11." + method + ".concepts." + numConcepts;
+		String outputClassificationFile = "data/sb11/output/result.concept." + method + ".sb11.classification." + numConcepts;
+		String outputLabelComparisonFile = "data/sb11/output/result.concept. " + method + ".sb11.labelComparison." + numConcepts;
 
 		String sb11Table = "Byggdelar"; // Byggdelar, Landskapsinformation ot Alternativtabell
 
-		Run(numConcepts, sb11Taxonomy, sb11Table, rawData, textIndex,
-				conceptTreeFile, conceptFile, outputClassificationFile, outputLabelComparisonFile, topK, false);
+		
+		Run(numConcepts, sb11Taxonomy, sb11Table, rawData, textIndex, conceptTreeFile, conceptFile, 
+				outputClassificationFile, outputLabelComparisonFile, topK, method, false);
 
 	}
 
 	public static void Run(int numConcepts, String sb11Taxonomy, String sb11Table, String rawData, String textIndex,
 			String conceptTreeFile, String conceptFile, String outputClassificationFile,
-			String outputLabelComparisonFile, int topK, boolean cleanRun) {
+			String outputLabelComparisonFile, int topK, String method, boolean cleanRun) {
 		/*
 		 * Make sure that the following paths in conf/configurations.properties are set
 		 * correctly: - cogcomp.esa.simple.wikiIndex
@@ -65,13 +67,19 @@ public class HierarchicalClassifierSB11Experiment {
 
 		boolean createConceptTree = !Files.exists(new File(conceptTreeFile).toPath());
 		if (createConceptTree || cleanRun) {
-			DumpConceptTreeSB11.testSB11DataESA(numConcepts, conceptTreeFile, sb11Taxonomy, sb11Table);
+			DumpConceptTreeSB11.testSB11DataESA(numConcepts, conceptTreeFile, sb11Taxonomy, sb11Table, method);
 			;
 		}
 
 		boolean createConceptFile = !Files.exists(new File(conceptFile).toPath());
 		if (createConceptFile || cleanRun) {
-			CorpusESAConceptualizationSB11.conceptualizeCorpus(numConcepts, textIndex, conceptFile);
+			if (method == "simple") {
+				CorpusESAConceptualizationSB11.conceptualizeCorpus(numConcepts, textIndex, conceptFile);	
+			}else if (method == "complex") {
+				CorpusESAConceptualizationSB11.conceptualizeCorpusComplex(numConcepts, textIndex);	
+			
+			}
+			
 		}
 
 		ConceptClassificationESAML.testSB11SimpleConcept(topK, sb11Table, textIndex, conceptTreeFile, conceptFile,

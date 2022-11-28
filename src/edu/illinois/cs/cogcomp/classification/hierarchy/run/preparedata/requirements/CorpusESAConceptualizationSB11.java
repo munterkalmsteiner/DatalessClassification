@@ -45,20 +45,19 @@ public class CorpusESAConceptualizationSB11 {
 		System.out.println("Completed conceptualizing data corpus");
 	}
 
-	public static void conceptualizeCorpusComplex(int conceptNum) {
+	public static void conceptualizeCorpusComplex(int conceptNum, String inputData) {
 		int seed = 0;
 		Random random = new Random(seed);
 		double trainingRate = 0.5;
 
-		String inputData = "data/sb11/textindex";
-		String outputData = "data/sb11/output/20newsgroups.complexGraph.cutoff" + ClassifierConstant.cutOff
+		String outputData = "data/sb11/output/SB11.complexGraph.cutoff" + ClassifierConstant.cutOff
 				+ ".esa.concepts." + ClassifierConstant.complexVectorType + conceptNum;
 
 		CorpusESAConceptualizationSB11 corpusContentProc = new CorpusESAConceptualizationSB11();
 		SB11CorpusConceptData sb11Data = new SB11CorpusConceptData();
 		sb11Data.readCorpusContentOnly(inputData, random, trainingRate);
 		corpusContentProc.writeCorpusComplexConceptData(sb11Data.getCorpusContentMap(), conceptNum, outputData);
-
+		System.out.println("Completed conceptualizing data corpus using ComplexESA");
 	}
 
 	/***
