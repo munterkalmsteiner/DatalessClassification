@@ -31,10 +31,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 
 import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token;
-import edu.illinois.cs.cogcomp.classification.hierarchy.run.ml.sb11.SB11ExperimentConfig;
-import edu.illinois.cs.cogcomp.classification.hierarchy.run.preparedata.sb11.Annotation.ClassificationSystem;
-import edu.illinois.cs.cogcomp.classification.hierarchy.run.preparedata.sb11.DataParser;
-import edu.illinois.cs.cogcomp.classification.hierarchy.run.preparedata.sb11.Requirement;
+import edu.illinois.cs.cogcomp.classification.hierarchy.run.ml.requirements.GenericCSConfig;
+import edu.illinois.cs.cogcomp.classification.hierarchy.run.ml.requirements.SB11ExperimentConfig;
+import edu.illinois.cs.cogcomp.classification.hierarchy.run.preparedata.requirements.DataParser;
+import edu.illinois.cs.cogcomp.classification.hierarchy.run.preparedata.requirements.Requirement;
+import edu.illinois.cs.cogcomp.classification.hierarchy.run.preparedata.requirements.Annotation.ClassificationSystem;
 import se.bth.serl.flatclassifier.classificationsystem.CSObject;
 import se.bth.serl.flatclassifier.classificationsystem.CSReader;
 import se.bth.serl.flatclassifier.classificationsystem.CSReaderFactory;
@@ -63,10 +64,10 @@ public class Classifier
         String csname = SB11ExperimentConfig.csName;
         String csrawdata = SB11ExperimentConfig.sb11Taxonomy;
         String csModelfilename = SB11ExperimentConfig.csModelFile;
-        String word2vecfilename = SB11ExperimentConfig.word2vecmodel;
-        String annotatedData = SB11ExperimentConfig.rawDataSB11;
         String csTable = SB11ExperimentConfig.sb11Table;
         
+        String word2vecfilename = GenericCSConfig.word2vecmodel;
+        String annotatedData = GenericCSConfig.rawData;
          
         Optional<CSReader> csr = CSReaderFactory.getReader(csname, csrawdata, language);
         if (csr.isEmpty())
@@ -132,6 +133,88 @@ public class Classifier
         predictors = new ArrayList<>();
         predictors.add(new SimpleNounPredictor(csModel, csTable));
         predictors.add(new Word2VecPredictor(csModel, csTable, w2vModel));
+    }
+    
+    /**
+     * I added this class so that we return the classifications 
+     * rather than writing them in the console
+     *  
+     * @param requirement
+     * @return classifications
+     */
+    public Map<String, Double> classifyRequirement(Requirement requirement, int topKPerTerm) {
+    	
+    	Map<String, Double> results = new LinkedHashMap<String, Double>();
+    	
+    	jcas.setDocumentLanguage(NLP.getLanguageString(lang));
+        jcas.setDocumentText(requirement.getText(lang));
+     
+        StringBuilder sb = new StringBuilder();
+        
+        sb.append("-----------");
+        sb.append(requirement.getReqId());
+        sb.append("-----------\n\n");
+        sb.append(requirement.getText(lang));
+        sb.append("\nAnnotations (");
+        sb.append(csTable);
+        sb.append("): ");
+        sb.append(requirement.getAnnotationInfo(cs, lang, csTable));
+        sb.append("\n\n");
+        
+        try {
+            SimplePipeline.runPipeline(jcas, NLP.baseAnalysisEngine());
+            
+            /* For some reason, we get Tokens with different POS (and possibly other varying 
+             * features) JCas with select. Hence, we keep track of the terms we are interested in 
+             * (nouns). Note that the hash function of Term does not consider the POS value since
+             * it seems that a term can be tagged with different noun POS tags. In this way, we
+             * avoid that those terms appear twice. 
+             */
+            Set<Term> uniqueTerms = new HashSet<>();
+            
+            int nouns = 0;
+            for (Token token : JCasUtil.select(jcas, Token.class)) {
+                Term term = new Term(token, lang);
+                if (term.isNoun() && !uniqueTerms.contains(term)) {
+                    nouns++;
+                    
+                    Map<String, Score> result = calculateScore(term);
+                    //uniqueTerms.add(term);
+
+                    if(result.size() == 0) {
+                    	continue;
+                    }
+                    
+                    for(int k = 0; k < topKPerTerm; k++) {
+                    	if(result.size() <= k) {
+                    		break;
+                    	}
+                    	String topLabelIri = (String) result.keySet().toArray()[k];
+                    	String topLabelCode = topLabelIri.split("_")[1];
+                    	Double topScore = result.get(result.keySet().toArray()[k]).totalScore;
+                        
+                    	if(!result.containsKey(topLabelCode)) {
+                    		results.put(topLabelCode, topScore);	
+                    	}
+                    }
+                    
+                }
+            }
+            
+            sb.append("\n");
+            sb.append("Total nouns: ");
+            sb.append(nouns);
+            sb.append("\n\n\n");
+                                    
+            jcas.reset();
+            
+            return results;
+        }
+        catch (AnalysisEngineProcessException | ResourceInitializationException e) {
+            e.printStackTrace();
+            return null;
+        }
+
     }
     
     private void classify(Requirement requirement) 

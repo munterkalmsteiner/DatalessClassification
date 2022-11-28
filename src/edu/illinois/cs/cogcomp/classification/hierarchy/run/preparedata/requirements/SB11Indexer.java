@@ -1,4 +1,4 @@
-package edu.illinois.cs.cogcomp.classification.hierarchy.run.preparedata.sb11;
+package edu.illinois.cs.cogcomp.classification.hierarchy.run.preparedata.requirements;
 
 import java.io.IOException;
 
@@ -7,7 +7,7 @@ import org.apache.lucene.document.Field;
 import org.apache.lucene.document.Fieldable;
 import org.apache.lucene.index.CorruptIndexException;
 
-import edu.illinois.cs.cogcomp.classification.hierarchy.run.preparedata.sb11.Annotation.ClassificationSystem;
+import edu.illinois.cs.cogcomp.classification.hierarchy.run.preparedata.requirements.Annotation.ClassificationSystem;
 import edu.illinois.cs.cogcomp.descartes.indexer.AbstractDocIndexer;
 import se.bth.serl.flatclassifier.utils.NLP.Language;
 
@@ -84,12 +84,13 @@ public class SB11Indexer extends AbstractDocIndexer {
 	 *          and advice.
 	 */
 	private Document createDocument(Requirement req) {
-		String uri = req.getDocumentTitle(lang) + "_" + req.getReqId();
-		String documentTitle = req.getDocumentTitle(lang);
-		String sectionTitles = req.getSectionTitlesString(lang);
-		String text = req.getText(lang);
-		String advice = req.getAdvice(lang) == null ? "" : req.getAdvice(lang); 
-		String sb11Labels = req.getLabelsString(ClassificationSystem.SB11, lang, table).toLowerCase();
+		String uri = req.getReqId();
+		String documentTitle = req.getDocumentTitle(Language.EN);
+		String sectionTitles = req.getSectionTitlesString(Language.EN);
+		String text = req.getText(Language.EN);
+		String advice = req.getAdvice(Language.EN) == null ? "" : req.getAdvice(Language.EN);
+		String sb11Labels = req.getLabelsString(ClassificationSystem.SB11, Language.EN, table).toLowerCase();
+
 		Document doc = new Document();
 
 		// Uri

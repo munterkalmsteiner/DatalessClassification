@@ -15,7 +15,8 @@ import edu.illinois.cs.cogcomp.classification.hierarchy.dataprocess.newsgroups.N
 import edu.illinois.cs.cogcomp.classification.hierarchy.dataprocess.newsgroups.NewsgroupsTreeLabelData;
 import edu.illinois.cs.cogcomp.classification.hierarchy.dataprocess.nytimes.NYTimesTreeLabelData;
 import edu.illinois.cs.cogcomp.classification.hierarchy.dataprocess.rcv.RCVTreeLabelData;
-import edu.illinois.cs.cogcomp.classification.hierarchy.dataprocess.sb11.SB11TreeLabelData;
+import edu.illinois.cs.cogcomp.classification.hierarchy.dataprocess.requirements.CoClassTreeLabelData;
+import edu.illinois.cs.cogcomp.classification.hierarchy.dataprocess.requirements.SB11TreeLabelData;
 import edu.illinois.cs.cogcomp.classification.hierarchy.dataprocess.yahoo.CustomizedLabelData;
 import edu.illinois.cs.cogcomp.classification.hierarchy.dataprocess.yahoo.WikiCateLabelData;
 import edu.illinois.cs.cogcomp.classification.hierarchy.dataprocess.yahoo.WikiTwoLabelData;
@@ -119,6 +120,10 @@ public abstract class AbstractConceptTree extends AbstractLabelTree {
 			String table = values[1];
 			String lang = values[2];
 			treeLabelData = new SB11TreeLabelData(table, lang);
+		}
+		if (data.startsWith(DatalessResourcesConfig.CONST_DATA_COCLASS)) {
+			String table = data.split(",")[1];
+			treeLabelData = new CoClassTreeLabelData(table);
 		}
 		if (data.equals("CustomizedHCServer")) {
 			treeLabelData = new CustomizedHCServer();

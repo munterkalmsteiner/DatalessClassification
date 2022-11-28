@@ -1,4 +1,4 @@
-package edu.illinois.cs.cogcomp.classification.hierarchy.run.preparedata.sb11;
+package edu.illinois.cs.cogcomp.classification.hierarchy.run.preparedata.requirements;
 
 import java.util.HashMap;
 
@@ -13,9 +13,10 @@ public class DumpConceptTreeSB11 {
 
 	public static HashMap<String, Double> conceptWeights = new HashMap<String, Double>();;
 	
-	public static void testSB11DataESA (int conceptNum, String fileOutputPath, String fileTopicHierarchyPath, String sb11Table, String lang) {
-		String classSpecs = "sb11," + sb11Table + "," + lang;  
-		AbstractConceptTree tree = new ConceptTreeTopDownML(classSpecs, "simple", conceptWeights, true);
+	public static void testSB11DataESA (int conceptNum,  String fileOutputPath, 
+			String fileTopicHierarchyPath, String sb11Table, String method) {
+		
+		AbstractConceptTree tree = new ConceptTreeTopDownML("sb11," + sb11Table, method, conceptWeights, true);
 		System.out.println("process tree...");
 		tree.treeLabelData.readTreeHierarchy(fileTopicHierarchyPath);
 		ConceptTreeNode rootNode = tree.initializeTree("root", 0);
