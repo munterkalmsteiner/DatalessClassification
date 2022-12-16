@@ -3,35 +3,122 @@ package edu.illinois.cs.cogcomp.classification.hierarchy.run.ml.requirements;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map.Entry;
 
 import edu.illinois.cs.cogcomp.classification.hierarchy.run.preparedata.requirements.CoClassIndexer;
 import edu.illinois.cs.cogcomp.classification.hierarchy.run.preparedata.requirements.CorpusESAConceptualizationCoClass;
 import edu.illinois.cs.cogcomp.classification.hierarchy.run.preparedata.requirements.DumpConceptTreeCoClass;
 import edu.illinois.cs.cogcomp.classification.main.DatalessResourcesConfig;
+import edu.illinois.cs.cogcomp.lbjava.learn.Log;
+import se.bth.serl.flatclassifier.ExperimentConfig;
 
 public class HierarchicalClassifierCoClassExperiment {
 	public static void main(String[] args) {
-	      
-		int numConcepts = 500;
-		int topK = 5;
+	    
+		int numOfConcepts = 500;
+		// Tillgångssystem, Grundfunktioner-och-Komponenter or Konstruktiva-system
+		
 		String coClassTaxonomy = CoClassExperimentConfig.coClassTaxonomy;
 		String rawData = CoClassExperimentConfig.rawData;
 		String textIndex = "data/coclass/textindex/"; // sub directory will be created with table name
-		String conceptTreeFile = "data/coclass/output/tree.coclass.simple.esa.concepts.newrefine." + numConcepts;
-		String conceptFile = "data/coclass/output/coclass.simple.esa.concepts." + numConcepts;
-		String outputClassificationFile = "data/coclass/output/result.concept.coclass.classification." + numConcepts;
-		String outputLabelComparisonFile = "data/coclass/output/result.concept.coclass.labelComparison." + numConcepts;
+		String conceptTreeFile = "data/coclass/output/tree.coclass.simple.esa.concepts.newrefine." + numOfConcepts;
+		String conceptFile = "data/coclass/output/coclass.simple.esa.concepts." + numOfConcepts;
+		String outputClassificationFile = "data/coclass/output/result.concept.coclass.classification." + numOfConcepts;
+		String outputLabelComparisonFile = "data/coclass/output/result.concept.coclass.labelComparison." + numOfConcepts;
+		
+		
+		HashMap<String, ExperimentConfig> experiments = new HashMap<String,ExperimentConfig>();
+		
+		experiments.put("4" ,new ExperimentConfig(
+				"4",coClassTaxonomy, rawData, textIndex, conceptTreeFile, conceptFile, 
+				outputClassificationFile, outputLabelComparisonFile, numOfConcepts, 
+				2, "Tillgångssystem", false));
+		
+		experiments.put("5" ,new ExperimentConfig(
+				"5",coClassTaxonomy, rawData, textIndex, conceptTreeFile, conceptFile, 
+				outputClassificationFile, outputLabelComparisonFile, numOfConcepts, 
+				5, "Tillgångssystem", false));
+		
+		experiments.put("6", new ExperimentConfig(
+				"6",coClassTaxonomy, rawData, textIndex, conceptTreeFile, conceptFile, 
+				outputClassificationFile, outputLabelComparisonFile, numOfConcepts, 
+				5, "Grundfunktioner-och-Komponenter", false));
+		
+		experiments.put("7", new ExperimentConfig(
+				"7",coClassTaxonomy, rawData, textIndex, conceptTreeFile, conceptFile, 
+				outputClassificationFile, outputLabelComparisonFile, numOfConcepts, 
+				5, "Konstruktiva-system", false));
+		
+		experiments.put("8", new ExperimentConfig(
+				"8",coClassTaxonomy, rawData, textIndex, conceptTreeFile, conceptFile, 
+				outputClassificationFile, outputLabelComparisonFile, numOfConcepts, 
+				10, "Tillgångssystem", false));
+		
+		experiments.put("9", new ExperimentConfig(
+				"9",coClassTaxonomy, rawData, textIndex, conceptTreeFile, conceptFile, 
+				outputClassificationFile, outputLabelComparisonFile, numOfConcepts, 
+				10, "Grundfunktioner-och-Komponenter", false));
+		
+		experiments.put("10", new ExperimentConfig(
+				"10",coClassTaxonomy, rawData, textIndex, conceptTreeFile, conceptFile, 
+				outputClassificationFile, outputLabelComparisonFile, numOfConcepts, 
+				10, "Konstruktiva-system", false));
 
-		String coClassTable = "Tillgångssystem"; // Byggdelar, Landskapsinformation ot Alternativtabell
+		experiments.put("11", new ExperimentConfig(
+				"11",coClassTaxonomy, rawData, textIndex, conceptTreeFile, conceptFile, 
+				outputClassificationFile, outputLabelComparisonFile, numOfConcepts, 
+				15, "Tillgångssystem", false));
+		
+		experiments.put("12", new ExperimentConfig(
+				"12",coClassTaxonomy, rawData, textIndex, conceptTreeFile, conceptFile, 
+				outputClassificationFile, outputLabelComparisonFile, numOfConcepts, 
+				15, "Grundfunktioner-och-Komponenter", false));
+		
+		experiments.put("13", new ExperimentConfig(
+				"13",coClassTaxonomy, rawData, textIndex, conceptTreeFile, conceptFile, 
+				outputClassificationFile, outputLabelComparisonFile, numOfConcepts, 
+				15, "Konstruktiva-system", false));
+		
+		experiments.put("20", new ExperimentConfig(
+				"20",coClassTaxonomy, rawData, textIndex, conceptTreeFile, conceptFile, 
+				outputClassificationFile, outputLabelComparisonFile, numOfConcepts, 
+				20, "Tillgångssystem", false));
+		
+		experiments.put("21", new ExperimentConfig(
+				"21",coClassTaxonomy, rawData, textIndex, conceptTreeFile, conceptFile, 
+				outputClassificationFile, outputLabelComparisonFile, numOfConcepts, 
+				20, "Grundfunktioner-och-Komponenter", false));
+		
+		experiments.put("22", new ExperimentConfig(
+				"22",coClassTaxonomy, rawData, textIndex, conceptTreeFile, conceptFile, 
+				outputClassificationFile, outputLabelComparisonFile, numOfConcepts, 
+				20, "Konstruktiva-system", false));
+		
+		
+		experiments.put("23", new ExperimentConfig(
+				"23",coClassTaxonomy, rawData, textIndex, conceptTreeFile, conceptFile, 
+				outputClassificationFile, outputLabelComparisonFile, numOfConcepts, 
+				20, "Tillgångssystem", true));
+		
+		experiments.put("24", new ExperimentConfig(
+				"24",coClassTaxonomy, rawData, textIndex, conceptTreeFile, conceptFile, 
+				outputClassificationFile, outputLabelComparisonFile, numOfConcepts, 
+				20, "Grundfunktioner-och-Komponenter", true));
+		
+		experiments.put("25", new ExperimentConfig(
+				"25",coClassTaxonomy, rawData, textIndex, conceptTreeFile, conceptFile, 
+				outputClassificationFile, outputLabelComparisonFile, numOfConcepts, 
+				20, "Konstruktiva-system", true));
+		
 
-		HierarchicalClassifierCoClassExperiment.RunESA(numConcepts, coClassTaxonomy, coClassTable, rawData, textIndex,
-				conceptTreeFile, conceptFile, outputClassificationFile, outputLabelComparisonFile, topK, false);
+		HierarchicalClassifierCoClassExperiment.RunESA(experiments.get("23"), false);
 
 	}
 
-	public static void RunESA(int numConcepts, String coClassTaxonomy, String coClassTable, String rawData, String textIndex,
-			String conceptTreeFile, String conceptFile, String outputClassificationFile,
-			String outputLabelComparisonFile, int topK, boolean cleanRun) {
+	public static void RunESA(ExperimentConfig conf, boolean cleanRun) {
 		/*
 		 * Make sure that the following paths in conf/configurations.properties are set
 		 * correctly: - cogcomp.esa.simple.wikiIndex
@@ -39,15 +126,15 @@ public class HierarchicalClassifierCoClassExperiment {
 
 		DatalessResourcesConfig.initialization();
 
-		textIndex += coClassTable + "/";
-		conceptTreeFile += "." + coClassTable;
-		conceptFile += "." + coClassTable;
-		outputClassificationFile += "." + coClassTable;
-		outputLabelComparisonFile += "." + coClassTable;
+		conf.setTextIndex(conf.getTextIndex() + conf.getCsTable() + "/");
+		conf.setConceptTreeFile(conf.getConceptTreeFile() + "." + conf.getCsTable());
+		conf.setConceptFile(conf.getConceptFile() + "." + conf.getCsTable());
+		conf.setOutputClassificationFile(conf.getOutputClassificationFile() + "." + conf.getCsTable());
+		conf.setOutputLabelComparisonFile(conf.getOutputLabelComparisonFile() + "." + conf.getCsTable());
 
 		boolean indexRawData = false;
 		try {
-			indexRawData = Files.list(new File(textIndex).toPath()).filter(Files::isRegularFile).count() == 0;
+			indexRawData = Files.list(new File(conf.getTextIndex()).toPath()).filter(Files::isRegularFile).count() == 0;
 		} catch (IOException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
@@ -55,25 +142,28 @@ public class HierarchicalClassifierCoClassExperiment {
 
 		if (indexRawData || cleanRun) {
 			try {
-				CoClassIndexer t = new CoClassIndexer(rawData, textIndex, coClassTable);
+				CoClassIndexer t = new CoClassIndexer(conf.getRawDataFile(), conf.getTextIndex(), conf.getCsTable());
 				t.index();
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
 		}
 
-		boolean createConceptTree = !Files.exists(new File(conceptTreeFile).toPath());
+		boolean createConceptTree = !Files.exists(new File(conf.getConceptTreeFile()).toPath());
 		if (createConceptTree || cleanRun) {
-			DumpConceptTreeCoClass.testCoClassDataESA(numConcepts, conceptTreeFile, coClassTaxonomy, coClassTable);
+			DumpConceptTreeCoClass.testCoClassDataESA(conf.getNumOfConcepts(), conf.getConceptTreeFile(),
+					conf.getTaxonomyFile(), conf.getCsTable());
 			;
 		}
 
-		boolean createConceptFile = !Files.exists(new File(conceptFile).toPath());
+		boolean createConceptFile = !Files.exists(new File(conf.getConceptFile()).toPath());
 		if (createConceptFile || cleanRun) {
-			CorpusESAConceptualizationCoClass.conceptualizeCorpus(numConcepts, textIndex, conceptFile);
+			CorpusESAConceptualizationCoClass.conceptualizeCorpus(conf.getNumOfConcepts(), 
+					conf.getTextIndex(), conf.getConceptFile());
 		}
 
-		ConceptClassificationESAML.testCoClassSimpleConcept(topK, coClassTable, textIndex, conceptTreeFile, conceptFile,
-				outputClassificationFile, outputLabelComparisonFile);
+		ConceptClassificationESAML.testCoClassSimpleConcept(conf.getTopK(), conf.getCsTable(),
+				conf.getTextIndex(), conf.getConceptTreeFile(), conf.getConceptFile(),
+				conf.getOutputClassificationFile(), conf.getOutputLabelComparisonFile(), conf.getIncludeSuperTopic());
 	}
 }

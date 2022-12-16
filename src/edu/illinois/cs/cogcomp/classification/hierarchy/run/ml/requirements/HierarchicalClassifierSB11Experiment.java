@@ -14,7 +14,7 @@ public class HierarchicalClassifierSB11Experiment {
 	public static void main(String[] args) {
 
 		int numConcepts = 500;
-		int topK = 5;
+		int topK = 15;
 		String sb11Taxonomy = SB11ExperimentConfig.sb11Taxonomy;
 		String rawData = GenericCSConfig.rawData;
 		String method = "simple";
@@ -24,9 +24,8 @@ public class HierarchicalClassifierSB11Experiment {
 		String outputClassificationFile = "data/sb11/output/result.concept." + method + ".sb11.classification." + numConcepts;
 		String outputLabelComparisonFile = "data/sb11/output/result.concept. " + method + ".sb11.labelComparison." + numConcepts;
 
-		String sb11Table = "Byggdelar"; // Byggdelar, Landskapsinformation ot Alternativtabell
+		String sb11Table = "Alternativtabell"; // Byggdelar, Landskapsinformation or Alternativtabell
 
-		
 		Run(numConcepts, sb11Taxonomy, sb11Table, rawData, textIndex, conceptTreeFile, conceptFile, 
 				outputClassificationFile, outputLabelComparisonFile, topK, method, false);
 
@@ -83,7 +82,7 @@ public class HierarchicalClassifierSB11Experiment {
 		}
 
 		ConceptClassificationESAML.testSB11SimpleConcept(topK, sb11Table, textIndex, conceptTreeFile, conceptFile,
-				outputClassificationFile, outputLabelComparisonFile);
+				outputClassificationFile, outputLabelComparisonFile, false);
 	}
 
 }

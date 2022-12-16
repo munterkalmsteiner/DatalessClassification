@@ -21,11 +21,13 @@ public class CoClassTopicDocMaps extends AbstractTopicDocMaps {
 	
 	private String coClassFilePath = "";
 	private String table = "";
-	
-	public CoClassTopicDocMaps (String coClassFilePath, String table) {
+	private Boolean includeSuperTopic = false;
+
+	public CoClassTopicDocMaps (String coClassFilePath, String table, Boolean includeSuperTopic) {
 		super();
 		this.coClassFilePath = coClassFilePath;
 		this.table = table;
+		this.includeSuperTopic = includeSuperTopic;
 	}
 	
 	@Override
@@ -81,7 +83,7 @@ public class CoClassTopicDocMaps extends AbstractTopicDocMaps {
 					String docID = doc.get("uri");
 					String topics = doc.get("coClassLabels"); //doc.get("Body");
 					if (docID == null || topics == null) {
-						 continue;
+						continue;
 					}
 					if (docIDSet.contains(docID) == false)
 						continue;
@@ -126,10 +128,9 @@ public class CoClassTopicDocMaps extends AbstractTopicDocMaps {
 			docTopicMap.get(docID).add(topic);
 		}
 		
-		
-		String superTopic = parentIndex.get(topic);
-		
-		this.populateMaps(docID, superTopic, parentIndex);
-		
+		if(includeSuperTopic) {
+			String superTopic = parentIndex.get(topic);
+			this.populateMaps(docID, superTopic, parentIndex);	
+		}
 	}
 }

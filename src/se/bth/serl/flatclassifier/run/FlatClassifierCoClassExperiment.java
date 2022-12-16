@@ -18,12 +18,13 @@ public class FlatClassifierCoClassExperiment {
         String cstable = CoClassExperimentConfig.CoClassTables.Tillgångssystem.toString();
         String csModelFilename = CoClassExperimentConfig.csModelFile;
         String textIndex = "data/coclass/textindex/" + cstable;
+        Boolean includeSuperTopic = false;
         
         int topK = 1;
         
         String outputFile = "data/coclass/output/flat.classification.top." + topK + "." + cstable;
         
-        CoClassTopicDocMaps coclassTDM = new CoClassTopicDocMaps(csrawdata, cstable);
+        CoClassTopicDocMaps coclassTDM = new CoClassTopicDocMaps(csrawdata, cstable, includeSuperTopic);
 		coclassTDM.readTopicDocMap(textIndex);
 		System.out.println("Found " + coclassTDM.getDocTopicMap().size() + " requirements with true labels form " + csname + "/" + cstable);
 		

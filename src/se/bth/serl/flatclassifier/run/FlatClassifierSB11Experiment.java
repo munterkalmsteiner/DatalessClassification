@@ -19,11 +19,12 @@ public class FlatClassifierSB11Experiment {
         String annotatedData = GenericCSConfig.rawData;
         String textIndex = "data/sb11/textindex/" + cstable;
         String csModelFilename = SB11ExperimentConfig.csModelFile;
+        Boolean includeSuperTopic = false;
         int topK = 1;
         
         String outputFile = "data/sb11/output/flat.classification.top." + topK + "." + cstable;
         
-        SB11TopicDocMaps sb11TDM = new SB11TopicDocMaps(csrawdata, cstable);
+        SB11TopicDocMaps sb11TDM = new SB11TopicDocMaps(csrawdata, cstable, includeSuperTopic);
 		sb11TDM.readTopicDocMap(textIndex);
 		System.out.println("Found " + sb11TDM.getDocTopicMap().size() + " requirements with true labels form " + csname + "/" + cstable);
 		

@@ -36,4 +36,5 @@ public abstract class AbstractTopicDocMaps {
 	abstract public void readTopicDocMap (String file);
 	
 	abstract public void readFilteredTopicDocMap (String file, Set<String> docIDSet);
+	
 }

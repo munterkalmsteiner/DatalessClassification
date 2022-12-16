@@ -4,12 +4,21 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Optional;
+import java.util.OptionalInt;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import org.apache.log4j.Level;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import edu.illinois.cs.cogcomp.classification.hierarchy.datastructure.LabelKeyValuePair;
 import se.bth.serl.flatclassifier.utils.ConfusionMatrix;
 
 public class Evaluator {
@@ -22,21 +31,46 @@ public class Evaluator {
 	double uPrecision;
 	double uF1;
 	double MF1;
+	double mrr;
 	HashMap<String, ConfusionMatrix> cms;
+	HashMap<String, Integer> ranks;
 	
 	public Evaluator (HashMap<String, HashMap<String, Double>> classifiedRequirements,
 			HashMap<String, HashSet<String>> docTopicMap) {
 		cms = calculateConfusionMatrix(classifiedRequirements, docTopicMap);
+		calculateRanks(classifiedRequirements, docTopicMap);
+		calcMaxNumberOfTrueLabels(docTopicMap);
 	}
 
-	
 	public Evaluator (String resultsFile, HashMap<String, HashSet<String>> docTopicMap) {
 		HashMap<String, HashMap<String, Double>> classifiedRequirements = readResultsFromDump(resultsFile);
 		cms = calculateConfusionMatrix(classifiedRequirements, docTopicMap);
+		calculateRanks(classifiedRequirements, docTopicMap);
+		calcMaxNumberOfTrueLabels(docTopicMap);
+	}
+	
+	HashSet<String> unique(HashSet<String> input){
+		HashSet<String> result = new HashSet<String>();
+		for(String value: input) {
+			if(!result.contains(value)) result.add(value);
+		}
+		if(result.size() >= 6) {
+			log.info(result.toString());
+		}
+		return result;
+	}
+	
+	private void calcMaxNumberOfTrueLabels(HashMap<String, HashSet<String>> docTopicMap) {
+		OptionalInt max = docTopicMap.entrySet().stream()
+			.mapToInt(e -> unique(e.getValue()).size())
+			.max();
+		
+		log.info("max number of true labels: " + max.getAsInt());
 	}
 	
 	private HashMap<String, HashMap<String, Double>> readResultsFromDump(String resultsFile){
-		HashMap<String, HashMap<String, Double>> classifiedRequirements = new HashMap<String, HashMap<String, Double>>();
+		HashMap<String, HashMap<String, Double>> classifiedRequirements = 
+				new HashMap<String, HashMap<String, Double>>();
 		try {
 			FileReader reader = new FileReader(resultsFile);
 			BufferedReader bf = new BufferedReader(reader);
@@ -79,11 +113,11 @@ public class Evaluator {
 		return classifiedRequirements;
 	}
 	
-
 	public HashMap<String, ConfusionMatrix> calculateConfusionMatrix(HashMap<String, HashMap<String, Double>> docClassifedTopicMap, 
 			HashMap<String, HashSet<String>> docTrueTopicMap) {
 		HashMap<String, ConfusionMatrix> cms = new HashMap<String,ConfusionMatrix>();
 		
+		log.info("Used requirements: " + docTrueTopicMap.size());
 		for(String docId : docTrueTopicMap.keySet()) {
 			Map<String, Double> classifiedLabels = docClassifedTopicMap.get(docId);
 			HashSet<String> trueLabels = docTrueTopicMap.get(docId);
@@ -122,6 +156,50 @@ public class Evaluator {
 		return cms;
 	}
 	
+	public HashMap<String, Integer> calculateRanks(HashMap<String, HashMap<String, Double>> classifiedRequirements,
+			HashMap<String, HashSet<String>> docTrueTopicMap) {
+		
+		HashMap<String, Integer> ranks = new HashMap<String, Integer>();
+		for (Entry<String, HashSet<String>> doc: docTrueTopicMap.entrySet()) {
+			String docId = doc.getKey();
+			HashSet<String> trueLabels = doc.getValue();
+			List<Entry<String,Double>> sortedClassifications = classifiedRequirements.get(docId)
+					.entrySet()
+					.stream()
+					.sorted((a,b) -> Double.compare(b.getValue(),a.getValue()))
+					.toList();
+			if(sortedClassifications == null) {
+				ranks.put(docId, 0);
+			}
+			else {
+				int topRank = Integer.MAX_VALUE;
+				for(String tLabel : trueLabels) {
+					int rank = -1;
+					int index = 1;
+					for (Iterator<Entry<String, Double>> it = sortedClassifications.iterator(); it.hasNext(); index++)
+					{
+						Entry<String, Double> nextClassification = it.next();
+					    if(nextClassification.getKey().equals(tLabel)) {
+					    	rank = index;
+					    	break;
+					    }
+					}
+							
+					if(rank > 0 && rank < topRank) {
+						topRank = rank;
+					}
+				}
+				if(topRank == Integer.MAX_VALUE) {
+					ranks.put(docId, 0);
+				}else {
+					ranks.put(docId, topRank);	
+				}
+			}
+		}
+		this.ranks = ranks;
+		return ranks;
+	}
+	
 	public void calculateMetrics() {		
 		log.info(cms.size() + " labels used.");
 		
@@ -134,7 +212,7 @@ public class Evaluator {
 				.mapToInt(e -> e.getValue().getTp() +  e.getValue().getFn())
 				.sum();
 		
-		this.uRecall =  (double) allTp / (double) allTpAndFn; 
+		this.uRecall = (double) allTp / (double) allTpAndFn; 
 				
 		this.MRecall = (double) cms.entrySet().stream()
 				.mapToDouble(e -> e.getValue().getTp() == 0 ? 0 : ( e.getValue().getTp() / (e.getValue().getTp() + e.getValue().getFn())))
@@ -169,6 +247,27 @@ public class Evaluator {
 		
 		log.info("micro F1:" + this.uF1);
 		log.info("macro F1:" + this.MF1);
+		
+		//MRR
+		if(this.ranks.size()  == 0) {
+			mrr = 0;
+		}
+		else {
+			int rankSize = this.ranks.size();
+			double rankSum = (double) this.ranks.values().stream()
+					.filter(e -> e != 0)
+					.mapToDouble(e -> 1/(double)e)
+					.sum();
+			mrr = rankSum / rankSize;
+			log.info("ranks size: " + rankSize);
+			log.info("ranks sum: " + rankSum);
+		}
+		
+		log.info("mrr: "+ mrr);
+		
+		log.info("results in TSV format");
+		log.info(String.format("%,.12f\t%,.12f\t%,.12f\t%,.12f\t%,.12f\t%,.12f\t%.12f", this.uRecall, this.MRecall, this.uPrecision, this.MPrecision, this.uF1, this.MF1, this.mrr));
+		
 	}
 	
 	public double getMRecall() {

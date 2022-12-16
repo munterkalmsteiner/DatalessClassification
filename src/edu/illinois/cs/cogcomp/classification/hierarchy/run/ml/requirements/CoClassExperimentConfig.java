@@ -12,4 +12,6 @@ public class CoClassExperimentConfig {
 	public final static String wikiIndexSV = "/home/waleed/Documents/Waleed's_PhD/DCAT/WP4/external_data/Waleed/SVWikiIndexsvwiki-20220820-original/";
 	
 	public static enum CoClassTables { Tillgångssystem , GrundfunktionerochKomponenter, Konstruktivasystem  };
+	
+	
 }

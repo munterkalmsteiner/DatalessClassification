@@ -7,6 +7,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,10 +25,13 @@ public class CSTopicHierarchy {
 		// String filePath = "./data/sb11/raw/SB11_SV_EN_20220520.csv";
 		String filePath = "data/coclass/raw/coclass_eng_swe_by_michael.csv";
 		String cs = "CoClass"; // SB11 , CoClass
-		CSTopicHierarchy tx = new CSTopicHierarchy(cs, "SV", filePath);
-		String label = "1AHB";// "31B";
+		CSTopicHierarchy tx = new CSTopicHierarchy(cs, "EN", filePath);
+		String label = "1ahb";// "31B";
+		String label2 = "bbc";
 		String labelName = tx.getTopicHierarchy().get("Tillgångssystem").get(label);
+		String label2Name = tx.getTopicHierarchy().get("Grundfunktioner-och-Komponenter").get(label2);
 		System.out.println(label + ": " + labelName);
+		System.out.println(label2 + ": " + label2Name);
 
 		tx.getTopicHierarchy().keySet().forEach(table -> {
 			System.out.println("table " + table + " has " + tx.getTopicHierarchy().get(table).size());
@@ -110,7 +114,7 @@ public class CSTopicHierarchy {
 		for (List<String> node : nodes) {
 			// skip empty lines
 			if (node.size() > 2) {
-				String table = node.get(tableIndex).replace(" ", "");
+				String table = node.get(tableIndex).replace(" ", "-");
 				String label = node.get(labelIndex).toLowerCase();
 				if (!topicHierarchy.containsKey(table)) {
 					topicHierarchy.put(table, new LinkedHashMap<String, String>());

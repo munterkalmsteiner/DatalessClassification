@@ -21,11 +21,13 @@ public class SB11TopicDocMaps extends AbstractTopicDocMaps {
 	
 	private String sb11FilePath = "";
 	private String table = "";
+	private Boolean includeSuperTopic = false;
 	
-	public SB11TopicDocMaps (String sb11FilePath, String table) {
+	public SB11TopicDocMaps (String sb11FilePath, String table, Boolean includeSuperTopic) {
 		super();
 		this.sb11FilePath = sb11FilePath;
 		this.table = table;
+		this.includeSuperTopic = includeSuperTopic;
 	}
 	
 	@Override

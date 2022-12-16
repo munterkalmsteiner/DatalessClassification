@@ -19,7 +19,10 @@ import edu.illinois.cs.cogcomp.classification.hierarchy.dataprocess.nytimes.NYTi
 import edu.illinois.cs.cogcomp.classification.hierarchy.dataprocess.nytimes.NYTimesTreeLabelData;
 import edu.illinois.cs.cogcomp.classification.hierarchy.dataprocess.rcv.RCVTopicDocMaps;
 import edu.illinois.cs.cogcomp.classification.hierarchy.dataprocess.rcv.RCVTreeLabelData;
+import edu.illinois.cs.cogcomp.classification.hierarchy.dataprocess.requirements.CoClassTopicDocMaps;
+import edu.illinois.cs.cogcomp.classification.hierarchy.dataprocess.requirements.CoClassTreeLabelData;
 import edu.illinois.cs.cogcomp.classification.hierarchy.datastructure.LabelResultMC;
+import edu.illinois.cs.cogcomp.classification.hierarchy.run.ml.requirements.CoClassExperimentConfig;
 
 /**
  * yqsong@illinois.edu
@@ -53,6 +56,11 @@ public abstract class AbstractClassifierLibLinearTree extends AbstractLabelTree 
 		if (data.equals("20newsgroups")) {
 			treeLabelData = new NewsgroupsTreeLabelData();
 			topicDocMapData = new NewsgroupsTopicDocMaps();
+		}
+		if(data.startsWith("coClass")) {
+			String table = data.split(",")[1];
+			treeLabelData = new CoClassTreeLabelData(table);
+			topicDocMapData = new CoClassTopicDocMaps(CoClassExperimentConfig.coClassTaxonomy, table, false);
 		}
 		
 		allNodeList = new ArrayList<ClassifierLibLinearTreeNode>();
@@ -172,7 +180,7 @@ public abstract class AbstractClassifierLibLinearTree extends AbstractLabelTree 
 		ClassifierLibLinearTreeNode node = null;
 		HashSet<String> childrenStr = treeLabelData.getTreeChildrenIndex().get(rootNodeStr);
 		HashSet<ClassifierLibLinearTreeNode> children = new HashSet<ClassifierLibLinearTreeNode>();
-		if (childrenStr != null) {
+		if (childrenStr != null && childrenStr.size() > 0) {
 			for (String key : childrenStr) {
 				ClassifierLibLinearTreeNode child = initializeTreeLabelsAndData(key, depth+1);
 				children.add(child);

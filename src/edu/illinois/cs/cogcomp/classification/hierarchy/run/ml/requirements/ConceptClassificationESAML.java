@@ -31,7 +31,8 @@ public class ConceptClassificationESAML {
 				"",
 				"",
 				"",
-				"");
+				"",
+				false);
 	}
 	
 	public static void testSB11SimpleConcept(int topK, 
@@ -40,7 +41,8 @@ public class ConceptClassificationESAML {
 			String conceptTreeFile,
 			String conceptFile,
 			String outputClassificationFile,
-			String outputLabelComparisonFile) {
+			String outputLabelComparisonFile,
+			Boolean includeSuperTopic) {
 		
 		int seed = 0;
 		Random random = new Random(seed);
@@ -65,7 +67,7 @@ public class ConceptClassificationESAML {
 		corpusContentProc.readCorpusContentAndConcepts(docIDContentConceptFile, ClassifierConstant.isBreakConcepts, random, trainingRate, conceptWeights);
 
 		// read topic doc maps
-		SB11TopicDocMaps sb11TDM = new SB11TopicDocMaps(sb11Taxonomy, sb11Table);
+		SB11TopicDocMaps sb11TDM = new SB11TopicDocMaps(sb11Taxonomy, sb11Table, includeSuperTopic);
 		sb11TDM.readFilteredTopicDocMap (docIDTopicMapFile, corpusContentProc.getCorpusConceptVectorMap().keySet());
 		
 		System.out.println("Found " + sb11TDM.getDocTopicMap().size() + " requirements with true labels form SB11/" + sb11Table);
@@ -105,7 +107,8 @@ public class ConceptClassificationESAML {
 			String conceptTreeFile,
 			String conceptFile,
 			String outputClassificationFile,
-			String outputLabelComparisonFile) {
+			String outputLabelComparisonFile,
+			Boolean includeSuperTopic) {
 		
 		int seed = 0;
 		Random random = new Random(seed);
@@ -130,7 +133,7 @@ public class ConceptClassificationESAML {
 		corpusContentProc.readCorpusContentAndConcepts(docIDContentConceptFile, ClassifierConstant.isBreakConcepts, random, trainingRate, conceptWeights);
 
 		// read topic doc maps
-		CoClassTopicDocMaps coClassTDM = new CoClassTopicDocMaps(coClassTaxonomy, coClassTable);
+		CoClassTopicDocMaps coClassTDM = new CoClassTopicDocMaps(coClassTaxonomy, coClassTable, includeSuperTopic);
 		coClassTDM.readFilteredTopicDocMap (docIDTopicMapFile, corpusContentProc.getCorpusConceptVectorMap().keySet());
 		System.out.println("Found " + coClassTDM.getDocTopicMap().size() + " requirements with true labels form CoClass/" + coClassTable);
 		
