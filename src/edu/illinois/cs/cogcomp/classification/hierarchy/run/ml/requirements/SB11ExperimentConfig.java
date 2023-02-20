@@ -7,4 +7,4 @@ public class SB11ExperimentConfig {
 	public final static String language = "EN";
 	public final static String csName = "SB11";
 	
-}
+}	

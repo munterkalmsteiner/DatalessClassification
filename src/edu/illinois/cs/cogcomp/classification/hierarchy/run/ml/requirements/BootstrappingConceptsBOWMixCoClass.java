@@ -62,7 +62,8 @@ public class BootstrappingConceptsBOWMixCoClass {
 	public static void testMix (String direction, String learningMethod, double trainingRate, int iter, double penalty) {
 
 		int bootstrappingNum = 20;
-		int bootstrappingIter = 30;
+		int bootstrappingIter = 5;
+		int topK = 3;
 		try {
 			List<Double> precisionList = new ArrayList<Double>();
 			List<Double> recallList = new ArrayList<Double>();
@@ -73,7 +74,7 @@ public class BootstrappingConceptsBOWMixCoClass {
 
 			for (int i = 0; i < iter; ++i) {
 				
-				EvalResults result = bootstrappingCoClass_Mix(bootstrappingNum, bootstrappingIter, 1, direction, penalty, i, learningMethod, trainingRate, i);
+				EvalResults result = bootstrappingCoClass_Mix(bootstrappingNum, bootstrappingIter, topK, direction, penalty, i, learningMethod, trainingRate, i);
 				
 				precisionList.add(result.precision);
 				recallList.add(result.recall);
@@ -109,9 +110,8 @@ public class BootstrappingConceptsBOWMixCoClass {
 			int seed) throws IOException {
 		
 		FileWriter writerIntermediateResults = null;
-		
 		writerIntermediateResults = new FileWriter("data/coclass/output/reqs_bootstrappingCoClass_Mix_details_" + direction + currentIter + ".txt");
-
+		
 		List<Double> precisionListD1 = new ArrayList<Double>();
 		List<Double> recallListD1 = new ArrayList<Double>();
 		List<Double> mf1ListD1 = new ArrayList<Double>();
@@ -225,7 +225,7 @@ public class BootstrappingConceptsBOWMixCoClass {
 			
 			conceptTreeClassificationResults.put(docID, treeLabelResult);
 			count++;
-			if (count % 1000 == 0) {
+			if (count % 10 == 0) {
 				System.out.println("Classified " + count + " documents ...");
 			}
 		}
@@ -246,7 +246,7 @@ public class BootstrappingConceptsBOWMixCoClass {
 					break;
 				topicSelected++;
 				
-//				System.out.println("[Debug:] " + topic + ": " + docID + ", " + docScoreMap.get(docID)); 
+				System.out.println("[Debug:] " + topic + ": " + docID + ", " + docScoreMap.get(docID)); 
 				
 				HashMap<Integer, List<LabelKeyValuePair>> treeLabelResult = conceptTreeClassificationResults.get(docID);
 				
@@ -307,7 +307,7 @@ public class BootstrappingConceptsBOWMixCoClass {
 			AbstractLabelTree classifierTree = null;
 			if (learningMethod.equals("lbj")) {
 				AbstractClassifierLBJTree classifierTreeUpdate = null;
-				if (direction .equals("bottomup")) {
+				if (direction.equals("bottomup")) {
 					classifierTreeUpdate = new ClassifierLBJTreeBottomUpML(data);
 				} else {
 					classifierTreeUpdate = new ClassifierLBJTreeTopDownML(data);
@@ -321,7 +321,7 @@ public class BootstrappingConceptsBOWMixCoClass {
 			
 			if (learningMethod.equals("liblinear")) {
 				AbstractClassifierLibLinearTree classifierTreeUpdate = null;
-				if (direction .equals("bottomup")) {
+				if (direction.equals("bottomup")) {
 					classifierTreeUpdate = new ClassifierLibLinearTreeBottomUpML(data);
 				} else {
 					classifierTreeUpdate = new ClassifierLibLinearTreeTopDownML(data);

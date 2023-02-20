@@ -3,37 +3,53 @@ package edu.illinois.cs.cogcomp.classification.hierarchy.run.ml.requirements;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.util.HashMap;
 
 import edu.illinois.cs.cogcomp.classification.hierarchy.run.preparedata.requirements.CorpusESAConceptualizationSB11;
 import edu.illinois.cs.cogcomp.classification.hierarchy.run.preparedata.requirements.DumpConceptTreeSB11;
 import edu.illinois.cs.cogcomp.classification.hierarchy.run.preparedata.requirements.SB11Indexer;
 import edu.illinois.cs.cogcomp.classification.main.DatalessResourcesConfig;
+import se.bth.serl.flatclassifier.ExperimentConfig;
 
 public class HierarchicalClassifierSB11Experiment {
 
 	public static void main(String[] args) {
 
-		int numConcepts = 500;
+		int numOfConcepts = 500;
+		
 		int topK = 15;
 		String sb11Taxonomy = SB11ExperimentConfig.sb11Taxonomy;
 		String rawData = GenericCSConfig.rawData;
-		String method = "simple";
 		String textIndex = "data/sb11/textindex/"; // sub directory will be created with table name
-		String conceptTreeFile = "data/sb11/output/tree.sb11." + method + ".concepts.newrefine." + numConcepts;
-		String conceptFile = "data/sb11/output/sb11." + method + ".concepts." + numConcepts;
-		String outputClassificationFile = "data/sb11/output/result.concept." + method + ".sb11.classification." + numConcepts;
-		String outputLabelComparisonFile = "data/sb11/output/result.concept. " + method + ".sb11.labelComparison." + numConcepts;
+		String conceptTreeFile = "data/sb11/output/tree.sb11.simple.concepts.newrefine." + numOfConcepts;
+		String conceptFile = "data/sb11/output/sb11.simple.concepts." + numOfConcepts;
+		String outputClassificationFile = "data/sb11/output/result.concept.sb11.classification." + numOfConcepts;
+		String outputLabelComparisonFile = "data/sb11/output/result.concept.sb11.labelComparison." + numOfConcepts;
 
 		String sb11Table = "Alternativtabell"; // Byggdelar, Landskapsinformation or Alternativtabell
 
-		Run(numConcepts, sb11Taxonomy, sb11Table, rawData, textIndex, conceptTreeFile, conceptFile, 
-				outputClassificationFile, outputLabelComparisonFile, topK, method, false);
-
+		HashMap<String, ExperimentConfig> experiments = new HashMap<String,ExperimentConfig>();
+		
+		experiments.put("26", new ExperimentConfig(
+				"26",sb11Taxonomy, rawData, textIndex, conceptTreeFile, conceptFile, 
+				outputClassificationFile, outputLabelComparisonFile, numOfConcepts, 
+				20, "Byggdelar", false));
+		
+		experiments.put("27", new ExperimentConfig(
+				"27",sb11Taxonomy, rawData, textIndex, conceptTreeFile, conceptFile, 
+				outputClassificationFile, outputLabelComparisonFile, numOfConcepts, 
+				20, "Landskapsinformation", false));
+		
+		experiments.put("28", new ExperimentConfig(
+				"28",sb11Taxonomy, rawData, textIndex, conceptTreeFile, conceptFile, 
+				outputClassificationFile, outputLabelComparisonFile, numOfConcepts, 
+				20, "Alternativtabell", false));
+		
+		HierarchicalClassifierSB11Experiment.RunESA(experiments.get("28"), false);
+		
 	}
 
-	public static void Run(int numConcepts, String sb11Taxonomy, String sb11Table, String rawData, String textIndex,
-			String conceptTreeFile, String conceptFile, String outputClassificationFile,
-			String outputLabelComparisonFile, int topK, String method, boolean cleanRun) {
+	public static void RunESA(ExperimentConfig conf, boolean cleanRun) {
 		/*
 		 * Make sure that the following paths in conf/configurations.properties are set
 		 * correctly: - cogcomp.esa.simple.wikiIndex
@@ -41,15 +57,15 @@ public class HierarchicalClassifierSB11Experiment {
 
 		DatalessResourcesConfig.initialization();
 
-		textIndex += sb11Table + "/";
-		conceptTreeFile += "." + sb11Table;
-		conceptFile += "." + sb11Table;
-		outputClassificationFile += "." + sb11Table;
-		outputLabelComparisonFile += "." + sb11Table;
+		conf.setTextIndex(conf.getTextIndex() + conf.getCsTable() + "/");
+		conf.setConceptTreeFile(conf.getConceptTreeFile() + "." + conf.getCsTable());
+		conf.setConceptFile(conf.getConceptFile() + "." + conf.getCsTable());
+		conf.setOutputClassificationFile(conf.getOutputClassificationFile() + "." + conf.getCsTable());
+		conf.setOutputLabelComparisonFile(conf.getOutputLabelComparisonFile() + "." + conf.getCsTable());
 
 		boolean indexRawData = false;
 		try {
-			indexRawData = Files.list(new File(textIndex).toPath()).filter(Files::isRegularFile).count() == 0;
+			indexRawData = Files.list(new File(conf.getTextIndex()).toPath()).filter(Files::isRegularFile).count() == 0;
 		} catch (IOException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
@@ -57,32 +73,28 @@ public class HierarchicalClassifierSB11Experiment {
 
 		if (indexRawData || cleanRun) {
 			try {
-				SB11Indexer t = new SB11Indexer(rawData, textIndex, sb11Table);
+				SB11Indexer t = new SB11Indexer(conf.getRawDataFile(), conf.getTextIndex(), conf.getCsTable());
 				t.index();
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
 		}
-
-		boolean createConceptTree = !Files.exists(new File(conceptTreeFile).toPath());
+		boolean createConceptTree = !Files.exists(new File(conf.getConceptTreeFile()).toPath());
 		if (createConceptTree || cleanRun) {
-			DumpConceptTreeSB11.testSB11DataESA(numConcepts, conceptTreeFile, sb11Taxonomy, sb11Table, method);
+			DumpConceptTreeSB11.testSB11DataESA(conf.getNumOfConcepts(), conf.getConceptTreeFile(),
+					conf.getTaxonomyFile(), conf.getCsTable(), "simple");
 			;
 		}
 
-		boolean createConceptFile = !Files.exists(new File(conceptFile).toPath());
+		boolean createConceptFile = !Files.exists(new File(conf.getConceptFile()).toPath());
 		if (createConceptFile || cleanRun) {
-			if (method == "simple") {
-				CorpusESAConceptualizationSB11.conceptualizeCorpus(numConcepts, textIndex, conceptFile);	
-			}else if (method == "complex") {
-				CorpusESAConceptualizationSB11.conceptualizeCorpusComplex(numConcepts, textIndex);	
-			
-			}
-			
+			CorpusESAConceptualizationSB11.conceptualizeCorpus(conf.getNumOfConcepts(), 
+					conf.getTextIndex(), conf.getConceptFile());
 		}
-
-		ConceptClassificationESAML.testSB11SimpleConcept(topK, sb11Table, textIndex, conceptTreeFile, conceptFile,
-				outputClassificationFile, outputLabelComparisonFile, false);
+		
+		ConceptClassificationESAML.testSB11SimpleConcept(conf.getTopK(), conf.getCsTable(),
+				conf.getTextIndex(), conf.getConceptTreeFile(), conf.getConceptFile(),
+				conf.getOutputClassificationFile(), conf.getOutputLabelComparisonFile(), conf.getIncludeSuperTopic());
 	}
 
 }

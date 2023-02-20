@@ -7,7 +7,7 @@ import java.util.stream.Collectors;
 
 import edu.illinois.cs.cogcomp.classification.hierarchy.datastructure.LabelKeyValuePair;
 
-public class SB11Classifier {
+public class RequirementsClassifier {
 	public static void printLabelDepthResults (HashMap<Integer,List<LabelKeyValuePair>> labelResultsInDepth) {
 		for (int x : labelResultsInDepth.keySet()) {
 		//Collections.sort(labelResultsInDepth.get(x), (c1, c2) -> c1.getLabel().compareTo(c2.getLabel()));

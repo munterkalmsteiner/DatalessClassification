@@ -7,7 +7,7 @@ import java.util.List;
 import edu.illinois.cs.cogcomp.classification.hierarchy.classificationinterface.InterfaceMultiLabelConceptClassificationTree;
 import edu.illinois.cs.cogcomp.classification.hierarchy.datastructure.LabelKeyValuePair;
 import edu.illinois.cs.cogcomp.classification.hierarchy.datastructure.SparseVector;
-import edu.illinois.cs.cogcomp.classification.hierarchy.run.ml.requirements.SB11Classifier;
+import edu.illinois.cs.cogcomp.classification.hierarchy.run.ml.requirements.RequirementsClassifier;
 import se.bth.serl.flatclassifier.Evaluator;
 
 
@@ -30,7 +30,7 @@ public class SB11Evaluation {
 
 				HashMap<Integer, List<LabelKeyValuePair>> labelResultsInDepth = tree.labelDocumentML(document);
 
-				List<LabelKeyValuePair> classifiedLabelScoreList = SB11Classifier
+				List<LabelKeyValuePair> classifiedLabelScoreList = RequirementsClassifier
 						.topScorefromAllClasses(labelResultsInDepth, topK);
 
 				if (!docClassifiedTopics.containsKey(docID)) {

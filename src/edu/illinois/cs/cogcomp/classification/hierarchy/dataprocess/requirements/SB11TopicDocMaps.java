@@ -77,6 +77,7 @@ public class SB11TopicDocMaps extends AbstractTopicDocMaps {
 			Directory inputDir = FSDirectory.open(new File(file));
 			IndexReader reader = IndexReader.open(inputDir, true);
 			int maxDocNum = reader.maxDoc();
+			int readDocs = 0;
 			for (int i = 0; i < maxDocNum; ++i) {
 				if (reader.isDeleted(i) == false) { 
 					Document doc = reader.document(i);
@@ -95,10 +96,11 @@ public class SB11TopicDocMaps extends AbstractTopicDocMaps {
 							continue;
 						}
 						this.populateMaps(docID, topic.toLowerCase(), parentIndex);	
+						readDocs++;
 					}	
 				}
 			}
-			System.out.println ("TopicDocMap: Read SB11 data with true labels for " + maxDocNum + " docs.");
+			System.out.println ("TopicDocMap: Read SB11 data with true labels for " + readDocs + " docs.");
 			reader.close();
 		} catch (Exception e) {
 			e.printStackTrace();

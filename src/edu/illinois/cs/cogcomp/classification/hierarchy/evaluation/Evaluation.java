@@ -572,7 +572,7 @@ public class Evaluation {
 				
 				HashSet<String> trueLabelSet = docTopicMap.get(docID);
 				if (trueLabelSet == null) {
-					System.out.println(docID);
+					System.out.println(docID + " has no true labels");
 					trueLabelSet = new HashSet<String>();
 				}
 				HashMap<Integer, HashSet<String>> trueDepthsLabels = new HashMap<Integer, HashSet<String>>();
