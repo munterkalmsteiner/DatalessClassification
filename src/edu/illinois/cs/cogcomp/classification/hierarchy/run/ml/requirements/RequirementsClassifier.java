@@ -2,9 +2,13 @@ package edu.illinois.cs.cogcomp.classification.hierarchy.run.ml.requirements;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 import java.util.stream.Collectors;
 
+import edu.illinois.cs.cogcomp.classification.hierarchy.datastructure.HashSort;
 import edu.illinois.cs.cogcomp.classification.hierarchy.datastructure.LabelKeyValuePair;
 
 public class RequirementsClassifier {
@@ -111,7 +115,6 @@ public class RequirementsClassifier {
 	public static List<LabelKeyValuePair> topScorefromAllClasses(HashMap<Integer,List<LabelKeyValuePair>> labelResultsInDepth, int numOfLabels) {
 		List<LabelKeyValuePair> result = new ArrayList<LabelKeyValuePair>();
 		
-		//Flatten classifications
 		if(numOfLabels < 1) return null;
 		
 		for (int depth : labelResultsInDepth.keySet()) {
@@ -119,7 +122,8 @@ public class RequirementsClassifier {
 				continue;
 			
 			List<LabelKeyValuePair> labelResultInDepthBranch =  labelResultsInDepth.get(depth);
-			
+
+			//select
 			result.addAll(labelResultInDepthBranch
 				.stream()
 				.limit(numOfLabels)

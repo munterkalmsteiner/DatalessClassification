@@ -100,19 +100,27 @@ public class HierarchicalClassifierCoClassExperiment {
 		experiments.put("23",
 				new ExperimentConfig("23", coClassTaxonomy, rawData, textIndex, conceptTreeFile, conceptFile,
 						outputClassificationFile, outputLabelComparisonFile, numOfConcepts, 20, "Tillgångssystem",
-						false));
+						true));
 
 		experiments.put("24",
 				new ExperimentConfig("24", coClassTaxonomy, rawData, textIndex, conceptTreeFile, conceptFile,
 						outputClassificationFile, outputLabelComparisonFile, numOfConcepts, 20,
-						"Grundfunktioner-och-Komponenter", false));
+						"Grundfunktioner-och-Komponenter", true));
 
 		experiments.put("25",
 				new ExperimentConfig("25", coClassTaxonomy, rawData, textIndex, conceptTreeFile, conceptFile,
 						outputClassificationFile, outputLabelComparisonFile, numOfConcepts, 20, "Konstruktiva-system",
+						true));
+		
+		experiments.put("26",
+				new ExperimentConfig("26", coClassTaxonomy, 
+						"data/sb11/raw/reqs_with_annotation_for_hc_20220901_CS_T.csv",
+						textIndex, conceptTreeFile, conceptFile,
+						outputClassificationFile, outputLabelComparisonFile,
+						numOfConcepts, 20, "Tillgångssystem",
 						false));
 
-		HierarchicalClassifierCoClassExperiment.RunESA(experiments.get("25"), false);
+		HierarchicalClassifierCoClassExperiment.RunESA(experiments.get("20"), false);
 
 	}
 

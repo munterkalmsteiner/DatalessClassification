@@ -7,8 +7,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import edu.illinois.cs.cogcomp.classification.hierarchy.datastructure.ConceptData;
 import edu.illinois.cs.cogcomp.classification.hierarchy.datastructure.SparseVector;
+import se.bth.serl.flatclassifier.Evaluator;
 
 /**
  * yqsong@illinois.edu
@@ -17,6 +21,8 @@ import edu.illinois.cs.cogcomp.classification.hierarchy.datastructure.SparseVect
  */
 
 public abstract class AbstractCorpusConceptData {
+	protected static final Logger log = LoggerFactory.getLogger(AbstractCorpusConceptData.class);
+	
 	protected HashMap<String, String> corpusContentMap = null;
 	protected HashMap<String, SparseVector> corpusConceptVectorMap = null;
 	protected HashMap<String, String> corpusConceptStringMap = null;
@@ -128,6 +134,10 @@ public abstract class AbstractCorpusConceptData {
 			}
 			bf.close();
 			reader.close();
+			
+			log.info("read total: " + corpusContentMap.size() + " corpus document.");
+			log.info("read training: " + corpusConceptMapTraining.size() + " corpus document.");
+			log.info("read test: " + corpusContentMapTest.size() + " corpus document.");
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -197,6 +207,10 @@ public abstract class AbstractCorpusConceptData {
 			}
 			bf.close();
 			reader.close();
+			
+			log.info("read total: " + corpusContentMap.size() + " corpus document.");
+			log.info("read training: " + corpusConceptMapTraining.size() + " corpus document.");
+			log.info("read test: " + corpusContentMapTest.size() + " corpus document.");
 
 		} catch (Exception e) {
 			e.printStackTrace();

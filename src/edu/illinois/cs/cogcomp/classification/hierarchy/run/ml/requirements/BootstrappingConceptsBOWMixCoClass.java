@@ -24,7 +24,7 @@ import edu.illinois.cs.cogcomp.classification.hierarchy.dataless.representation.
 import edu.illinois.cs.cogcomp.classification.hierarchy.dataless.representation.ml.ConceptTreeTopDownML;
 import edu.illinois.cs.cogcomp.classification.hierarchy.dataprocess.requirements.CoClassTopicDocMaps;
 import edu.illinois.cs.cogcomp.classification.hierarchy.dataprocess.requirements.CoClassTreeLabelData;
-import edu.illinois.cs.cogcomp.classification.hierarchy.dataprocess.requirements.SB11CorpusConceptData;
+import edu.illinois.cs.cogcomp.classification.hierarchy.dataprocess.requirements.RequirementsCorpusConceptData;
 import edu.illinois.cs.cogcomp.classification.hierarchy.datastructure.HashSort;
 import edu.illinois.cs.cogcomp.classification.hierarchy.datastructure.LabelKeyValuePair;
 import edu.illinois.cs.cogcomp.classification.hierarchy.datastructure.SparseVector;
@@ -147,7 +147,7 @@ public class BootstrappingConceptsBOWMixCoClass {
 		
 		
 		// initialize data
-		SB11CorpusConceptData corpusContentProc = new SB11CorpusConceptData();
+		RequirementsCorpusConceptData corpusContentProc = new RequirementsCorpusConceptData();
 		corpusContentProc.readCorpusContentAndConcepts(docIDContentConceptFile, ClassifierConstant.isBreakConcepts, random, trainingRate, conceptWeights);
 
 		if (boostrappingMaxIter <= 0) {

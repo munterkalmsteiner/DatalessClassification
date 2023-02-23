@@ -29,9 +29,10 @@ public class CorpusDataProcessing {
 	
 	HashMap<String, HashMap<String, Integer>> corpusKVMap;
 	HashMap<String, String> corpusLibSVMFormat;
+	int logCount = 5;
 	
 	public boolean startFromZero = false; //Liblinear should start from 1
-
+	
 	public CorpusDataProcessing () {
 		dfMap = new HashMap<String, Integer>();
 		globalDict = new HashMap<String, Integer>();
@@ -296,7 +297,7 @@ public class CorpusDataProcessing {
 		}
 		int docCount = 0;
 		for (String docID : corpusStringMap.keySet()) {
-			if (docCount % 1000 == 0) {
+			if (docCount % logCount == 0) {
 				System.out.println("  [Data:]" + " process doc " + docCount + " with tf");
 			}
 			docCount++;
@@ -335,7 +336,7 @@ public class CorpusDataProcessing {
 				
 		docCount = 0;
 		for (String docID : corpusKVMap.keySet()) {
-			if (docCount % 1000 == 0) {
+			if (docCount % logCount == 0) {
 				System.out.println("  [Data:] process doc " + docCount + " with tfidf");
 			}
 			docCount++;
@@ -400,7 +401,7 @@ public class CorpusDataProcessing {
 		HashMap<Integer, Double> maxValues = new HashMap<Integer, Double>();
 		HashMap<Integer, Double> minValues = new HashMap<Integer, Double>();
 		for (String docID : corpusStringMap.keySet()) {
-			if (docCount % 1000 == 0) {
+			if (docCount % logCount == 0) {
 				System.out.println("  [Data:]" + " process doc " + docCount + " with tf");
 			}
 			docCount++;
@@ -445,7 +446,7 @@ public class CorpusDataProcessing {
 		
 		docCount = 0;
 		for (String docID : corpusStringMap.keySet()) {
-			if (docCount % 1000 == 0) {
+			if (docCount % logCount == 0) {
 				System.out.println("  [Data:] process doc " + docCount + " with tfidf");
 			}
 			docCount++;

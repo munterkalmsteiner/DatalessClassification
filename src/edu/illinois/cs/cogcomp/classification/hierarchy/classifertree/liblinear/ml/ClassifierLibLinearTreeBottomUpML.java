@@ -124,6 +124,7 @@ public class ClassifierLibLinearTreeBottomUpML extends ClassifierLibLinearTreeBo
 			TreeMap<String, Double> sortedSimilarities = HashSort.sortByValues(similarities);
 			double ratio = 0;
 			int labelCount = 0;
+			
 			for (String simiKey : sortedSimilarities.keySet()) {
 				ratio += similarities.get(simiKey);
 				if ((ratio < classifierMLThreshold && labelCount < maxK) || labelCount < leastK) {

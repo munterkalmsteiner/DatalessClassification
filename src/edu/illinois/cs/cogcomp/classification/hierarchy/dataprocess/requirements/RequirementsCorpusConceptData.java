@@ -10,14 +10,16 @@ import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
 
 import edu.illinois.cs.cogcomp.classification.hierarchy.dataprocess.abstracts.AbstractCorpusConceptData;
+import edu.illinois.cs.cogcomp.classification.hierarchy.datastructure.StopWords;
+import edu.illinois.cs.cogcomp.classification.main.DatalessResourcesConfig;
 
 
 /**
- * SB11 data corpus processor
+ * Requirements data corpus processor
  * @author waleed
  *
  */
-public class SB11CorpusConceptData extends AbstractCorpusConceptData {
+public class RequirementsCorpusConceptData extends AbstractCorpusConceptData {
 
 	/***
 	 * Pre-process the indexed corpus data. The following steps are applied:
@@ -37,16 +39,17 @@ public class SB11CorpusConceptData extends AbstractCorpusConceptData {
 	public void readCorpusContentOnly(String file, Random random, double trainingRate) {
 		try {
 			Directory inputDir = FSDirectory.open(new File(file));
-			IndexReader reader = IndexReader.open(inputDir, true);
+			IndexReader reader = IndexReader.open(inputDir, true);			
+			
 			int maxDocNum = reader.maxDoc();
 			for (int i = 0; i < maxDocNum; ++i) {
 				if (reader.isDeleted(i) == false) {
 					if (i % 10 == 0) {
-						System.out.println("[Read SB11 Data: ] " + i + "docs ..");
+						System.out.println("[Read Requirements Data: ] " + i + "docs ..");
 					}
 					Document doc = reader.document(i);
 					String id = doc.get("uri");
-					String text = doc.get("text"); // doc.get("Body");
+					String text = " ";
 					if (doc.get("documentTitle") != null) {
 						text += " " + doc.get("documentTitle");
 					}
@@ -56,6 +59,7 @@ public class SB11CorpusConceptData extends AbstractCorpusConceptData {
 					if (doc.get("advice") != null) {
 						text += " " + doc.get("advice");
 					}
+					text += doc.get("text");
 					text = text.replaceAll("\n", " ");
 					text = text.replaceAll("\r", " ");
 					text = text.replaceAll("\t", " ");
@@ -66,7 +70,6 @@ public class SB11CorpusConceptData extends AbstractCorpusConceptData {
 					text = text.replaceAll("[1-9]", " ");
 
 //					text = text.replaceAll("[^a-zA-Z\\s]", "");
-
 					text = text.replaceAll("\\s+", " ").toLowerCase();
 					if (id != null && text != null) {
 						corpusContentMap.put(id, text);
@@ -92,7 +95,7 @@ public class SB11CorpusConceptData extends AbstractCorpusConceptData {
 			for (int i = 0; i < maxDocNum; ++i) {
 				if (reader.isDeleted(i) == false) {
 					if (i % 10 == 0) {
-						System.out.println("[Read SB11 Data: ] " + i + "docs ..");
+						System.out.println("[Read Requirements Data: ] " + i + "docs ..");
 					}
 					Document doc = reader.document(i);
 
@@ -145,8 +148,8 @@ public class SB11CorpusConceptData extends AbstractCorpusConceptData {
 			int maxDocNum = reader.maxDoc();
 			for (int i = 0; i < readNum; ++i) {
 				if (reader.isDeleted(i) == false) {
-					if (i % 10000 == 0) {
-						System.out.println("[Read newsgroups Data: ] " + i + "docs ..");
+					if (i % 10 == 0) {
+						System.out.println("[Read Requirements Data: ] " + i + "docs ..");
 					}
 					Document doc = reader.document(i);
 					String id = doc.get("uri");

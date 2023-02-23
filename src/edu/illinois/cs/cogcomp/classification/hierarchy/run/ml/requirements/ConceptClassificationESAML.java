@@ -7,10 +7,10 @@ import java.util.Random;
 import edu.illinois.cs.cogcomp.classification.hierarchy.dataless.representation.ConceptTreeNode;
 import edu.illinois.cs.cogcomp.classification.hierarchy.dataless.representation.ml.ConceptTreeTopDownML;
 import edu.illinois.cs.cogcomp.classification.hierarchy.dataprocess.requirements.CoClassTopicDocMaps;
-import edu.illinois.cs.cogcomp.classification.hierarchy.dataprocess.requirements.SB11CorpusConceptData;
+import edu.illinois.cs.cogcomp.classification.hierarchy.dataprocess.requirements.RequirementsCorpusConceptData;
 import edu.illinois.cs.cogcomp.classification.hierarchy.dataprocess.requirements.SB11TopicDocMaps;
 import edu.illinois.cs.cogcomp.classification.hierarchy.datastructure.StopWords;
-import edu.illinois.cs.cogcomp.classification.hierarchy.evaluation.SB11Evaluation;
+import edu.illinois.cs.cogcomp.classification.hierarchy.evaluation.BTHEvaluation;
 import edu.illinois.cs.cogcomp.classification.hierarchy.run.ClassifierConstant;
 
 /**
@@ -63,7 +63,7 @@ public class ConceptClassificationESAML {
 
 		StopWords.rcvStopWords = StopWords.readStopWords (stopWordsFile);
 		
-		SB11CorpusConceptData corpusContentProc = new SB11CorpusConceptData();
+		RequirementsCorpusConceptData corpusContentProc = new RequirementsCorpusConceptData();
 		corpusContentProc.readCorpusContentAndConcepts(docIDContentConceptFile, ClassifierConstant.isBreakConcepts, random, trainingRate, conceptWeights);
 
 		// read topic doc maps
@@ -91,7 +91,7 @@ public class ConceptClassificationESAML {
 //				outputClassificationFile,  outputLabelComparisonFile, 
 //				topK);
 //		
-		SB11Evaluation.testTopKWithoutDepth(tree,
+		BTHEvaluation.testMultiLabelConceptTreeResultsWithoutDepth(tree,
 				corpusContentProc.getCorpusConceptVectorMap(), 
 				topicDocMap, docTopicMap,
 				outputClassificationFile,  outputLabelComparisonFile, 
@@ -129,7 +129,7 @@ public class ConceptClassificationESAML {
 
 		StopWords.rcvStopWords = StopWords.readStopWords (stopWordsFile);
 		
-		SB11CorpusConceptData corpusContentProc = new SB11CorpusConceptData();
+		RequirementsCorpusConceptData corpusContentProc = new RequirementsCorpusConceptData();
 		corpusContentProc.readCorpusContentAndConcepts(docIDContentConceptFile, ClassifierConstant.isBreakConcepts, random, trainingRate, conceptWeights);
 
 		// read topic doc maps
@@ -156,7 +156,7 @@ public class ConceptClassificationESAML {
 //				outputClassificationFile,  outputLabelComparisonFile, 
 //				topK);
 //		
-		SB11Evaluation.testTopKWithoutDepth(tree,
+		BTHEvaluation.testMultiLabelConceptTreeResultsWithoutDepth(tree,
 				corpusContentProc.getCorpusConceptVectorMap(), 
 				topicDocMap, docTopicMap,
 				outputClassificationFile,  outputLabelComparisonFile, 

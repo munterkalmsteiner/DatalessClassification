@@ -91,8 +91,12 @@ public class CoClassTopicDocMaps extends AbstractTopicDocMaps {
 					String[] topicArray = topics.split(" ");
 					
 					for (String topic: topicArray) {
-						//Doc without true labels will not be put in the maps
+						//Skip docs without true labels 
 						if(topic.isBlank()) {
+							continue;
+						}
+						//Skip docs without true labels from the specified table 
+						if(!treeLabelData.getTreeChildrenIndex().containsKey(topic)) {
 							continue;
 						}
 						this.populateMaps(docID, topic.toLowerCase(), parentIndex);
@@ -106,7 +110,7 @@ public class CoClassTopicDocMaps extends AbstractTopicDocMaps {
 			e.printStackTrace();
 		}
 	}
-
+	
 	private void populateMaps(String docID, String topic, HashMap<String, String> parentIndex) {
 		if (docID == null || topic == null || topic == "root") {
 			 return;

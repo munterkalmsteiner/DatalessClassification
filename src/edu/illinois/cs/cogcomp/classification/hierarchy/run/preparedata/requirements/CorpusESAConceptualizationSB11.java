@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Random;
 
 import edu.illinois.cs.cogcomp.classification.hierarchy.dataprocess.newsgroups.NewsgroupsCorpusConceptData;
-import edu.illinois.cs.cogcomp.classification.hierarchy.dataprocess.requirements.SB11CorpusConceptData;
+import edu.illinois.cs.cogcomp.classification.hierarchy.dataprocess.requirements.RequirementsCorpusConceptData;
 import edu.illinois.cs.cogcomp.classification.hierarchy.datastructure.ConceptData;
 import edu.illinois.cs.cogcomp.classification.hierarchy.run.ClassifierConstant;
 import edu.illinois.cs.cogcomp.classification.representation.esa.AbstractESA;
@@ -39,7 +39,7 @@ public class CorpusESAConceptualizationSB11 {
 		double trainingRate = 0.6;
 
 		CorpusESAConceptualizationSB11 corpusContentProc = new CorpusESAConceptualizationSB11();
-		SB11CorpusConceptData sb11Data = new SB11CorpusConceptData();
+		RequirementsCorpusConceptData sb11Data = new RequirementsCorpusConceptData();
 		sb11Data.readCorpusContentOnly(inputData, random, trainingRate);
 		corpusContentProc.writeCorpusSimpleConceptData(sb11Data.getCorpusContentMap(), conceptNum, outputData);
 		System.out.println("Completed conceptualizing data corpus");
@@ -54,7 +54,7 @@ public class CorpusESAConceptualizationSB11 {
 				+ ".esa.concepts." + ClassifierConstant.complexVectorType + conceptNum;
 
 		CorpusESAConceptualizationSB11 corpusContentProc = new CorpusESAConceptualizationSB11();
-		SB11CorpusConceptData sb11Data = new SB11CorpusConceptData();
+		RequirementsCorpusConceptData sb11Data = new RequirementsCorpusConceptData();
 		sb11Data.readCorpusContentOnly(inputData, random, trainingRate);
 		corpusContentProc.writeCorpusComplexConceptData(sb11Data.getCorpusContentMap(), conceptNum, outputData);
 		System.out.println("Completed conceptualizing data corpus using ComplexESA");
