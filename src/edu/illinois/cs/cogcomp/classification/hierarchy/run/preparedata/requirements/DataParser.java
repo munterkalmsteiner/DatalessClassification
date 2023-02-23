@@ -55,12 +55,13 @@ public class DataParser {
 	private String filePath;
 	private Map<String,Requirement> requirements;
 	
-	public static void main(String[] args) {
-        DataParser p = new DataParser("data/sb11/raw/reqs_with_annotation_for_hc_20220412.csv");
+	public static void main(String[] args) {		
+		DataParser p = new DataParser("data/sb11/raw/reqs_with_annotation_for_hc_20220412.csv");
         p.parse();
         for (Requirement r : p.getRequirements()) {
             System.out.println(r.toString());
         }
+        System.out.println(p.getRequirements().size() + " requirements found");
     }
 	
 	public DataParser(String filePath) {
@@ -183,7 +184,6 @@ public class DataParser {
 	            .build()) {
 		    
     		        results = Optional.of(reader.readAll());
-    		        
     		        /* Replace new lines with spaces */
     		        if (results.isPresent()) {
         		        for (String[] r : results.get()) {
