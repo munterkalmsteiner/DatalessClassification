@@ -11,7 +11,25 @@ public class CoClassExperimentConfig {
 	// Swedish language
 	public final static String wikiIndexSV = "/home/waleed/Documents/Waleed's_PhD/DCAT/WP4/external_data/Waleed/SVWikiIndexsvwiki-20220820-original/";
 	
-	public static enum CoClassTables { Tillgångssystem , GrundfunktionerochKomponenter, Konstruktivasystem  };
+	public static enum CoClassTable { 
+		Tillgångssystem("Tillgångssystem"),
+		GrundfunktionerochKomponenter("Grundfunktioner-och-Komponenter"),
+		Konstruktivasystem("Konstruktiva-system");
+
+		private String value;
+		CoClassTable(String string) {
+			// TODO Auto-generated constructor stub
+			value = string;
+		}
+		
+		public String getValue() {
+			return value;
+		}
+		
+		public String getValueWithSpaces() {
+			return value.replace("-", " ");
+		}
+	};
 	
 	
 }

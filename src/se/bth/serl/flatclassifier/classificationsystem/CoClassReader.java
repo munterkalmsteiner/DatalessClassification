@@ -133,7 +133,7 @@ public class CoClassReader
              e.printStackTrace();
          }
          
-         log.info("Found {} nouns in SB11.", lookupTable.size());
+         log.info("Found {} nouns in CoClass.", lookupTable.size());
          
          return lookupTable;        
     }

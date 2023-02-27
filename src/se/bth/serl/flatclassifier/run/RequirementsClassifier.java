@@ -33,7 +33,7 @@ public class RequirementsClassifier {
 		String language = SB11ExperimentConfig.language;
         String csname = SB11ExperimentConfig.csName;
         String csrawdata = SB11ExperimentConfig.sb11Taxonomy;
-        String csTable = SB11ExperimentConfig.sb11Table;
+        String csTable = SB11ExperimentConfig.SB11Table.Byggdelar.toString();
         String csModelFilename = SB11ExperimentConfig.csModelFile;
         String annotatedData = GenericCSConfig.rawData;
         int topK = 2;
@@ -81,7 +81,10 @@ public class RequirementsClassifier {
                 
                 int numReqs = reqs.size();
                 for (int i = 0; i < numReqs; i++) {
-                    Map<String, Double> classificationResults = cl.classifyRequirement(reqs.get(i), topK);
+                    Map<String, Double> classificationResults = cl.classifyRequirementWithTopK(reqs.get(i), topK);
+                    
+                    log.info("Classified requirements" + reqs.get(i).getReqId() + " with " + classificationResults.size());
+                    
                     HashMap<String, Double> lowerCaseResults = new LinkedHashMap<String, Double>();
                     
                     if(classificationResults.size() > 0) {

@@ -111,16 +111,58 @@ public class HierarchicalClassifierCoClassExperiment {
 				new ExperimentConfig("25", coClassTaxonomy, rawData, textIndex, conceptTreeFile, conceptFile,
 						outputClassificationFile, outputLabelComparisonFile, numOfConcepts, 20, "Konstruktiva-system",
 						true));
+
+		experiments.put("35",
+				new ExperimentConfig("35", coClassTaxonomy, rawData, textIndex, conceptTreeFile, conceptFile,
+						outputClassificationFile, outputLabelComparisonFile, numOfConcepts, 2,
+						"Grundfunktioner-och-Komponenter", false));
+
+		experiments.put("36",
+				new ExperimentConfig("36", coClassTaxonomy, rawData, textIndex, conceptTreeFile, conceptFile,
+						outputClassificationFile, outputLabelComparisonFile, numOfConcepts, 2, "Konstruktiva-system",
+						false));
 		
-		experiments.put("26",
-				new ExperimentConfig("26", coClassTaxonomy, 
+		experiments.put("37",
+				new ExperimentConfig("37", coClassTaxonomy, rawData, textIndex, conceptTreeFile, conceptFile,
+						outputClassificationFile, outputLabelComparisonFile, numOfConcepts, 1, "Tillgångssystem",
+						false));
+		
+		experiments.put("38",
+				new ExperimentConfig("38", coClassTaxonomy, rawData, textIndex, conceptTreeFile, conceptFile,
+						outputClassificationFile, outputLabelComparisonFile, numOfConcepts, 1,
+						"Grundfunktioner-och-Komponenter", false));
+
+		experiments.put("39",
+				new ExperimentConfig("39", coClassTaxonomy, rawData, textIndex, conceptTreeFile, conceptFile,
+						outputClassificationFile, outputLabelComparisonFile, numOfConcepts, 1, "Konstruktiva-system",
+						false));
+		
+		
+		experiments.put("40",
+				new ExperimentConfig("40", coClassTaxonomy, rawData, textIndex, conceptTreeFile, conceptFile,
+						outputClassificationFile, outputLabelComparisonFile, numOfConcepts, 25, "Tillgångssystem",
+						false));
+		
+		experiments.put("41",
+				new ExperimentConfig("41", coClassTaxonomy, rawData, textIndex, conceptTreeFile, conceptFile,
+						outputClassificationFile, outputLabelComparisonFile, numOfConcepts, 25,
+						"Grundfunktioner-och-Komponenter", false));
+
+		experiments.put("42",
+				new ExperimentConfig("42", coClassTaxonomy, rawData, textIndex, conceptTreeFile, conceptFile,
+						outputClassificationFile, outputLabelComparisonFile, numOfConcepts, 25, "Konstruktiva-system",
+						false));
+		
+		
+		experiments.put("XX",
+				new ExperimentConfig("XX_Bootstrappin", coClassTaxonomy, 
 						"data/sb11/raw/reqs_with_annotation_for_hc_20220901_CS_T.csv",
 						textIndex, conceptTreeFile, conceptFile,
 						outputClassificationFile, outputLabelComparisonFile,
 						numOfConcepts, 20, "Tillgångssystem",
 						false));
 
-		HierarchicalClassifierCoClassExperiment.RunESA(experiments.get("20"), false);
+		HierarchicalClassifierCoClassExperiment.RunESA(experiments.get("42"), false);
 
 	}
 
@@ -171,5 +213,7 @@ public class HierarchicalClassifierCoClassExperiment {
 		ConceptClassificationESAML.testCoClassSimpleConcept(conf.getTopK(), conf.getCsTable(), conf.getTextIndex(),
 				conf.getConceptTreeFile(), conf.getConceptFile(), conf.getOutputClassificationFile(),
 				conf.getOutputLabelComparisonFile(), conf.getIncludeSuperTopic());
+		
+		System.out.print("Experiment number "  + conf.getDescription() + " is completed.");
 	}
 }

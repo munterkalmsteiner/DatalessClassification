@@ -39,6 +39,7 @@ public class CoClassTopicDocMaps extends AbstractTopicDocMaps {
 			Directory inputDir = FSDirectory.open(new File(file));
 			IndexReader reader = IndexReader.open(inputDir, true);
 			int maxDocNum = reader.maxDoc();
+			int counter = 0;
 			for (int i = 0; i < maxDocNum; ++i) {
 				if (reader.isDeleted(i) == false) { 
 					Document doc = reader.document(i);
@@ -56,10 +57,11 @@ public class CoClassTopicDocMaps extends AbstractTopicDocMaps {
 							continue;
 						}
 						this.populateMaps(docID, topic.toLowerCase(), parentIndex);	
+						counter++;
 					}				
 				}
 			}
-			System.out.println ("TopicDocMap: Read CoClass data with true labels for " + maxDocNum + " docs.");
+			System.out.println ("TopicDocMap: Read CoClass data with true labels for " + counter + "/" + maxDocNum + " docs.");
 			reader.close();
 		} catch (Exception e) {
 			e.printStackTrace();

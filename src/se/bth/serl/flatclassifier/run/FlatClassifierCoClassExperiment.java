@@ -6,6 +6,7 @@ import java.util.HashMap;
 
 import edu.illinois.cs.cogcomp.classification.hierarchy.dataprocess.requirements.CoClassTopicDocMaps;
 import edu.illinois.cs.cogcomp.classification.hierarchy.run.ml.requirements.CoClassExperimentConfig;
+import edu.illinois.cs.cogcomp.classification.hierarchy.run.ml.requirements.CoClassExperimentConfig.CoClassTable;
 import se.bth.serl.flatclassifier.Evaluator;
 
 public class FlatClassifierCoClassExperiment {
@@ -15,16 +16,16 @@ public class FlatClassifierCoClassExperiment {
         String csname = CoClassExperimentConfig.csName;
         String csrawdata = CoClassExperimentConfig.coClassTaxonomy;
         String annotatedData = CoClassExperimentConfig.rawData;
-        String cstable = CoClassExperimentConfig.CoClassTables.Tillgångssystem.toString();
+        CoClassTable cstable = CoClassExperimentConfig.CoClassTable.Konstruktivasystem;
         String csModelFilename = CoClassExperimentConfig.csModelFile;
-        String textIndex = "data/coclass/textindex/" + cstable;
+        String textIndex = "data/coclass/textindex/" + cstable.getValue();
         Boolean includeSuperTopic = false;
         
-        int topK = 1;
+        int topK = 10;
         
         String outputFile = "data/coclass/output/flat.classification.top." + topK + "." + cstable;
         
-        CoClassTopicDocMaps coclassTDM = new CoClassTopicDocMaps(csrawdata, cstable, includeSuperTopic);
+        CoClassTopicDocMaps coclassTDM = new CoClassTopicDocMaps(csrawdata, cstable.getValue(), includeSuperTopic);
 		coclassTDM.readTopicDocMap(textIndex);
 		System.out.println("Found " + coclassTDM.getDocTopicMap().size() + " requirements with true labels form " + csname + "/" + cstable);
 		
@@ -33,7 +34,7 @@ public class FlatClassifierCoClassExperiment {
 			System.out.println("Classifying requirements");
 			HashMap<String, HashMap<String, Double>>  classifiedRequirements = RequirementsClassifier.ClassifyWithWord2vec(language,
 	        		csname,
-	        		cstable,
+	        		cstable.getValueWithSpaces(),
 	        		csrawdata,
 	        		csModelFilename,
 	        		annotatedData,

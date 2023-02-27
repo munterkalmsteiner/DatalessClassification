@@ -1,4 +1,4 @@
-package se.bth.serl.flatclassifier;
+	package se.bth.serl.flatclassifier;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -32,6 +32,7 @@ public class Evaluator {
 	double uF1;
 	double MF1;
 	double mrr;
+	double accuracy;
 	HashMap<String, ConfusionMatrix> cms;
 	HashMap<String, Integer> ranks;
 
@@ -200,6 +201,13 @@ public class Evaluator {
 	public void calculateMetrics() {
 		log.info(cms.size() + " labels used.");
 
+		//Accuracy
+		this.accuracy = (double) cms.entrySet().stream()
+				.mapToDouble(e -> e.getValue().getTp() == 0 ? 0
+						: ((e.getValue().getTp() + e.getValue().getTn()) / (e.getValue().getTp() + e.getValue().getFn() + e.getValue().getFp() + e.getValue().getTn())))
+				.sum() / (double) cms.size();
+		log.info("accuracy:" + this.accuracy);
+		
 		// Recall
 		int allTp = cms.entrySet().stream().mapToInt(e -> e.getValue().getTp()).sum();
 
@@ -252,7 +260,7 @@ public class Evaluator {
 		log.info("mrr: " + mrr);
 
 		log.info("results in TSV format");
-		log.info(String.format("%,.12f\t%,.12f\t%,.12f\t%,.12f\t%,.12f\t%,.12f\t%.12f", this.uRecall, this.MRecall,
+		log.info(String.format("%,.12f\t%,.12f\t%,.12f\t%,.12f\t%,.12f\t%,.12f\t%,.12f", this.uRecall, this.MRecall,
 				this.uPrecision, this.MPrecision, this.uF1, this.MF1, this.mrr));
 
 	}

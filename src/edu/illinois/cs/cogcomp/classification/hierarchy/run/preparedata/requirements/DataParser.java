@@ -62,6 +62,78 @@ public class DataParser {
             System.out.println(r.toString());
         }
         System.out.println(p.getRequirements().size() + " requirements found");
+        
+        int reqsLabeledWithTable = (int) p.getRequirements()
+            	.stream()
+            	.filter(e-> e.getLabels(ClassificationSystem.COCLASS, Language.EN).size() > 0)
+            	.count();        
+        System.out.println(reqsLabeledWithTable+ " requirements labeled with CoClass");
+        
+        int labelsCount = (int) p.getRequirements()
+            	.stream()
+            	.map(e-> e.getLabels(ClassificationSystem.COCLASS, Language.EN).size())
+            	.mapToInt(Integer::intValue).sum();       
+        System.out.println(labelsCount+ " labels instances from CoClass");
+        
+        double labelsDensity = (double) p.getRequirements()
+            	.stream()
+            	.map(e-> (double) e.getLabels(ClassificationSystem.COCLASS, Language.EN).size() / (double) 1426)
+            	.mapToDouble(Double::doubleValue).sum() / reqsLabeledWithTable;
+        System.out.println(labelsDensity + " label density for CoClass");
+        
+        reqsLabeledWithTable = (int) p.getRequirements()
+        	.stream()
+        	.filter(e-> e.getLabels(ClassificationSystem.COCLASS, Language.EN, "Tillgångssystem").size() > 0)
+        	.count();
+        System.out.println(reqsLabeledWithTable+ " requirements labeled with Tillgångssystem");
+        
+        labelsCount = (int) p.getRequirements()
+            	.stream()
+            	.map(e-> e.getLabels(ClassificationSystem.COCLASS, Language.EN, "Tillgångssystem").size())
+            	.mapToInt(Integer::intValue).sum();
+        System.out.println(labelsCount+ " labels instances from Tillgångssystem");
+        
+        labelsDensity = (double) p.getRequirements()
+            	.stream()
+            	.map(e-> (double) e.getLabels(ClassificationSystem.COCLASS, Language.EN, "Tillgångssystem").size() / (double) 250)
+            	.mapToDouble(Double::doubleValue).sum() / reqsLabeledWithTable;
+        System.out.println(labelsDensity + " label density for Tillgångssystem");
+        
+        reqsLabeledWithTable = (int) p.getRequirements()
+            	.stream()
+            	.filter(e-> e.getLabels(ClassificationSystem.COCLASS, Language.EN, "Konstruktiva-system").size() > 0)
+            	.count();        
+        System.out.println(reqsLabeledWithTable+ " requirements labeled with Konstruktiva-system");
+        
+        labelsCount = (int) p.getRequirements()
+            	.stream()
+            	.map(e-> e.getLabels(ClassificationSystem.COCLASS, Language.EN, "Konstruktiva-system").size())
+            	.mapToInt(Integer::intValue).sum();
+        System.out.println(labelsCount+ " labels instances from Konstruktiva-system");
+        
+        labelsDensity = (double) p.getRequirements()
+            	.stream()
+            	.map(e-> (double) e.getLabels(ClassificationSystem.COCLASS, Language.EN, "Konstruktiva-system").size() / (double) 312)
+            	.mapToDouble(Double::doubleValue).sum() / reqsLabeledWithTable;
+        System.out.println(labelsDensity + " label density for Konstruktiva-system");
+        
+        reqsLabeledWithTable = (int) p.getRequirements()
+            	.stream()
+            	.filter(e-> e.getLabels(ClassificationSystem.COCLASS, Language.EN, "Grundfunktioner-och-Komponenter").size() > 0)
+            	.count();        
+        System.out.println(reqsLabeledWithTable+ " requirements labeled with Grundfunktioner-och-Komponenter");
+        
+        labelsCount = (int) p.getRequirements()
+            	.stream()
+            	.map(e-> e.getLabels(ClassificationSystem.COCLASS, Language.EN, "Grundfunktioner-och-Komponenter").size())
+            	.mapToInt(Integer::intValue).sum();
+        System.out.println(labelsCount+ " labels instances from Grundfunktioner-och-Komponenter");
+        
+        labelsDensity = (double) p.getRequirements()
+            	.stream()
+            	.map(e-> (double) e.getLabels(ClassificationSystem.COCLASS, Language.EN, "Grundfunktioner-och-Komponenter").size() / (double) 864)
+            	.mapToDouble(Double::doubleValue).sum() / reqsLabeledWithTable;
+        System.out.println(labelsDensity + " label density for Grundfunktioner-och-Komponenter");
     }
 	
 	public DataParser(String filePath) {
@@ -211,5 +283,6 @@ public class DataParser {
 	public List<Requirement> getRequirements() {
 		return new ArrayList<>(requirements.values());
 	}
+	
 
 }

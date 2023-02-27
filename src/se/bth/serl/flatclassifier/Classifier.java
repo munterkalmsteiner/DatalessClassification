@@ -64,7 +64,7 @@ public class Classifier
         String csname = SB11ExperimentConfig.csName;
         String csrawdata = SB11ExperimentConfig.sb11Taxonomy;
         String csModelfilename = SB11ExperimentConfig.csModelFile;
-        String csTable = SB11ExperimentConfig.sb11Table;
+        String csTable = SB11ExperimentConfig.SB11Table.Byggdelar.toString();
         
         String word2vecfilename = GenericCSConfig.word2vecmodel;
         String annotatedData = GenericCSConfig.rawData;
@@ -198,6 +198,98 @@ public class Classifier
                     	}
                     }
                     
+                }
+            }
+            
+            sb.append("\n");
+            sb.append("Total nouns: ");
+            sb.append(nouns);
+            sb.append("\n\n\n");
+                                    
+            jcas.reset();
+            
+            return results;
+        }
+        catch (AnalysisEngineProcessException | ResourceInitializationException e) {
+            e.printStackTrace();
+            return null;
+        }
+
+    }
+    
+    
+    /**
+     * This an implementation of the classifier that returns the top K 
+     * labels per requirement
+     *  
+     * @param requirement
+     * @return classifications
+     */
+    public Map<String, Double> classifyRequirementWithTopK(Requirement requirement, int topKPerRequirement) {
+    	
+    	Map<String, Double> results = new LinkedHashMap<String, Double>();
+    	
+    	jcas.setDocumentLanguage(NLP.getLanguageString(lang));
+        jcas.setDocumentText(requirement.getText(lang));
+     
+        StringBuilder sb = new StringBuilder();
+        
+        sb.append("-----------");
+        sb.append(requirement.getReqId());
+        sb.append("-----------\n\n");
+        sb.append(requirement.getText(lang));
+        sb.append("\nAnnotations (");
+        sb.append(csTable);
+        sb.append("): ");
+        sb.append(requirement.getAnnotationInfo(cs, lang, csTable));
+        sb.append("\n\n");
+        
+        try {
+            SimplePipeline.runPipeline(jcas, NLP.baseAnalysisEngine());
+            
+            /* For some reason, we get Tokens with different POS (and possibly other varying 
+             * features) JCas with select. Hence, we keep track of the terms we are interested in 
+             * (nouns). Note that the hash function of Term does not consider the POS value since
+             * it seems that a term can be tagged with different noun POS tags. In this way, we
+             * avoid that those terms appear twice. 
+             */
+            Set<Term> uniqueTerms = new HashSet<>();
+            
+            //count unique nouns
+            int nouns = 0;
+            for (Token token : JCasUtil.select(jcas, Token.class)) {
+                Term term = new Term(token, lang);
+                if (term.isNoun() && !uniqueTerms.contains(term)) {
+                    nouns++;
+                    
+                    // the following line was commented out, i don't know why
+                    uniqueTerms.add(term);
+                }
+            }
+            
+            //calculate topK per term
+            int topKPerTerm = topKPerRequirement / nouns;
+            topKPerTerm = Math.max(topKPerTerm, 1);
+            log.info("TopK: " + topKPerRequirement + ", nouns: " +  nouns + ", topk per term: " + topKPerTerm);
+            //classify
+            for (Term term : uniqueTerms) {
+                Map<String, Score> result = calculateScore(term);
+                if(result.size() == 0) {
+                	continue;
+                }
+                
+                // select topK per term
+                for(int k = 0; k < topKPerTerm; k++) {
+                	if(result.size() <= k) {
+                		break;
+                	}
+                	String topLabelIri = (String) result.keySet().toArray()[k];
+                	String topLabelCode = topLabelIri.split("_")[1];
+                	Double topScore = result.get(result.keySet().toArray()[k]).totalScore;
+                    
+                	if(!result.containsKey(topLabelCode)) {
+                		results.put(topLabelCode, topScore);	
+                	}
                 }
             }
             

@@ -115,6 +115,15 @@ public class Requirement {
                 .collect(Collectors.toList());
 	}
 	
+	public List<String> getLabels(ClassificationSystem cs, Language lang) 
+	{
+	    return annotations.stream()
+	            .filter(a -> a.getClassificationSystem().equals(cs))
+	            .filter(a -> a.getLanguage().equals(lang))
+                .map(a -> a.getLabel())
+                .collect(Collectors.toList());
+	}
+	
 	public String getLabelsString(ClassificationSystem cs, Language lang, String table) 
 	{
 	    return getLabels(cs, lang, table).stream().collect(Collectors.joining(" "));

@@ -15,12 +15,12 @@ public class FlatClassifierSB11Experiment {
 		String language = SB11ExperimentConfig.language;
         String csname = SB11ExperimentConfig.csName;
         String csrawdata = SB11ExperimentConfig.sb11Taxonomy;
-        String cstable = SB11ExperimentConfig.sb11Table;
+        String cstable = SB11ExperimentConfig.SB11Table.Byggdelar.toString();
         String annotatedData = GenericCSConfig.rawData;
         String textIndex = "data/sb11/textindex/" + cstable;
         String csModelFilename = SB11ExperimentConfig.csModelFile;
         Boolean includeSuperTopic = false;
-        int topK = 1;
+        int topK = 10;
         
         String outputFile = "data/sb11/output/flat.classification.top." + topK + "." + cstable;
         

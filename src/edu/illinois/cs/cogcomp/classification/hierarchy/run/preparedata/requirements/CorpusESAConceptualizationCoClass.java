@@ -10,6 +10,7 @@ import edu.illinois.cs.cogcomp.classification.hierarchy.dataprocess.newsgroups.N
 import edu.illinois.cs.cogcomp.classification.hierarchy.dataprocess.requirements.RequirementsCorpusConceptData;
 import edu.illinois.cs.cogcomp.classification.hierarchy.datastructure.ConceptData;
 import edu.illinois.cs.cogcomp.classification.hierarchy.run.ClassifierConstant;
+import edu.illinois.cs.cogcomp.classification.main.DatalessResourcesConfig;
 import edu.illinois.cs.cogcomp.classification.representation.esa.AbstractESA;
 import edu.illinois.cs.cogcomp.classification.representation.esa.complex.DiskBasedComplexESA;
 import edu.illinois.cs.cogcomp.classification.representation.esa.simple.SimpleESALocal;
@@ -30,6 +31,23 @@ public class CorpusESAConceptualizationCoClass {
 //		int type = 1;
 //		ClassifierConstant.complexVectorType = ComplexESALocal.searchTypes[type];
 //		conceptualizeCorpusComplex (500) ;
+		
+		DatalessResourcesConfig.initialization();
+		String fileName = "trvinfra-00008-5-en";
+		String rawCorpusFile = "data/coclass/raw/" + fileName + ".csv";
+		String textIndex = "data/coclass/textindex/" +  fileName;
+		String conceptsOutputFile = "data/coclass/output/" + fileName + ".simple.concepts.500";
+		
+		try {
+			CoClassIndexer t = new CoClassIndexer(rawCorpusFile,textIndex,"Tillgångsystem");
+			t.index();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		
+		CorpusESAConceptualizationCoClass.conceptualizeCorpus(500, textIndex, conceptsOutputFile);
 
 	}
 
