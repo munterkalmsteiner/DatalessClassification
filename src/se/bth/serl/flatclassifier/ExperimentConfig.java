@@ -1,6 +1,10 @@
 package se.bth.serl.flatclassifier;
 
+import java.nio.charset.Charset;
+
 import edu.illinois.cs.cogcomp.classification.hierarchy.run.ml.requirements.CoClassExperimentConfig;
+import edu.illinois.cs.cogcomp.classification.hierarchy.run.ml.requirements.GenericCSConfig;
+import edu.illinois.cs.cogcomp.classification.hierarchy.run.ml.requirements.SB11ExperimentConfig;
 
 public class ExperimentConfig {
 	String description;
@@ -116,6 +120,18 @@ public class ExperimentConfig {
 	public ExperimentConfig () {
 		
 	}
+   
+	public ExperimentConfig (String description, String csTable, String rawData, String textIndex, String outputClassificatonFile,
+			String outputLabelComparisonFile, int topK, Boolean includeSuperTopic) {
+		this.description = description;
+		this.csTable = csTable;
+		this.rawDataFile = rawData;
+		this.textIndex = textIndex;
+		this.outputClassificationFile = outputClassificatonFile;
+		this.outputLabelComparisonFile = outputLabelComparisonFile;
+		this.topK = topK;
+		this.includeSuperTopic = includeSuperTopic;
+	}
 	
 	public ExperimentConfig (String description, String taxonomyFile, String rawDataFile, String textIndex,
 			String conceptTreeFile, String conceptFile, String outputClassificationFile,
@@ -131,7 +147,8 @@ public class ExperimentConfig {
 		this.outputLabelComparisonFile = outputLabelComparisonFile;
 		this.numOfConcepts = numOfConcepts;
 		this.topK = topK;
-		this.csTable = csTable;
+		Charset charset = Charset.forName("UTF-8");
+		this.csTable = new String(csTable.getBytes(), charset);;
 		this.includeSuperTopic = includeSuperTopic;
 		
 	}

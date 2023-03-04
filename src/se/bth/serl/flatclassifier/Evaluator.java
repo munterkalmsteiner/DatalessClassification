@@ -1,7 +1,9 @@
-	package se.bth.serl.flatclassifier;
+package se.bth.serl.flatclassifier;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -12,6 +14,7 @@ import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.OptionalInt;
 import java.util.stream.Collectors;
+import java.util.stream.DoubleStream;
 import java.util.stream.IntStream;
 
 import org.apache.log4j.Level;
@@ -33,6 +36,10 @@ public class Evaluator {
 	double MF1;
 	double mrr;
 	double accuracy;
+	double errorRate;
+	double minClassificationsCount;
+	double maxClassificationsCount;
+	double averageClassificationsCount;
 	HashMap<String, ConfusionMatrix> cms;
 	HashMap<String, Integer> ranks;
 
@@ -41,6 +48,7 @@ public class Evaluator {
 		cms = calculateConfusionMatrix(classifiedRequirements, docTopicMap);
 		calculateRanks(classifiedRequirements, docTopicMap);
 		calcMaxNumberOfTrueLabels(docTopicMap);
+		calcClassifiedLabelsStatistics(classifiedRequirements);
 	}
 
 	public Evaluator(String resultsFile, HashMap<String, HashSet<String>> docTopicMap) {
@@ -48,6 +56,7 @@ public class Evaluator {
 		cms = calculateConfusionMatrix(classifiedRequirements, docTopicMap);
 		calculateRanks(classifiedRequirements, docTopicMap);
 		calcMaxNumberOfTrueLabels(docTopicMap);
+		calcClassifiedLabelsStatistics(classifiedRequirements);
 	}
 
 	HashSet<String> unique(HashSet<String> input) {
@@ -66,6 +75,19 @@ public class Evaluator {
 		OptionalInt max = docTopicMap.entrySet().stream().mapToInt(e -> unique(e.getValue()).size()).max();
 
 		log.info("max number of true labels: " + max.getAsInt());
+	}
+
+	private void calcClassifiedLabelsStatistics(HashMap<String, HashMap<String, Double>> classifiedRequirements) {
+		minClassificationsCount = classifiedRequirements.values().stream().mapToDouble(e -> (double) e.size()).min()
+				.getAsDouble();
+		maxClassificationsCount = classifiedRequirements.values().stream().mapToDouble(e -> (double) e.size()).max()
+				.getAsDouble();
+		averageClassificationsCount = classifiedRequirements.values().stream().mapToDouble(e -> (double) e.size()).average()
+				.getAsDouble();
+
+		log.info("min number of classifications: " + minClassificationsCount);
+		log.info("max number of classifications: " + maxClassificationsCount);
+		log.info("average number of classifications: " + averageClassificationsCount);
 	}
 
 	private HashMap<String, HashMap<String, Double>> readResultsFromDump(String resultsFile) {
@@ -201,13 +223,13 @@ public class Evaluator {
 	public void calculateMetrics() {
 		log.info(cms.size() + " labels used.");
 
-		//Accuracy
+		// Accuracy
 		this.accuracy = (double) cms.entrySet().stream()
-				.mapToDouble(e -> e.getValue().getTp() == 0 ? 0
-						: ((e.getValue().getTp() + e.getValue().getTn()) / (e.getValue().getTp() + e.getValue().getFn() + e.getValue().getFp() + e.getValue().getTn())))
+				.mapToDouble(e -> (e.getValue().getTp() + e.getValue().getTn())
+						/ (e.getValue().getTp() + e.getValue().getFn() + e.getValue().getFp() + e.getValue().getTn()))
 				.sum() / (double) cms.size();
 		log.info("accuracy:" + this.accuracy);
-		
+
 		// Recall
 		int allTp = cms.entrySet().stream().mapToInt(e -> e.getValue().getTp()).sum();
 
@@ -259,9 +281,47 @@ public class Evaluator {
 
 		log.info("mrr: " + mrr);
 
+		// Error Rate
+		this.errorRate = (double) cms.entrySet().stream()
+				.mapToDouble(e -> (e.getValue().getFp() + e.getValue().getFn())
+						/ (e.getValue().getTp() + e.getValue().getFn() + e.getValue().getFp() + e.getValue().getTn()))
+				.sum() / (double) cms.size();
+		log.info("error rate:" + this.errorRate);
+
 		log.info("results in TSV format");
 		log.info(String.format("%,.12f\t%,.12f\t%,.12f\t%,.12f\t%,.12f\t%,.12f\t%,.12f", this.uRecall, this.MRecall,
 				this.uPrecision, this.MPrecision, this.uF1, this.MF1, this.mrr));
+
+	}
+
+	public void dumpMetrics(String outputfile) {
+		FileWriter writer;
+		String separator = "\t";
+		try {
+			writer = new FileWriter(outputfile);
+			writer.write("uRecall" + separator + "MRecall" + separator + "uPrecision" + separator + "MPrecision"
+					+ separator + "uF1" + separator + "MF1");
+			writer.write("\n\r");
+
+			writer.write(this.uRecall + separator + this.MRecall + separator + this.uPrecision + separator
+					+ this.MPrecision + separator + this.uF1 + separator + this.MF1);
+			writer.write("\n\r");
+
+			writer.write("Classifications statistics");
+			writer.write("\n\r");
+
+			writer.write("min" + separator + "max" + separator + "average");
+			writer.write("\n\r");
+
+			writer.write(minClassificationsCount + separator + maxClassificationsCount + separator
+					+ averageClassificationsCount);
+			writer.write("\n\r");
+
+			writer.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
 	}
 

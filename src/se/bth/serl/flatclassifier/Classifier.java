@@ -225,12 +225,14 @@ public class Classifier
      * @param requirement
      * @return classifications
      */
-    public Map<String, Double> classifyRequirementWithTopK(Requirement requirement, int topKPerRequirement) {
+    public Map<String, Double> classifyRequirementWithTopK(Requirement requirement, int topKPerRequirement, String outputTermsScoreFile) {
     	
     	Map<String, Double> results = new LinkedHashMap<String, Double>();
+    	String textToClassify =  requirement.getText(lang)  + " " + requirement.getDocumentTitle(lang) + " " 
+    	+ requirement.getSectionTitlesString(lang);
     	
     	jcas.setDocumentLanguage(NLP.getLanguageString(lang));
-        jcas.setDocumentText(requirement.getText(lang));
+        jcas.setDocumentText(textToClassify);
      
         StringBuilder sb = new StringBuilder();
         
@@ -297,7 +299,18 @@ public class Classifier
             sb.append("Total nouns: ");
             sb.append(nouns);
             sb.append("\n\n\n");
-                                    
+            
+            BufferedWriter bw;
+			try {
+				bw = new BufferedWriter(new FileWriter(outputTermsScoreFile));
+				bw.write(sb.toString());
+	            bw.close();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+            
+            
             jcas.reset();
             
             return results;
@@ -369,12 +382,10 @@ public class Classifier
             sb.append("Total nouns: ");
             sb.append(nouns);
             sb.append("\n\n\n");
-            
-            bw.write(sb.toString());
                         
             jcas.reset();
         }
-        catch (AnalysisEngineProcessException | ResourceInitializationException | IOException e) {
+        catch (AnalysisEngineProcessException | ResourceInitializationException e) {
             e.printStackTrace();
         }
     }

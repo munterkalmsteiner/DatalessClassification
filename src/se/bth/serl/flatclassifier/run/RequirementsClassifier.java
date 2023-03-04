@@ -36,6 +36,8 @@ public class RequirementsClassifier {
         String csTable = SB11ExperimentConfig.SB11Table.Byggdelar.toString();
         String csModelFilename = SB11ExperimentConfig.csModelFile;
         String annotatedData = GenericCSConfig.rawData;
+        String outputTermsScoreFile = "data/sb11/output/test.flat." + csname + "." + csTable;
+        
         int topK = 2;
         
     	RequirementsClassifier.ClassifyWithWord2vec(language,
@@ -44,6 +46,7 @@ public class RequirementsClassifier {
         		csrawdata,
         		csModelFilename,
         		annotatedData,
+        		outputTermsScoreFile,
         		topK);
 	}
 	
@@ -54,6 +57,7 @@ public class RequirementsClassifier {
 			String csRawdata,
 			String csModelFilename,
 			String annotatedData,
+			String outputTermsScoreFile,
 			int topK
 			) {
         String word2vecfilename = GenericCSConfig.word2vecmodel;
@@ -81,9 +85,9 @@ public class RequirementsClassifier {
                 
                 int numReqs = reqs.size();
                 for (int i = 0; i < numReqs; i++) {
-                    Map<String, Double> classificationResults = cl.classifyRequirementWithTopK(reqs.get(i), topK);
+                    Map<String, Double> classificationResults = cl.classifyRequirementWithTopK(reqs.get(i), topK, outputTermsScoreFile);
                     
-                    log.info("Classified requirements" + reqs.get(i).getReqId() + " with " + classificationResults.size());
+                    log.debug("Classified requirement " + reqs.get(i).getReqId() + " with " + classificationResults.size() + " classes");
                     
                     HashMap<String, Double> lowerCaseResults = new LinkedHashMap<String, Double>();
                     

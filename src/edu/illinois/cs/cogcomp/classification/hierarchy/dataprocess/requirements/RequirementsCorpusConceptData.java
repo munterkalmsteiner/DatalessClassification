@@ -56,10 +56,10 @@ public class RequirementsCorpusConceptData extends AbstractCorpusConceptData {
 					if (doc.get("sectionTitles") != null) {
 						text += " " + doc.get("sectionTitles");
 					}
-					if (doc.get("advice") != null) {
-						text += " " + doc.get("advice");
-					}
-					text += doc.get("text");
+//					if (doc.get("advice") != null) {
+//						text += " " + doc.get("advice");
+//					}
+					text += " " + doc.get("text");
 					text = text.replaceAll("\n", " ");
 					text = text.replaceAll("\r", " ");
 					text = text.replaceAll("\t", " ");
@@ -108,13 +108,14 @@ public class RequirementsCorpusConceptData extends AbstractCorpusConceptData {
 						continue;
 					}
 
-					String text = doc.get("text"); // doc.get("Body");
+					String text = " "; // doc.get("Body");
 					if (doc.get("documentTitle") != null) {
 						text += " " + doc.get("documentTitle");
 					}
 					if (doc.get("sectionTitles") != null) {
 						text += " " + doc.get("sectionTitles");
 					}
+					text += " " + doc.get("text");
 					text = text.replaceAll("\n", " ");
 					text = text.replaceAll("\r", " ");
 					text = text.replaceAll("\t", " ");

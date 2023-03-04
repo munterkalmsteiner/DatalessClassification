@@ -20,14 +20,14 @@ public class BTHEvaluation {
 			HashMap<String, SparseVector> docIdContentMap,
 			HashMap<String, HashSet<String>> topicDocMap,
 			HashMap<String, HashSet<String>> docTopicMap,
-			String outputDataFilePath,
+			String outputMetricsFile,
 			String outputLabelFilePath,
 			int topK) {
 		// classification
 		HashMap<String, EvalResults> resultsMap = new HashMap<String, EvalResults>();
 		try {
 			int count = 0;
-			FileWriter writer = new FileWriter(outputDataFilePath);
+			FileWriter writer = new FileWriter(outputLabelFilePath);
 			
 			HashMap<String, HashMap<String, Double>> docClassifiedTopics = new LinkedHashMap<String, HashMap<String, Double>>();
 
@@ -82,10 +82,12 @@ public class BTHEvaluation {
 				writer.write("\n\r");
 				count++;
 			}
+			writer.close();
 			System.out.println("Classified " + count + " documents ...");
 			
 			Evaluator eval = new Evaluator(docClassifiedTopics, docTopicMap);
 			eval.calculateMetrics();
+			eval.dumpMetrics(outputMetricsFile);
 			
 			resultsMap.put("all", new EvalResults());
 			resultsMap.get("all").precision = eval.getuPrecision();
@@ -105,14 +107,14 @@ public class BTHEvaluation {
 			HashMap<String, String> allDocIdConceptStringMap, 
 			HashMap<String, HashSet<String>> topicDocMap,
 			HashMap<String, HashSet<String>> docTopicMap,
-			String outputDataFilePath, String outputLabelFilePath,
+			String outputMetricsFile, String outputLabelFilePath,
 			int topK,
 			boolean isUseConcept) {
 		HashMap<String, EvalResults> resultsMap = new HashMap<String, EvalResults>();
 		
 		try {
 			int count = 0;
-			FileWriter writer = new FileWriter(outputDataFilePath);
+			FileWriter writer = new FileWriter(outputLabelFilePath);
 			
 			HashMap<String, HashMap<String, Double>> docClassifiedTopics = new LinkedHashMap<String, HashMap<String, Double>>();
 			
@@ -180,6 +182,7 @@ public class BTHEvaluation {
 			// evaluate
 			Evaluator eval = new Evaluator(docClassifiedTopics, docTopicMap);
 			eval.calculateMetrics();
+			eval.dumpMetrics(outputMetricsFile);
 			
 			resultsMap.put("all", new EvalResults());
 			resultsMap.get("all").precision = eval.getuPrecision();

@@ -51,10 +51,10 @@ public class BootstrappingConceptsBOWMixCoClassNoDepthClassifier {
 
 		String csTable = "Tillgångssystem";
 		testMix(direction, learningMethod, trainingRate, maxIter, penalty, csTable, true);
-		csTable = "Konstruktiva-system";
-		testMix(direction, learningMethod, trainingRate, maxIter, penalty, csTable, true);
-		csTable = "Grundfunktioner-och-Komponenter";
-		testMix(direction, learningMethod, trainingRate, maxIter, penalty, csTable, true);
+		//csTable = "Konstruktiva-system";
+		//testMix(direction, learningMethod, trainingRate, maxIter, penalty, csTable, true);
+		//csTable = "Grundfunktioner-och-Komponenter";
+		//testMix(direction, learningMethod, trainingRate, maxIter, penalty, csTable, true);
 
 		long endTime = System.currentTimeMillis();
 		int second = (int) ((endTime - startTime) / 1000);
@@ -65,9 +65,9 @@ public class BootstrappingConceptsBOWMixCoClassNoDepthClassifier {
 	public static void testMix(String direction, String learningMethod, double trainingRate, int iter, double penalty,
 			String csTable, boolean useAdditionalData) {
 
-		int bootstrappingNum = 20;
-		int bootstrappingIter = 20;
-		int topK = 20;
+		int bootstrappingNum = 10;
+		int bootstrappingIter = 30;
+		int topK = 10;
 		try {
 			List<Double> precisionList = new ArrayList<Double>();
 			List<Double> recallList = new ArrayList<Double>();

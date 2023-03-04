@@ -1,5 +1,9 @@
 package edu.illinois.cs.cogcomp.classification.hierarchy.run.ml.requirements;
 
+import java.util.HashMap;
+
+import edu.illinois.cs.cogcomp.classification.hierarchy.run.ml.requirements.SB11ExperimentConfig.SB11Table;
+
 public class CoClassExperimentConfig {
 	public final static String language = "EN";
 	public final static String csName = "COCLASS";
@@ -31,5 +35,11 @@ public class CoClassExperimentConfig {
 		}
 	};
 	
+	public final static HashMap<String,Integer> nodesCount = new HashMap<>() {{
+		put(csName, 1426);
+		put(CoClassTable.Tillgångssystem.getValue(), 250);
+		put(CoClassTable.GrundfunktionerochKomponenter.getValue() , 864);
+		put(CoClassTable.Konstruktivasystem.getValue() , 312);
+	}}; 
 	
 }
