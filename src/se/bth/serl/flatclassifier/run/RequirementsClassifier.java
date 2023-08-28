@@ -1,5 +1,6 @@
 package se.bth.serl.flatclassifier.run;
 
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -75,6 +76,8 @@ public class RequirementsClassifier {
         File csModelFile = new File(csModelFilename);
         
         try {
+            BufferedWriter bw = new BufferedWriter(new FileWriter(outputTermsScoreFile));
+            
             Classifier cl = new Classifier(csr.get(), csModelFile, csTable, word2vecFile);
             HashMap<String, HashMap<String, Double>> classifiedRequirements = new LinkedHashMap<String, HashMap<String,Double>>();
             
@@ -85,9 +88,9 @@ public class RequirementsClassifier {
                 
                 int numReqs = reqs.size();
                 for (int i = 0; i < numReqs; i++) {
-                    Map<String, Double> classificationResults = cl.classifyRequirementWithTopK(reqs.get(i), topK, outputTermsScoreFile);
+                    Map<String, Double> classificationResults = cl.classifyRequirementWithTopK(reqs.get(i), topK, bw);
                     
-                    log.debug("Classified requirement " + reqs.get(i).getReqId() + " with " + classificationResults.size() + " classes");
+                    log.info("Classified requirement " + reqs.get(i).getReqId() + " with " + classificationResults.size() + " classes");
                     
                     HashMap<String, Double> lowerCaseResults = new LinkedHashMap<String, Double>();
                     
@@ -108,6 +111,8 @@ public class RequirementsClassifier {
                     log.info("Analyzed " + (i + 1) + " of " + numReqs + " requirements");
                     log.debug("----------------");
                 }
+                
+                bw.close();
                 return classifiedRequirements;
             }
         }

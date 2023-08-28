@@ -112,6 +112,7 @@ public class Classifier
         this.cs = csr.getClassificationSystem();
         this.lang = csr.getLanguage();
         this.csTable = csTable; 
+        reset();
         
         if (csModel == null) {
             csModel = csr.read();
@@ -133,6 +134,11 @@ public class Classifier
         predictors = new ArrayList<>();
         predictors.add(new SimpleNounPredictor(csModel, csTable));
         predictors.add(new Word2VecPredictor(csModel, csTable, w2vModel));
+    }
+    
+    public void reset() {
+    	csModel = null;
+    	jcas = null;
     }
     
     /**
@@ -224,8 +230,10 @@ public class Classifier
      *  
      * @param requirement
      * @return classifications
+     * @throws IOException 
      */
-    public Map<String, Double> classifyRequirementWithTopK(Requirement requirement, int topKPerRequirement, String outputTermsScoreFile) {
+    public Map<String, Double> classifyRequirementWithTopK(Requirement requirement, int topKPerRequirement,
+    		BufferedWriter writer) throws IOException {
     	
     	Map<String, Double> results = new LinkedHashMap<String, Double>();
     	String textToClassify =  requirement.getText(lang)  + " " + requirement.getDocumentTitle(lang) + " " 
@@ -293,6 +301,24 @@ public class Classifier
                 		results.put(topLabelCode, topScore);	
                 	}
                 }
+                
+                //Write terms and scores
+                sb.append("Noun ");
+                sb.append(nouns);
+                sb.append(" (lemmatized): ");
+                sb.append(term.getLemma());
+                sb.append("\n");
+                
+                for (Map.Entry<String, Score> e : result.entrySet()) {
+                    String iri = e.getKey();
+                    Score score = e.getValue();
+                    
+                    sb.append("\t");
+                    sb.append(iri);
+                    sb.append(": ");
+                    sb.append(score.getExplanation());
+                    sb.append("\n");
+                }
             }
             
             sb.append("\n");
@@ -300,17 +326,7 @@ public class Classifier
             sb.append(nouns);
             sb.append("\n\n\n");
             
-            BufferedWriter bw;
-			try {
-				bw = new BufferedWriter(new FileWriter(outputTermsScoreFile));
-				bw.write(sb.toString());
-	            bw.close();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-            
-            
+            writer.write(sb.toString());
             jcas.reset();
             
             return results;

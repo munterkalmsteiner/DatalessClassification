@@ -19,7 +19,7 @@ public class DumpConceptTreeSB11 {
 		tree.treeLabelData.readTreeHierarchy(fileTopicHierarchyPath);
 		ConceptTreeNode rootNode = tree.initializeTree("root", 0);
 		tree.setRootNode(rootNode);
-		tree.aggregateChildrenDescription(rootNode);
+//		tree.aggregateChildrenDescription(rootNode);
 		tree.setConceptNum(conceptNum);
 		tree.conceptualizeTreeLabels(rootNode, ClassifierConstant.isBreakConcepts);
 		tree.dumpTree(fileOutputPath);
