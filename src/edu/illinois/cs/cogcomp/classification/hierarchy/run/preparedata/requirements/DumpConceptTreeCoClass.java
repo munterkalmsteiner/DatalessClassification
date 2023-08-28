@@ -23,5 +23,4 @@ public class DumpConceptTreeCoClass {
 		tree.dumpTree(fileOutputPath);
 		System.out.println("process tree finished");
 	}
-	
 }

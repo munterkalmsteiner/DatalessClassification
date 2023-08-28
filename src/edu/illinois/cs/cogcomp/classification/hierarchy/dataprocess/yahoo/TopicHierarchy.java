@@ -33,8 +33,6 @@ public class TopicHierarchy {
 		topicHierarchy = new HashMap<String, HashMap<String, String>>();
 		topicHierarchy.put("labels", topicMapping1);
 
-		
-		
 	}
 
 
