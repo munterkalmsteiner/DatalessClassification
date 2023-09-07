@@ -1,5 +1,7 @@
 package edu.illinois.cs.cogcomp.classification.hierarchy.run.ml.requirements;
 
+import java.lang.reflect.Array;
+import java.util.Arrays;
 import java.util.HashMap;
 
 import edu.illinois.cs.cogcomp.classification.hierarchy.run.ml.requirements.SB11ExperimentConfig.SB11Table;
@@ -33,6 +35,7 @@ public class CoClassExperimentConfig {
 		public String getValueWithSpaces() {
 			return value.replace("-", " ");
 		}
+		
 	};
 	
 	public final static HashMap<String,Integer> nodesCount = new HashMap<>() {{

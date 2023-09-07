@@ -16,15 +16,15 @@
  * limitations under the License.
  */
 
-package se.bth.serl.flatclassifier.predictor;
+package se.bth.serl.word.classifier.predictor;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import se.bth.serl.flatclassifier.classificationsystem.CSObject;
-import se.bth.serl.flatclassifier.utils.Term;
+import se.bth.serl.word.classifier.classificationsystem.CSObject;
+import se.bth.serl.word.classifier.utils.Term;
 
 /**
  * If the token is a noun, we look for CoClass objects that contain this noun. The more frequent the

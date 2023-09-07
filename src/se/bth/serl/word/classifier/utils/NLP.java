@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package se.bth.serl.flatclassifier.utils;
+package se.bth.serl.word.classifier.utils;
 
 import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
 

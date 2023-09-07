@@ -22,14 +22,14 @@ public class CSTopicHierarchy {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		// String filePath = "./data/sb11/raw/SB11_SV_EN_20220520.csv";
-		String filePath = "data/coclass/raw/coclass_eng_swe_by_michael.csv";
-		String cs = "CoClass"; // SB11 , CoClass
+		 String filePath = "./data/sb11/raw/SB11_SV_EN_20220520.csv";
+//		String filePath = "data/coclass/raw/coclass_eng_swe_by_michael.csv";
+		String cs = "SB11"; // SB11 , CoClass
 		CSTopicHierarchy tx = new CSTopicHierarchy(cs, "EN", filePath);
-		String label = "1ahb";// "31B";
-		String label2 = "bbc";
-		String labelName = tx.getTopicHierarchy().get("Tillgångssystem").get(label);
-		String label2Name = tx.getTopicHierarchy().get("Grundfunktioner-och-Komponenter").get(label2);
+		String label = "admbue";// "31B";
+		String label2 = "84bbi";
+		String labelName = tx.getTopicHierarchy().get("Landskapsinformation").get(label);
+		String label2Name = tx.getTopicHierarchy().get("Byggdelar").get(label2);
 		System.out.println(label + ": " + labelName);
 		System.out.println(label2 + ": " + label2Name);
 
@@ -102,7 +102,9 @@ public class CSTopicHierarchy {
 		int labelIndex = 1;
 		// SB11
 		int labelNameIndex_SB11_EN = 2;
+		int labelDescriptionIndex_SB11_EN = 3;
 		int labelNameIndex_SB11_SV = 4;
+		int labelDescriptionIndex_SB11_SV = 5;
 		// CoClass
 		int labelNameIndex_CoClass_EN = 2;
 		int labelDescriptionIndex_CoClass_EN = 3;
@@ -121,12 +123,17 @@ public class CSTopicHierarchy {
 				}
 				if (cs.equals("SB11")) {
 					String labelName = "";
+					String labelDescription = "";					
 					if (lang.equals("EN")) {
 						labelName = node.get(labelNameIndex_SB11_EN);
+						labelDescription = node.get(labelDescriptionIndex_SB11_EN);
 					} else if (lang.equals("SV")) {
 						labelName = node.get(labelNameIndex_SB11_SV);
+						if(node.size() > labelDescriptionIndex_SB11_SV) {
+							labelDescription = node.get(labelDescriptionIndex_SB11_SV);
+						}
 					}
-					topicHierarchy.get(table).put(label, labelName);
+					topicHierarchy.get(table).put(label, labelName + ", " + labelDescription );
 					labelLookupMap.put(label, labelName);
 				} else if (cs.equals("CoClass")) {
 					String labelName = "";

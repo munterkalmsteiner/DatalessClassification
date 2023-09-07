@@ -5,7 +5,7 @@ import java.io.FileWriter;
 import edu.illinois.cs.cogcomp.classification.hierarchy.run.ml.requirements.CoClassExperimentConfig;
 import edu.illinois.cs.cogcomp.classification.hierarchy.run.ml.requirements.SB11ExperimentConfig;
 import edu.illinois.cs.cogcomp.classification.hierarchy.run.preparedata.requirements.Annotation.ClassificationSystem;
-import se.bth.serl.flatclassifier.utils.NLP.Language;
+import se.bth.serl.word.classifier.utils.NLP.Language;
 
 public class CharacteristicsExtractor {
 

@@ -19,7 +19,7 @@ import com.opencsv.enums.CSVReaderNullFieldIndicator;
 import com.opencsv.exceptions.CsvException;
 
 import edu.illinois.cs.cogcomp.classification.hierarchy.run.preparedata.requirements.Annotation.ClassificationSystem;
-import se.bth.serl.flatclassifier.utils.NLP.Language;
+import se.bth.serl.word.classifier.utils.NLP.Language;
 /**
  * This is a parser for the data used with the SB11 taxonomy
  * 

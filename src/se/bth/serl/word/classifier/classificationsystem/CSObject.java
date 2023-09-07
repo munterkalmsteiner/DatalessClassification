@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package se.bth.serl.flatclassifier.classificationsystem;
+package se.bth.serl.word.classifier.classificationsystem;
 
 import java.io.Serializable;
 import java.util.ArrayList;

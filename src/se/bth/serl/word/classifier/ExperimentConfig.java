@@ -1,10 +1,6 @@
-package se.bth.serl.flatclassifier;
+package se.bth.serl.word.classifier;
 
 import java.nio.charset.Charset;
-
-import edu.illinois.cs.cogcomp.classification.hierarchy.run.ml.requirements.CoClassExperimentConfig;
-import edu.illinois.cs.cogcomp.classification.hierarchy.run.ml.requirements.GenericCSConfig;
-import edu.illinois.cs.cogcomp.classification.hierarchy.run.ml.requirements.SB11ExperimentConfig;
 
 public class ExperimentConfig {
 	String description;
@@ -15,6 +11,7 @@ public class ExperimentConfig {
 	String conceptFile;
 	String outputClassificationFile;
 	String outputLabelComparisonFile;
+	String hierarchy;
 	int numOfConcepts;
 	int topK;
 	String csTable;
@@ -101,6 +98,14 @@ public class ExperimentConfig {
 		this.numOfConcepts = numOfConcepts;
 	}
 
+	public String getHierarchy() {
+		return hierarchy;
+	}
+
+	public void setHierarchy(String hierarchy) {
+		this.hierarchy = hierarchy;
+	}
+	
 	public int getTopK() {
 		return topK;
 	}
@@ -116,7 +121,7 @@ public class ExperimentConfig {
 	public void setCsTable(String csTable) {
 		this.csTable = csTable;
 	}
-
+	
 	public ExperimentConfig () {
 		
 	}
@@ -129,6 +134,19 @@ public class ExperimentConfig {
 		this.textIndex = textIndex;
 		this.outputClassificationFile = outputClassificatonFile;
 		this.outputLabelComparisonFile = outputLabelComparisonFile;
+		this.topK = topK;
+		this.includeSuperTopic = includeSuperTopic;
+	}
+	
+	public ExperimentConfig (String description, String csTable, String rawData, String textIndex, String outputClassificatonFile,
+			String outputLabelComparisonFile, String hierarchy, int topK, Boolean includeSuperTopic) {
+		this.description = description;
+		this.csTable = csTable;
+		this.rawDataFile = rawData;
+		this.textIndex = textIndex;
+		this.outputClassificationFile = outputClassificatonFile;
+		this.outputLabelComparisonFile = outputLabelComparisonFile;
+		this.hierarchy = hierarchy;
 		this.topK = topK;
 		this.includeSuperTopic = includeSuperTopic;
 	}

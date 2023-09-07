@@ -6,4 +6,5 @@ public class GenericCSConfig {
 		public final static String word2vecmodel = "/home/waleed/dev/local_resources/dataless_classification/word2vec_en_wikipedia2021/model.bin";	
 		// Swedish language
 		public final static String wikiIndexSV = "/home/waleed/Documents/Waleed's_PhD/DCAT/WP4/external_data/Waleed/SVWikiIndexsvwiki-20220820-original/";
+		
 }

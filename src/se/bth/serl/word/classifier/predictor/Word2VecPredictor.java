@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package se.bth.serl.flatclassifier.predictor;
+package se.bth.serl.word.classifier.predictor;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -27,9 +27,9 @@ import java.util.stream.Collectors;
 
 import org.deeplearning4j.models.word2vec.Word2Vec;
 
-import se.bth.serl.flatclassifier.classificationsystem.CSObject;
-import se.bth.serl.flatclassifier.utils.NLP;
-import se.bth.serl.flatclassifier.utils.Term;
+import se.bth.serl.word.classifier.classificationsystem.CSObject;
+import se.bth.serl.word.classifier.utils.NLP;
+import se.bth.serl.word.classifier.utils.Term;
 
 public class Word2VecPredictor
     extends PredictorBase

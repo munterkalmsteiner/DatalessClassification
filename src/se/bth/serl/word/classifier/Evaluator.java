@@ -1,4 +1,4 @@
-package se.bth.serl.flatclassifier;
+package se.bth.serl.word.classifier;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -22,7 +22,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import edu.illinois.cs.cogcomp.classification.hierarchy.datastructure.LabelKeyValuePair;
-import se.bth.serl.flatclassifier.utils.ConfusionMatrix;
+import se.bth.serl.word.classifier.utils.ConfusionMatrix;
 
 public class Evaluator {
 
@@ -38,6 +38,30 @@ public class Evaluator {
 	double accuracy;
 	double errorRate;
 	double minClassificationsCount;
+	public double getMinClassificationsCount() {
+		return minClassificationsCount;
+	}
+
+	public void setMinClassificationsCount(double minClassificationsCount) {
+		this.minClassificationsCount = minClassificationsCount;
+	}
+
+	public double getMaxClassificationsCount() {
+		return maxClassificationsCount;
+	}
+
+	public void setMaxClassificationsCount(double maxClassificationsCount) {
+		this.maxClassificationsCount = maxClassificationsCount;
+	}
+
+	public double getAverageClassificationsCount() {
+		return averageClassificationsCount;
+	}
+
+	public void setAverageClassificationsCount(double averageClassificationsCount) {
+		this.averageClassificationsCount = averageClassificationsCount;
+	}
+
 	double maxClassificationsCount;
 	double averageClassificationsCount;
 	HashMap<String, ConfusionMatrix> cms;

@@ -1,4 +1,4 @@
-package se.bth.serl.flatclassifier.classificationsystem;
+package se.bth.serl.word.classifier.classificationsystem;
 
 import java.io.File;
 import java.util.Optional;
@@ -6,13 +6,13 @@ import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import se.bth.serl.flatclassifier.utils.NLP.Language;
+import se.bth.serl.word.classifier.utils.NLP.Language;
 
 public class CSReaderFactory
 {
     private static final Logger log = LoggerFactory.getLogger(CSReaderFactory.class);
     
-    public static Optional<CSReader> getReader(String csname, String csRawData, String language)
+    public static Optional<CSReader> getReader(String csname, String csRawData, String language, String hierarchy)
     {
         CSReader csr = null;
         File csFile = new File(csRawData);
@@ -25,9 +25,9 @@ public class CSReaderFactory
                 log.error("Language not defined.");
             } else {
                 if (csname.equals("SB11"))
-                    csr = new SB11Reader(csFile, lang.get());
+                    csr = new SB11Reader(csFile, lang.get(), hierarchy);
                 else if (csname.equals("COCLASS"))
-                    csr = new CoClassReader(csFile, lang.get());
+                    csr = new CoClassReader(csFile, lang.get(), hierarchy);
                 else 
                     log.error("Classification system not defined.");
             }

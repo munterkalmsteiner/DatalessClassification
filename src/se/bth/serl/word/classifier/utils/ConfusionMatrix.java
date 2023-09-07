@@ -1,4 +1,4 @@
-package se.bth.serl.flatclassifier.utils;
+package se.bth.serl.word.classifier.utils;
 
 public class ConfusionMatrix {
 	private Integer tp;

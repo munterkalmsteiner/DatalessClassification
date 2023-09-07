@@ -9,7 +9,7 @@ import org.apache.lucene.index.CorruptIndexException;
 
 import edu.illinois.cs.cogcomp.classification.hierarchy.run.preparedata.requirements.Annotation.ClassificationSystem;
 import edu.illinois.cs.cogcomp.descartes.indexer.AbstractDocIndexer;
-import se.bth.serl.flatclassifier.utils.NLP.Language;
+import se.bth.serl.word.classifier.utils.NLP.Language;
 
 /**
  * 

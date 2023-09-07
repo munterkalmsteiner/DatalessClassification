@@ -9,9 +9,9 @@ import edu.illinois.cs.cogcomp.classification.hierarchy.run.preparedata.requirem
 import edu.illinois.cs.cogcomp.classification.hierarchy.run.preparedata.requirements.DumpConceptTreeSB11;
 import edu.illinois.cs.cogcomp.classification.hierarchy.run.preparedata.requirements.SB11Indexer;
 import edu.illinois.cs.cogcomp.classification.main.DatalessResourcesConfig;
-import se.bth.serl.flatclassifier.ExperimentConfig;
+import se.bth.serl.word.classifier.ExperimentConfig;
 
-public class HierarchicalClassifierSB11Experiment {
+public class SentenceClassifierSB11Experiment {
 
 	public static void main(String[] args) {
 
@@ -135,7 +135,7 @@ public class HierarchicalClassifierSB11Experiment {
 				25, "Alternativtabell", false));
 
 		for(String ex:experiments.keySet()) {
-			HierarchicalClassifierSB11Experiment.RunESA(experiments.get(ex), false);	
+			SentenceClassifierSB11Experiment.RunESA(experiments.get(ex), false);	
 		}
 		
 	}

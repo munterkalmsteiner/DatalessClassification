@@ -22,9 +22,9 @@ import edu.illinois.cs.cogcomp.classification.hierarchy.run.preparedata.requirem
 import edu.illinois.cs.cogcomp.classification.hierarchy.run.preparedata.requirements.DumpConceptTreeCoClass;
 import edu.illinois.cs.cogcomp.classification.main.DatalessResourcesConfig;
 import edu.illinois.cs.cogcomp.lbjava.learn.Log;
-import se.bth.serl.flatclassifier.ExperimentConfig;
+import se.bth.serl.word.classifier.ExperimentConfig;
 
-public class HierarchicalClassifierCoClassExperiment {
+public class SentenceClassifierCoClassExperiment {
 	public static void main(String[] args) {
 
 		int numOfConcepts = 500;
@@ -171,7 +171,7 @@ public class HierarchicalClassifierCoClassExperiment {
 		
 	
 		for(String ex:experiments.keySet()) {
-			HierarchicalClassifierCoClassExperiment.RunESA(experiments.get(ex), false);	
+			SentenceClassifierCoClassExperiment.RunESA(experiments.get(ex), false);	
 		}
 	}
 
@@ -216,7 +216,6 @@ public class HierarchicalClassifierCoClassExperiment {
 		if (createConceptTree || cleanRun) {
 			DumpConceptTreeCoClass.testCoClassDataESA(conf.getNumOfConcepts(), conf.getConceptTreeFile(),
 					conf.getTaxonomyFile(), conf.getCsTable());
-			;
 		}
 
 		boolean createConceptFile = !Files.exists(new File(conf.getConceptFile()).toPath());

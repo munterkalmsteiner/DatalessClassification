@@ -1,4 +1,4 @@
-package se.bth.serl.flatclassifier.run;
+package se.bth.serl.word.classifier.run;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -21,10 +21,9 @@ import edu.illinois.cs.cogcomp.classification.hierarchy.run.ml.requirements.Gene
 import edu.illinois.cs.cogcomp.classification.hierarchy.run.ml.requirements.SB11ExperimentConfig;
 import edu.illinois.cs.cogcomp.classification.hierarchy.run.preparedata.requirements.DataParser;
 import edu.illinois.cs.cogcomp.classification.hierarchy.run.preparedata.requirements.Requirement;
-import edu.stanford.nlp.patterns.surface.SurfacePatternFactory.Genre;
-import se.bth.serl.flatclassifier.Classifier;
-import se.bth.serl.flatclassifier.classificationsystem.CSReader;
-import se.bth.serl.flatclassifier.classificationsystem.CSReaderFactory;
+import se.bth.serl.word.classifier.Classifier;
+import se.bth.serl.word.classifier.classificationsystem.CSReader;
+import se.bth.serl.word.classifier.classificationsystem.CSReaderFactory;
 
 public class RequirementsClassifier {
 
@@ -34,12 +33,13 @@ public class RequirementsClassifier {
 		String language = SB11ExperimentConfig.language;
         String csname = SB11ExperimentConfig.csName;
         String csrawdata = SB11ExperimentConfig.sb11Taxonomy;
-        String csTable = SB11ExperimentConfig.SB11Table.Byggdelar.toString();
+        String csTable = SB11ExperimentConfig.SB11Table.Landskapsinformation.toString();
         String csModelFilename = SB11ExperimentConfig.csModelFile;
         String annotatedData = GenericCSConfig.rawData;
         String outputTermsScoreFile = "data/sb11/output/test.flat." + csname + "." + csTable;
+        String hierarchy = "flat";
         
-        int topK = 2;
+        int topK = 5;
         
     	RequirementsClassifier.ClassifyWithWord2vec(language,
         		csname,
@@ -48,6 +48,7 @@ public class RequirementsClassifier {
         		csModelFilename,
         		annotatedData,
         		outputTermsScoreFile,
+        		hierarchy,
         		topK);
 	}
 	
@@ -59,11 +60,12 @@ public class RequirementsClassifier {
 			String csModelFilename,
 			String annotatedData,
 			String outputTermsScoreFile,
+			String hierarchy,
 			int topK
 			) {
         String word2vecfilename = GenericCSConfig.word2vecmodel;
         
-        Optional<CSReader> csr = CSReaderFactory.getReader(csName, csRawdata, language);
+        Optional<CSReader> csr = CSReaderFactory.getReader(csName, csRawdata, language, hierarchy);
         if (csr.isEmpty())
             System.exit(1);
         
@@ -90,7 +92,7 @@ public class RequirementsClassifier {
                 for (int i = 0; i < numReqs; i++) {
                     Map<String, Double> classificationResults = cl.classifyRequirementWithTopK(reqs.get(i), topK, bw);
                     
-                    log.info("Classified requirement " + reqs.get(i).getReqId() + " with " + classificationResults.size() + " classes");
+                    log.debug("Classified requirement " + reqs.get(i).getReqId() + " with " + classificationResults.size() + " classes");
                     
                     HashMap<String, Double> lowerCaseResults = new LinkedHashMap<String, Double>();
                     

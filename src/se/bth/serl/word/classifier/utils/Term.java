@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package se.bth.serl.flatclassifier.utils;
+package se.bth.serl.word.classifier.utils;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token;
-import se.bth.serl.flatclassifier.utils.NLP.Language;
+import se.bth.serl.word.classifier.utils.NLP.Language;
 
 public class Term
 {

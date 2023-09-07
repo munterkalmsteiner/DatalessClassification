@@ -10,7 +10,7 @@ import edu.illinois.cs.cogcomp.classification.hierarchy.classificationinterface.
 import edu.illinois.cs.cogcomp.classification.hierarchy.datastructure.LabelKeyValuePair;
 import edu.illinois.cs.cogcomp.classification.hierarchy.datastructure.SparseVector;
 import edu.illinois.cs.cogcomp.classification.hierarchy.run.ml.requirements.RequirementsClassifier;
-import se.bth.serl.flatclassifier.Evaluator;
+import se.bth.serl.word.classifier.Evaluator;
 
 
 public class BTHEvaluation {

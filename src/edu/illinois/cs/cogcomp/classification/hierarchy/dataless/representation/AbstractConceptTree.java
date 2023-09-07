@@ -126,8 +126,6 @@ public abstract class AbstractConceptTree extends AbstractLabelTree {
 		if (data.equals("CustomizedHCServer")) {
 			treeLabelData = new CustomizedHCServer();
 		}
-		
-		
 
 		representationType = method;
 
@@ -606,8 +604,8 @@ public abstract class AbstractConceptTree extends AbstractLabelTree {
 			aggregateChildrenDescription(child);
 			String newLabelDescriptionStr = "";
 			if (child.getLabelDescriptioinString() != null) {
-				newLabelDescriptionStr = rootNode.getLabelDescriptioinString() + " "
-						+ child.getLabelDescriptioinString() + " ";
+				newLabelDescriptionStr = rootNode.getLabelDescriptioinString() + ".\n"
+						+ child.getLabelDescriptioinString() ;
 			}
 			rootNode.setLabelDescriptionString(newLabelDescriptionStr);
 		}

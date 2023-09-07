@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-package se.bth.serl.flatclassifier.predictor;
+package se.bth.serl.word.classifier.predictor;
 
 import java.util.HashMap;
 import java.util.List;
@@ -29,7 +29,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token;
-import se.bth.serl.flatclassifier.classificationsystem.CSObject;
+import se.bth.serl.word.classifier.classificationsystem.CSObject;
 
 public abstract class PredictorBase
     implements IPredictor

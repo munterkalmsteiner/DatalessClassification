@@ -1,4 +1,4 @@
-package se.bth.serl.flatclassifier;
+package se.bth.serl.word.classifier;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -36,15 +36,15 @@ import edu.illinois.cs.cogcomp.classification.hierarchy.run.ml.requirements.SB11
 import edu.illinois.cs.cogcomp.classification.hierarchy.run.preparedata.requirements.DataParser;
 import edu.illinois.cs.cogcomp.classification.hierarchy.run.preparedata.requirements.Requirement;
 import edu.illinois.cs.cogcomp.classification.hierarchy.run.preparedata.requirements.Annotation.ClassificationSystem;
-import se.bth.serl.flatclassifier.classificationsystem.CSObject;
-import se.bth.serl.flatclassifier.classificationsystem.CSReader;
-import se.bth.serl.flatclassifier.classificationsystem.CSReaderFactory;
-import se.bth.serl.flatclassifier.predictor.IPredictor;
-import se.bth.serl.flatclassifier.predictor.SimpleNounPredictor;
-import se.bth.serl.flatclassifier.predictor.Word2VecPredictor;
-import se.bth.serl.flatclassifier.utils.NLP;
-import se.bth.serl.flatclassifier.utils.NLP.Language;
-import se.bth.serl.flatclassifier.utils.Term;
+import se.bth.serl.word.classifier.classificationsystem.CSObject;
+import se.bth.serl.word.classifier.classificationsystem.CSReader;
+import se.bth.serl.word.classifier.classificationsystem.CSReaderFactory;
+import se.bth.serl.word.classifier.predictor.IPredictor;
+import se.bth.serl.word.classifier.predictor.SimpleNounPredictor;
+import se.bth.serl.word.classifier.predictor.Word2VecPredictor;
+import se.bth.serl.word.classifier.utils.NLP;
+import se.bth.serl.word.classifier.utils.Term;
+import se.bth.serl.word.classifier.utils.NLP.Language;
 
 public class Classifier
 {
@@ -64,12 +64,14 @@ public class Classifier
         String csname = SB11ExperimentConfig.csName;
         String csrawdata = SB11ExperimentConfig.sb11Taxonomy;
         String csModelfilename = SB11ExperimentConfig.csModelFile;
-        String csTable = SB11ExperimentConfig.SB11Table.Byggdelar.toString();
+        String csTable = SB11ExperimentConfig.SB11Table.Alternativtabell.toString();
         
         String word2vecfilename = GenericCSConfig.word2vecmodel;
         String annotatedData = GenericCSConfig.rawData;
-         
-        Optional<CSReader> csr = CSReaderFactory.getReader(csname, csrawdata, language);
+        
+        String hierarchy = "flat";
+        
+        Optional<CSReader> csr = CSReaderFactory.getReader(csname, csrawdata, language, hierarchy);
         if (csr.isEmpty())
             System.exit(1);
         
@@ -280,7 +282,8 @@ public class Classifier
             //calculate topK per term
             int topKPerTerm = topKPerRequirement / nouns;
             topKPerTerm = Math.max(topKPerTerm, 1);
-            log.info("TopK: " + topKPerRequirement + ", nouns: " +  nouns + ", topk per term: " + topKPerTerm);
+            log.debug("TopK: " + topKPerRequirement + ", nouns: " +  nouns + ", topk per term: " + topKPerTerm);
+            
             //classify
             for (Term term : uniqueTerms) {
                 Map<String, Score> result = calculateScore(term);

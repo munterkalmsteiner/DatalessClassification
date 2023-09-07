@@ -16,11 +16,11 @@
  * limitations under the License.
  */
 
-package se.bth.serl.flatclassifier.predictor;
+package se.bth.serl.word.classifier.predictor;
 
 import java.util.Map;
 
-import se.bth.serl.flatclassifier.utils.Term;
+import se.bth.serl.word.classifier.utils.Term;
 
 
 public interface IPredictor

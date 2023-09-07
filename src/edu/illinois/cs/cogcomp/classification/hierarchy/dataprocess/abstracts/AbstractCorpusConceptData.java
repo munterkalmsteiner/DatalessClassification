@@ -12,7 +12,7 @@ import org.slf4j.LoggerFactory;
 
 import edu.illinois.cs.cogcomp.classification.hierarchy.datastructure.ConceptData;
 import edu.illinois.cs.cogcomp.classification.hierarchy.datastructure.SparseVector;
-import se.bth.serl.flatclassifier.Evaluator;
+import se.bth.serl.word.classifier.Evaluator;
 
 /**
  * yqsong@illinois.edu
